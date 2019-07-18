@@ -36,10 +36,12 @@ class Player {
   bindController() {
     document.addEventListener('keydown', (e) => {
       let key = e.keyCode;
+      if (!Object.values(KEY).includes(key)) return;
       switch (this.game.state) {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
+          // if (!Object.values(KEY).includes(key)) return;
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
@@ -62,6 +64,7 @@ class Player {
     })
     document.addEventListener('keyup', (e) => {
       let key = e.keyCode;
+      if (!Object.values(KEY).includes(key)) return;
       switch (this.game.state) {
         case this.game.STATE_INIT:
           break;

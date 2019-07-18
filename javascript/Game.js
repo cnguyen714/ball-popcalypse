@@ -16,7 +16,7 @@ class Game {
     this.STATE_RUNNING = STATE_RUNNING;
     this.STATE_OVER = STATE_OVER;
 
-    this.cvs = cvs;    
+    this.cvs = cvs;
     this.ctx = ctx;
 
     this.nextGameTick = (new Date).getTime() + NEXT_TICK_TIME;
@@ -36,7 +36,7 @@ class Game {
     this.ctx.canvas.height = window.innerHeight;
 
     this.players.push(new Player(this));
-    this.players[0].bindController();
+    this.players[0].mountController();
     this.state = STATE_BEGIN;
   }
 
@@ -54,7 +54,7 @@ class Game {
         this.init();
         break;
       case STATE_BEGIN:
-        break;      
+        break;
       case STATE_RUNNING:
         this.entities.forEach(entity => entity.update());
         this.particles.forEach(entity => entity.update());

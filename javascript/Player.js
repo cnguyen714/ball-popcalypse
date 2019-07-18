@@ -1,7 +1,13 @@
 
-const CLAMP_SPAWN = 100;
-const MOVE_SPEED = 4;
+import Vector from "./Vector";
+
+const CLAMP_SPAWN = 100; // Offset from edges
+const ACCEL = 3;
+const MAX_SPEED = 6;
 const DASH_MULTIPLIER = 2;
+const MAX_DASH_SPEED = 10;
+const DECEL = 0.9;
+const MIN_SPEED = 0.1;
 
 const KEY = {
   W: 87,
@@ -22,6 +28,10 @@ class Player {
     this.ctx = game.ctx;
     this.x = CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2);
     this.y = CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2);
+    this.vel = new Vector(0, 0); 
+    this.mouseX = this.cvs.width / 2;
+    this.mouseY = this.cvs.height / 2;
+
     this.r = 15;
     this.fillColor = 'black';
     this.keyDown = {
@@ -31,11 +41,19 @@ class Player {
       [KEY.D]: false,
       [KEY.SHIFT]: false,
     }
+
+    this.setMousePosition = this.setMousePosition.bind(this);
   }
 
-  bindController() {
+  setMousePosition(e) {
+
+  }
+
+  mountController() {
     document.addEventListener('keydown', (e) => {
       let key = e.keyCode;
+
+      // Ignore keys that have not been bound
       if (!Object.values(KEY).includes(key)) return;
       switch (this.game.state) {
         case this.game.STATE_INIT:
@@ -61,6 +79,7 @@ class Player {
           break;
       }
     })
+
     document.addEventListener('keyup', (e) => {
       let key = e.keyCode;
       if (!Object.values(KEY).includes(key)) return;
@@ -87,16 +106,10 @@ class Player {
           break;
       }
     })
-  }
 
-
-  update(state) {
-    let offset = MOVE_SPEED * (this.keyDown[KEY.SHIFT] ? DASH_MULTIPLIER : 1);
-    if(this.keyDown[KEY.W]) this.y -= offset;
-    if(this.keyDown[KEY.A]) this.x -= offset;
-    if(this.keyDown[KEY.S]) this.y += offset;
-    if(this.keyDown[KEY.D]) this.x += offset;
-    this.validatePosition(this.cvs.width, this.cvs.height);
+    document.onmousemove = (e) => {
+      this.setMousePosition(e);
+    }
   }
 
   validatePosition(rectX, rectY) {
@@ -106,7 +119,42 @@ class Player {
     if(this.y - this.r < 0) this.y = this.r;
   }
 
-  //   ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
+  clampSpeed() {
+    let vel = this.vel.length();
+    let maxSpeed = (this.keyDown[KEY.SHIFT] 
+      ? MAX_DASH_SPEED 
+      : MAX_SPEED)
+    if(vel > maxSpeed) {
+      this.vel = this.vel.divide(vel).multiply(maxSpeed)
+    }
+  }
+
+  applyDecel() {
+    if(this.keyDown[KEY.W]) return;
+    if(this.keyDown[KEY.A]) return;
+    if(this.keyDown[KEY.S]) return;
+    if(this.keyDown[KEY.D]) return;
+    let result = this.vel.multiply(DECEL);
+    if (result.x < MIN_SPEED || result.x > -1 * MIN_SPEED) result.x = 0; 
+    if (result.y < MIN_SPEED || result.y > -1 * MIN_SPEED) result.y = 0; 
+    this.vel = result;
+  }
+
+  update(state) {
+    let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? DASH_MULTIPLIER : 1);
+    if(this.keyDown[KEY.W]) this.vel.y -= offset;
+    if(this.keyDown[KEY.A]) this.vel.x -= offset;
+    if(this.keyDown[KEY.S]) this.vel.y += offset;
+    if(this.keyDown[KEY.D]) this.vel.x += offset;
+    this.clampSpeed();
+    this.x += this.vel.x;
+    this.y += this.vel.y;
+    this.applyDecel();
+
+    this.validatePosition(this.cvs.width, this.cvs.height);
+  }
+
+  // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);

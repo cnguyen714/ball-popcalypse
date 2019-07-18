@@ -2,6 +2,7 @@
 import Player from './Player';
 import Particle from './Particle';
 import Vector from './Vector';
+import * as ParticleFactory from './particle_factory';
 
 const FPS = 60;
 const NEXT_TICK_TIME = 1000 / FPS;
@@ -38,7 +39,16 @@ class Game {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
 
-    this.players.push(new Player(this));
+    let player = new Player(this);
+    this.players.push(player);
+
+    // Test particle callback
+    // let particle = new Particle(this);
+    // particle.cb = function() {
+    //   this.x = player.mouseX;
+    //   this.y = player.mouseY;
+    // };
+    // this.entities.push(particle);
     
     this.players[0].mountController();
     this.state = STATE_BEGIN;
@@ -62,13 +72,12 @@ class Game {
       case STATE_RUNNING:
         this.frameCount++;
         
+        this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
-        
+
         if (this.frameCount % 30 === 0) this.particles.push(new Particle(this, this.cvs.width / 2, this.cvs.height / 2, new Vector(3, 3)));
         this.particles.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
-
-        this.players.forEach(entity => entity.update());
         
         break;
       case STATE_OVER:

@@ -1,12 +1,19 @@
 import Vector from "./Vector";
 
 class Particle {
-  constructor(game, startX, startY, vel) {
+  constructor(
+    game, 
+    startX = 0, 
+    startY = 0, 
+    vel = new Vector(0,0), 
+    cb = () => {} 
+  ) {
     this.cvs = game.cvs;
     this.ctx = game.ctx;
     this.x = startX;
     this.y = startY;
     this.vel = vel;
+    this.cb = cb;
     this.alive = true;
 
     this.r = 2;
@@ -23,9 +30,11 @@ class Particle {
       };
   }
 
-  update(state) {
+  update(game) {
     this.x += this.vel.x;
     this.y += this.vel.y;
+    this.cb();
+
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 

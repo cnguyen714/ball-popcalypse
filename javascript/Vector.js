@@ -1,6 +1,6 @@
 
 class Vector {
-  constructor(x, y) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
@@ -26,6 +26,7 @@ class Vector {
     }
     return this;
   }
+
   multiply(v) {
     if (v instanceof Vector) {
       this.x *= v.x;
@@ -36,6 +37,7 @@ class Vector {
     }
     return this;
   }
+  
   divide(v) {
     if (v instanceof Vector) {
       if(v.x !== 0) this.x /= v.x;
@@ -61,7 +63,10 @@ class Vector {
     return Math.sqrt(this.dot(this));
   }
 
+  // WARNING - operation calls divide which will modify this vector
   normalize() {
+    // let that = new Vector(this.x, this.y);
+    // return that.divide(this.length());
     return this.divide(this.length());
   }
 }

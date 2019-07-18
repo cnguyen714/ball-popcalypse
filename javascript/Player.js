@@ -1,5 +1,6 @@
 
 import Vector from "./Vector";
+import { fireBulletAtCursor }from './particle_factory';
 
 const CLAMP_SPAWN = 100; // Offset from edges
 const ACCEL = 3;
@@ -20,6 +21,7 @@ const KEY = {
   DOWN: 40,
   RIGHT: 39,
   SHIFT: 16,
+  MOUSE: 10000,
 };
 
 class Player {
@@ -32,6 +34,7 @@ class Player {
     this.vel = new Vector(0, 0); 
     this.mouseX = this.cvs.width / 2;
     this.mouseY = this.cvs.height / 2;
+    this.aim = new Vector(0, 0);
 
     this.r = PLAYER_SIZE;
     this.fillColor = 'black';
@@ -41,13 +44,21 @@ class Player {
       [KEY.S]: false,
       [KEY.D]: false,
       [KEY.SHIFT]: false,
+      [KEY.MOUSE]: false,
     }
 
     this.setMousePosition = this.setMousePosition.bind(this);
   }
 
   setMousePosition(e) {
-    e
+    var canvasRect = this.cvs.getBoundingClientRect();
+    this.mouseX = e.clientX - canvasRect.left;
+    this.mouseY = e.clientY - canvasRect.top;
+    this.setAim();
+  }
+
+  setAim() {
+    this.aim = new Vector(this.mouseX - this.x, this.mouseY - this.y);
   }
 
   mountController() {
@@ -79,7 +90,7 @@ class Player {
         default:
           break;
       }
-    })
+    });
 
     document.addEventListener('keyup', (e) => {
       let key = e.keyCode;
@@ -106,11 +117,44 @@ class Player {
         default:
           break;
       }
-    })
+    });
 
     document.onmousemove = (e) => {
       this.setMousePosition(e);
-    }
+    };
+
+    document.addEventListener("mousedown", (e) => {
+      switch (this.game.state) {
+        case this.game.STATE_INIT:
+          break;
+        case this.game.STATE_BEGIN:
+          this.game.startGame();
+          break;
+        case this.game.STATE_RUNNING:
+          this.keyDown[KEY.MOUSE] = true;
+          break;
+        case this.game.STATE_OVER:
+          break;
+        default:
+          break;
+      }
+    });
+    document.addEventListener("mouseup", (e) => {
+      switch (this.game.state) {
+        case this.game.STATE_INIT:
+          break;
+        case this.game.STATE_BEGIN:
+          this.game.startGame();
+          break;
+        case this.game.STATE_RUNNING:
+          this.keyDown[KEY.MOUSE] = true;
+          break;
+        case this.game.STATE_OVER:
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   validatePosition(rectX, rectY) {
@@ -141,16 +185,20 @@ class Player {
     this.vel = result;
   }
 
-  update(state) {
+  update() {
     let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? DASH_MULTIPLIER : 1);
     if(this.keyDown[KEY.W]) this.vel.y -= offset;
     if(this.keyDown[KEY.A]) this.vel.x -= offset;
     if(this.keyDown[KEY.S]) this.vel.y += offset;
     if(this.keyDown[KEY.D]) this.vel.x += offset;
     this.clampSpeed();
+
     this.x += this.vel.x;
     this.y += this.vel.y;
     this.applyDecel();
+
+    this.setAim();
+    if(this.keyDown[KEY.MOUSE]) this.game.particles.push(fireBulletAtCursor(this));
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
@@ -162,6 +210,12 @@ class Player {
     this.ctx.fillStyle = this.fillColor;
     this.ctx.strokeStyle = this.fillColor;
     this.ctx.fill();
+    this.ctx.stroke();
+
+    //test aim
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.x, this.y);
+    this.ctx.lineTo(this.x + this.aim.x, this.y + this.aim.y);
     this.ctx.stroke();
   }
 }

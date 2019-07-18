@@ -27,10 +27,9 @@ class Game {
     this.particles =[];
     this.players = [];
 
-    this.loop = this.loop.bind(this);
     this.init = this.init.bind(this);
+    this.loop = this.loop.bind(this);
   }
-
 
   init() {
     this.ctx.canvas.width = window.innerWidth;
@@ -95,6 +94,5 @@ class Game {
     window.requestAnimationFrame(this.loop);
   }
 }
-
 
 export default Game;

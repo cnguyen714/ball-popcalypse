@@ -41,7 +41,6 @@ class Player {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
-          // if (!Object.values(KEY).includes(key)) return;
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:

@@ -1,5 +1,7 @@
 import Vector from "./Vector";
 
+const RADIUS = 2;
+
 class Particle {
   constructor(
     game, 
@@ -8,6 +10,7 @@ class Particle {
     vel = new Vector(0,0), 
     cb = () => {} 
   ) {
+    this.game = game;
     this.cvs = game.cvs;
     this.ctx = game.ctx;
     this.x = startX;
@@ -16,9 +19,8 @@ class Particle {
     this.cb = cb;
     this.alive = true;
 
-    this.r = 2;
+    this.r = RADIUS;
     this.fillColor = 'red';
-    this.outline = 'none';
   }
 
   validatePosition(rectX, rectY) {
@@ -31,9 +33,9 @@ class Particle {
   }
 
   update(game) {
+    this.cb();
     this.x += this.vel.x;
     this.y += this.vel.y;
-    this.cb();
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

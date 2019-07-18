@@ -9,7 +9,11 @@ const DASH_MULTIPLIER = 2;
 const MAX_DASH_SPEED = 10;
 const DECEL = 0.9;
 const MIN_SPEED = 0.1;
-const PLAYER_SIZE = 10;
+const PLAYER_RADIUS = 10;
+const COLOR = 'black';
+
+const STATE_WALKING = "STATE_WALKING";
+const STATE_DASHING = "STATE_DASHING";
 
 const KEY = {
   W: 87,
@@ -36,8 +40,8 @@ class Player {
     this.mouseY = this.cvs.height / 2;
     this.aim = new Vector(0, 0);
 
-    this.r = PLAYER_SIZE;
-    this.fillColor = 'black';
+    this.r = PLAYER_RADIUS;
+    this.color = COLOR;
     this.keyDown = {
       [KEY.W]: false,
       [KEY.A]: false,
@@ -139,6 +143,7 @@ class Player {
           break;
       }
     });
+
     document.addEventListener("mouseup", (e) => {
       switch (this.game.state) {
         case this.game.STATE_INIT:
@@ -147,7 +152,7 @@ class Player {
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
-          this.keyDown[KEY.MOUSE] = true;
+          this.keyDown[KEY.MOUSE] = false;
           break;
         case this.game.STATE_OVER:
           break;
@@ -197,8 +202,10 @@ class Player {
     this.y += this.vel.y;
     this.applyDecel();
 
-    this.setAim();
-    if(this.keyDown[KEY.MOUSE]) this.game.particles.push(fireBulletAtCursor(this));
+    if(this.keyDown[KEY.MOUSE]) {
+      this.setAim();
+      this.game.particles.push(fireBulletAtCursor(this));
+    };
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
@@ -207,8 +214,8 @@ class Player {
   draw() {
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-    this.ctx.fillStyle = this.fillColor;
-    this.ctx.strokeStyle = this.fillColor;
+    this.ctx.fillStyle = this.color;
+    this.ctx.strokeStyle = this.color;
     this.ctx.fill();
     this.ctx.stroke();
 

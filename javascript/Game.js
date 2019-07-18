@@ -3,6 +3,7 @@ import Player from './Player';
 import Particle from './Particle';
 import Vector from './Vector';
 import * as ParticleFactory from './particle_factory';
+import * as EnemyFactory from './enemy_factory';
 
 const FPS = 60;
 const NEXT_TICK_TIME = 1000 / FPS;
@@ -75,10 +76,8 @@ class Game {
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
 
-        if (this.frameCount % 30 === 0) this.particles.push(new Particle(this, this.cvs.width / 2, this.cvs.height / 2, new Vector(3, 3)));
-        this.particles.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
-        
+        this.particles.forEach(entity => entity.update());
         break;
       case STATE_OVER:
         break;

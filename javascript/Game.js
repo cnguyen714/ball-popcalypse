@@ -1,5 +1,7 @@
 
 import Player from './Player';
+import Particle from './Particle';
+import Vector from './Vector';
 
 const FPS = 60;
 const NEXT_TICK_TIME = 1000 / FPS;
@@ -15,6 +17,7 @@ class Game {
     this.STATE_BEGIN = STATE_BEGIN;
     this.STATE_RUNNING = STATE_RUNNING;
     this.STATE_OVER = STATE_OVER;
+    this.frameCount = 0;
 
     this.cvs = cvs;
     this.ctx = ctx;
@@ -36,6 +39,7 @@ class Game {
     this.ctx.canvas.height = window.innerHeight;
 
     this.players.push(new Player(this));
+    
     this.players[0].mountController();
     this.state = STATE_BEGIN;
   }
@@ -56,9 +60,16 @@ class Game {
       case STATE_BEGIN:
         break;
       case STATE_RUNNING:
+        this.frameCount++;
+        
         this.entities.forEach(entity => entity.update());
+        
+        if (this.frameCount % 30 === 0) this.particles.push(new Particle(this, this.cvs.width / 2, this.cvs.height / 2, new Vector(3, 3)));
         this.particles.forEach(entity => entity.update());
+        this.particles = this.particles.filter(entity => entity.alive);
+
         this.players.forEach(entity => entity.update());
+        
         break;
       case STATE_OVER:
         break;
@@ -77,6 +88,7 @@ class Game {
       case STATE_BEGIN:
         break;
       case STATE_RUNNING:
+
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
         this.players.forEach(entity => entity.draw());

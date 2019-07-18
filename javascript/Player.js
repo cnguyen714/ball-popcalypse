@@ -8,6 +8,7 @@ const DASH_MULTIPLIER = 2;
 const MAX_DASH_SPEED = 10;
 const DECEL = 0.9;
 const MIN_SPEED = 0.1;
+const PLAYER_SIZE = 10;
 
 const KEY = {
   W: 87,
@@ -32,7 +33,7 @@ class Player {
     this.mouseX = this.cvs.width / 2;
     this.mouseY = this.cvs.height / 2;
 
-    this.r = 15;
+    this.r = PLAYER_SIZE;
     this.fillColor = 'black';
     this.keyDown = {
       [KEY.W]: false,
@@ -46,7 +47,7 @@ class Player {
   }
 
   setMousePosition(e) {
-
+    e
   }
 
   mountController() {
@@ -159,6 +160,7 @@ class Player {
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.fillColor;
+    this.ctx.strokeStyle = this.fillColor;
     this.ctx.fill();
     this.ctx.stroke();
   }

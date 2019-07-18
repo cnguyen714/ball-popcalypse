@@ -11,8 +11,8 @@ class EnemyCircle {
     this.game = game;
     this.cvs = game.cvs;
     this.ctx = game.ctx;
-    this.x = 0;
-    this.y = 0;
+    this.pos = new Vector(0, 0);
+    this.maxSpeed = MAX_SPEED;
     this.vel = new Vector(0, 0);
     this.aim = new Vector(0, 0);
     this.alive = true;
@@ -20,6 +20,9 @@ class EnemyCircle {
 
     this.r = RADIUS;
     this.color = COLOR;
+
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
   }
 
   validatePosition(rectX, rectY) {
@@ -37,15 +40,15 @@ class EnemyCircle {
     this.aiCallback();
 
     this.clampSpeed();
-    this.x += this.vel.x;
-    this.y += this.vel.y;
+    this.pos.x += this.vel.x;
+    this.pos.y += this.vel.y;
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = this.color;
     this.ctx.fill();

@@ -7,8 +7,8 @@ const BULLET_SPREAD = 0.05;
 
 export const fireBulletAtCursor = (player) => {
   let p = new Particle(player.game);
-  p.x = player.x;
-  p.y = player.y;
+  p.pos.x = player.pos.x;
+  p.pos.y = player.pos.y;
 
   let aim = new Vector(1, 1);
   aim.multiply(player.aim);

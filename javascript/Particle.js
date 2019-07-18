@@ -13,29 +13,30 @@ class Particle {
     this.game = game;
     this.cvs = game.cvs;
     this.ctx = game.ctx;
-    this.x = startX;
-    this.y = startY;
+    this.pos = new Vector(startX, startY);
     this.vel = vel;
     this.cb = cb;
     this.alive = true;
 
     this.r = RADIUS;
     this.fillColor = 'red';
+
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
   }
 
   validatePosition(rectX, rectY) {
-    if ( this.x > rectX + this.r 
-      || this.x < 0 - this.r 
-      || this.y > rectY + this.r 
-      || this.y < 0 - this.r ) { 
+    if ( this.pos.x > rectX + this.r 
+      || this.pos.x < 0 - this.r 
+      || this.pos.y > rectY + this.r 
+      || this.pos.y < 0 - this.r ) { 
         this.alive = false;
       };
   }
 
   update(game) {
     this.cb();
-    this.x += this.vel.x;
-    this.y += this.vel.y;
+    this.pos.add(this.vel);
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
@@ -43,7 +44,7 @@ class Particle {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.fillColor;
     this.ctx.strokeStyle = this.fillColor;
     this.ctx.fill();

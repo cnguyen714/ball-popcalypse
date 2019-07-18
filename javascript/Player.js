@@ -11,6 +11,7 @@ const DECEL = 0.9;
 const MIN_SPEED = 0.1;
 const PLAYER_RADIUS = 10;
 const COLOR = 'black';
+const SHOOT_COOLDOWN = 0;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -33,12 +34,14 @@ class Player {
     this.game = game;
     this.cvs = game.cvs;
     this.ctx = game.ctx;
-    this.x = CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2);
-    this.y = CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2);
-    this.vel = new Vector(0, 0); 
-    this.mouseX = this.cvs.width / 2;
-    this.mouseY = this.cvs.height / 2;
-    this.aim = new Vector(0, 0);
+    // this.pos.x = CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2);
+    // this.pos.y = CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2);
+    this.pos = new Vector(CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2),
+                          CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2));
+    this.vel = new Vector(); 
+    this.mousePos = new Vector()
+    this.aim = new Vector();
+    this.shootCooldown = 0;
 
     this.r = PLAYER_RADIUS;
     this.color = COLOR;
@@ -52,17 +55,19 @@ class Player {
     }
 
     this.setMousePosition = this.setMousePosition.bind(this);
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
   }
 
   setMousePosition(e) {
     var canvasRect = this.cvs.getBoundingClientRect();
-    this.mouseX = e.clientX - canvasRect.left;
-    this.mouseY = e.clientY - canvasRect.top;
+    this.mousePos.x = e.clientX - canvasRect.left;
+    this.mousePos.y = e.clientY - canvasRect.top;
     this.setAim();
   }
 
   setAim() {
-    this.aim = new Vector(this.mouseX - this.x, this.mouseY - this.y);
+    this.aim = new Vector(this.mousePos.x - this.pos.x, this.mousePos.y - this.pos.y);
   }
 
   mountController() {
@@ -163,10 +168,10 @@ class Player {
   }
 
   validatePosition(rectX, rectY) {
-    if(this.x + this.r > rectX) this.x = rectX - this.r;
-    if(this.x - this.r < 0) this.x = this.r;
-    if(this.y + this.r > rectY) this.y = rectY - this.r;
-    if(this.y - this.r < 0) this.y = this.r;
+    if(this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
+    if(this.pos.x - this.r < 0) this.pos.x = this.r;
+    if(this.pos.y + this.r > rectY) this.pos.y = rectY - this.r;
+    if(this.pos.y - this.r < 0) this.pos.y = this.r;
   }
 
   clampSpeed() {
@@ -197,13 +202,14 @@ class Player {
     if(this.keyDown[KEY.S]) this.vel.y += offset;
     if(this.keyDown[KEY.D]) this.vel.x += offset;
     this.clampSpeed();
-
-    this.x += this.vel.x;
-    this.y += this.vel.y;
+    this.pos.add(this.vel);
     this.applyDecel();
 
-    if(this.keyDown[KEY.MOUSE]) {
-      this.setAim();
+    if(this.shootCooldown > 0) this.shootCooldown--;
+    this.setAim();
+    if(this.keyDown[KEY.MOUSE] && this.shootCooldown <= 0) {
+      this.shootCooldown = SHOOT_COOLDOWN;
+      this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
     };
 
@@ -213,16 +219,16 @@ class Player {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = this.color;
     this.ctx.fill();
     this.ctx.stroke();
 
-    //test aim
+    //draw aim
     this.ctx.beginPath();
-    this.ctx.moveTo(this.x, this.y);
-    this.ctx.lineTo(this.x + this.aim.x, this.y + this.aim.y);
+    this.ctx.moveTo(this.pos.x, this.pos.y);
+    this.ctx.lineTo(this.pos.x + this.aim.x, this.pos.y + this.aim.y);
     this.ctx.stroke();
   }
 }

@@ -5,6 +5,8 @@ import Vector from './Vector';
 import * as ParticleFactory from './particle_factory';
 import * as EnemyFactory from './enemy_factory';
 
+// My laptop has a performance limit of around 700 particles
+
 const FPS = 60;
 const NEXT_TICK_TIME = 1000 / FPS;
 // const MAX_FRAME_SKIP = 3;
@@ -27,6 +29,7 @@ class Game {
     this.nextGameTick = (new Date).getTime() + NEXT_TICK_TIME;
 
     this.loops = 0;
+    this.fps = 0;
     this.state = STATE_INIT;
     this.entities = [];
     this.particles =[];
@@ -74,6 +77,8 @@ class Game {
         this.frameCount++;
         
         this.players.forEach(entity => entity.update());
+        
+        // this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
         this.entities.forEach(entity => entity.update());
 
         this.particles = this.particles.filter(entity => entity.alive);
@@ -111,6 +116,14 @@ class Game {
   loop() {
     this.update();
     this.draw();
+    this.loops++;
+    this.fps++;
+    let time = (new Date).getTime();
+    if (time > this.nextGameTick) {
+      console.log(`fps = ${this.fps} || entities: ${this.particles.length}`);
+      this.fps = 0;
+      this.nextGameTick += 1000;
+    }
     window.requestAnimationFrame(this.loop);
   }
 }

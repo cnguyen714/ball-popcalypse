@@ -14,7 +14,8 @@ const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
-const SPAWN_RATE = 180;
+// const SPAWN_RATE = 180;
+const SPAWN_RATE = 30;
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.01;
 
@@ -60,7 +61,7 @@ class Game {
   }
 
   endGame() {
-
+    this.state = STATE_OVER;
   }
 
   update() {
@@ -85,6 +86,7 @@ class Game {
 
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
+        if(this.players[0].health <= 0) this.endGame();
         break;
       case STATE_OVER:
         break;
@@ -120,7 +122,7 @@ class Game {
     this.draw();
     // this.loops++;
     this.fps++;
-    
+
     let time = (new Date).getTime();
     if (time > this.nextGameTick) {
       console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);

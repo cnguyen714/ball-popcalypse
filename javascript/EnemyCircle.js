@@ -6,6 +6,9 @@ const MAX_SPEED = 3;
 const RADIUS = 6;
 const COLOR = 'red';
 const ACCEL = 1;
+const KNOCKBACK = 5;
+const ENEMY_KNOCKBACK_MULTIPLIER = 5;
+const DAMPENING_COEFFICIENT = 0.7;
 
 class EnemyCircle {
   constructor(game) {
@@ -31,10 +34,10 @@ class EnemyCircle {
 
   }
 
-  clampSpeed() {
+  dampSpeed() {
     let vel = this.vel.length();
     if (vel > MAX_SPEED) {
-      this.vel = this.vel.divide(vel).multiply(MAX_SPEED);
+      this.vel.multiply(DAMPENING_COEFFICIENT);
     }
   }
 
@@ -43,7 +46,11 @@ class EnemyCircle {
     let distSqr = diff.dot(diff);
     if(obj instanceof Player) {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
-        
+        diff.normalize();
+        diff.multiply(KNOCKBACK);
+        obj.vel.subtract(diff);
+        this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
+        obj.health--;
       } 
     }
     return false;
@@ -52,7 +59,7 @@ class EnemyCircle {
   update() {
     this.aiCallback();
 
-    this.clampSpeed();
+    this.dampSpeed();
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
     // this.validatePosition(this.cvs.width, this.cvs.height);

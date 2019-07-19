@@ -11,6 +11,9 @@ const DECEL = 0.9;
 const MIN_SPEED = 0.1;
 const PLAYER_RADIUS = 10;
 const COLOR = 'black';
+const DAMPENING_COEFFICIENT = 0.7;
+const CLAMP_SPEED = 200;
+
 const SHOOT_COOLDOWN = 0;
 const MAX_HEALTH = 100;
 
@@ -181,13 +184,17 @@ class Player {
     if(this.pos.y - this.r < 0) this.pos.y = this.r;
   }
 
-  clampSpeed() {
+
+  dampSpeed() {
     let vel = this.vel.length();
     let maxSpeed = (this.keyDown[KEY.SHIFT] 
       ? MAX_DASH_SPEED 
       : MAX_SPEED)
+    if(vel > CLAMP_SPEED) {
+      this.vel.normalize().multiply(CLAMP_SPEED);
+    }
     if(vel > maxSpeed) {
-      this.vel = this.vel.divide(vel).multiply(maxSpeed)
+      this.vel.multiply(DAMPENING_COEFFICIENT);
     }
   }
 
@@ -204,11 +211,13 @@ class Player {
 
   update() {
     let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? DASH_MULTIPLIER : 1);
-    if(this.keyDown[KEY.W]) this.vel.y -= offset;
-    if(this.keyDown[KEY.A]) this.vel.x -= offset;
-    if(this.keyDown[KEY.S]) this.vel.y += offset;
-    if(this.keyDown[KEY.D]) this.vel.x += offset;
-    this.clampSpeed();
+    if(this.vel.length() < MAX_DASH_SPEED) {
+      if(this.keyDown[KEY.W]) this.vel.y -= offset;
+      if(this.keyDown[KEY.A]) this.vel.x -= offset;
+      if(this.keyDown[KEY.S]) this.vel.y += offset;
+      if(this.keyDown[KEY.D]) this.vel.x += offset;
+    }
+    this.dampSpeed();
     this.pos.add(this.vel);
     this.applyDecel();
 

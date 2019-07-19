@@ -9,6 +9,7 @@ const ACCEL = 1;
 const KNOCKBACK = 5;
 const ENEMY_KNOCKBACK_MULTIPLIER = 5;
 const DAMPENING_COEFFICIENT = 0.7;
+const HEALTH = 100;
 
 class EnemyCircle {
   constructor(game) {
@@ -22,6 +23,8 @@ class EnemyCircle {
     this.accel = ACCEL;
     this.alive = true;
     this.aiCallback = () => {};
+
+    this.health = 100;
 
     this.r = RADIUS;
     this.color = COLOR;
@@ -53,7 +56,6 @@ class EnemyCircle {
         obj.health--;
       } 
     }
-    return false;
   }
 
   update() {

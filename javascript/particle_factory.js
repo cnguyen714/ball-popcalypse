@@ -3,7 +3,7 @@ import Particle from "./Particle";
 import Vector from "./Vector";
 
 const BULLET_SPEED = 10;
-const BULLET_SPREAD = 0.05;
+const BULLET_SPREAD = 0.10;
 
 export const fireBulletAtCursor = (player) => {
   let p = new Particle(player.game);

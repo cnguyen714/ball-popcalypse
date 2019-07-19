@@ -1,5 +1,6 @@
 
 import Vector from "./Vector";
+import GameObject from "./GameObject";
 import { fireBulletAtCursor }from './particle_factory';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -33,18 +34,15 @@ const KEY = {
   MOUSE: 10000,
 };
 
-class Player {
+class Player extends GameObject {
   constructor(game) {
-    this.game = game;
-    this.cvs = game.cvs;
-    this.ctx = game.ctx;
-    // this.pos.x = CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2);
-    // this.pos.y = CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2);
+    super(game);
+    
     this.pos = new Vector(CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2),
                           CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2));
     this.vel = new Vector(); 
-    this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.aim = new Vector();
+    this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.shootCooldown = 0;
 
     this.maxHealth = MAX_HEALTH;
@@ -68,9 +66,6 @@ class Player {
 
   setMousePosition(e) {
     var canvasRect = this.cvs.getBoundingClientRect();
-    // let rect = new Vector(canvasRect.left, canvasRect.top); 
-    // let ePos = new Vector(e.clientX, e.clientY);
-    // this.mousePos = Vector.difference(ePos, rect)
     this.mousePos.x = e.clientX - canvasRect.left;
     this.mousePos.y = e.clientY - canvasRect.top;
     this.setAim();
@@ -225,6 +220,8 @@ class Player {
     this.setAim();
     if(this.keyDown[KEY.MOUSE] && this.shootCooldown <= 0) {
       this.shootCooldown = SHOOT_COOLDOWN;
+      this.game.particles.push(fireBulletAtCursor(this));
+      this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
     };

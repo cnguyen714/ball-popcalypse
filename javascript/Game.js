@@ -8,7 +8,7 @@ import * as EnemyFactory from './enemy_factory';
 // My laptop has a performance limit of around 700 particles
 
 const FPS = 60;
-const NEXT_TICK_TIME = 1000 / FPS;
+const NORMAL_TIME_DELTA = 1000 / FPS;
 // const MAX_FRAME_SKIP = 3;
 const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
@@ -28,7 +28,7 @@ class Game {
     this.cvs = cvs;
     this.ctx = ctx;
 
-    this.nextGameTick = (new Date).getTime() + NEXT_TICK_TIME;
+    this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
 
     this.state = STATE_INIT;
 
@@ -46,6 +46,8 @@ class Game {
     this.spawnRate = SPAWN_RATE;
     this.fpsCount = 0;
     this.fps = 0;
+    this.timeDelta = NORMAL_TIME_DELTA;
+    this.normalTimeDelta = NORMAL_TIME_DELTA;
     this.entities = [];
     this.particles = [];
     this.players = [];
@@ -80,9 +82,11 @@ class Game {
         
         this.players.forEach(entity => entity.update());
 
-        if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
+        // if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
-        }
+        // }
+        
+        this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
 
         this.particles = this.particles.filter(entity => entity.alive);
@@ -97,7 +101,7 @@ class Game {
     }
   }
 
-  draw() {
+  draw(timeDelta) {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
 
@@ -132,17 +136,17 @@ class Game {
   }
 
   loop() {
+    let time = (new Date).getTime();
+    this.timeDelta = time - NORMAL_TIME_DELTA;
     this.update();
     this.draw();
     // this.loops++;
     this.fpsCount++;
-
-    let time = (new Date).getTime();
-    if (time > this.nextGameTick) {
+    if (time > this.timeTracker) {
       // console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);
       this.fps = this.fpsCount;
       this.fpsCount = 0;
-      this.nextGameTick += 1000;
+      this.timeTracker += 1000;
       // this.difficulty += DIFFICULTY_MULTIPLIER;
     }
     window.requestAnimationFrame(this.loop);

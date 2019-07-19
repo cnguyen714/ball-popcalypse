@@ -1,6 +1,9 @@
 import Vector from "./Vector";
+import EnemyCircle from "./EnemyCircle";
 
 const RADIUS = 2;
+const KNOCKBACK = 20;
+const DAMAGE = 50;
 
 class Particle {
   constructor(
@@ -34,9 +37,26 @@ class Particle {
       };
   }
 
-  update(game) {
+  checkCollision (obj) {
+    let diff = Vector.difference(this.pos, obj.pos);
+    let distSqr = diff.dot(diff);
+    if (obj instanceof EnemyCircle) {
+      if (this.r * this.r + obj.r * obj.r > distSqr) {
+        this.alive = false;
+        this.vel.normalize();
+        this.vel.multiply(KNOCKBACK);
+        obj.vel.add(this.vel);
+        obj.health -= DAMAGE;
+        if (obj.health <= 0) obj.alive = false;
+      }
+    }
+  }
+
+  update() {
     this.cb();
     this.pos.add(this.vel);
+
+    this.game.entities.forEach(entity => { this.checkCollision(entity) });
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

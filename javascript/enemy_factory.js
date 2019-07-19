@@ -11,11 +11,10 @@ const MAP = {
 
 const SPAWN_OFFSET = 20;
 
-
 export const randomEdgePos = (canvas) => {
   let side = Math.floor(Math.random() * 4);
 
-  let pos = { x: Math.random() * canvas.width, 
+  let pos = { x: Math.random() * canvas.width,
               y: Math.random() * canvas.height };
 
   switch(side) {

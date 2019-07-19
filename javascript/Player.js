@@ -179,7 +179,6 @@ class Player extends GameObject {
     if(this.pos.y - this.r < 0) this.pos.y = this.r;
   }
 
-
   dampSpeed() {
     let vel = this.vel.length();
     let maxSpeed = (this.keyDown[KEY.SHIFT] 
@@ -213,7 +212,7 @@ class Player extends GameObject {
       if(this.keyDown[KEY.D]) this.vel.x += offset;
     }
     this.dampSpeed();
-    this.pos.add(this.vel);
+    this.addVelocityTimeDelta();
     this.applyDecel();
 
     if(this.shootCooldown > 0) this.shootCooldown--;

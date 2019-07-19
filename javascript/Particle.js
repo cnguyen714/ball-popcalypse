@@ -1,11 +1,12 @@
 import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
+import GameObject from "./GameObject";
 
 const RADIUS = 2;
 const KNOCKBACK = 20;
 const DAMAGE = 50;
 
-class Particle {
+class Particle extends GameObject {
   constructor(
     game, 
     startX = 0, 
@@ -54,10 +55,8 @@ class Particle {
 
   update() {
     this.cb();
-    this.pos.add(this.vel);
-
+    this.addVelocityTimeDelta();
     this.game.entities.forEach(entity => { this.checkCollision(entity) });
-
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 

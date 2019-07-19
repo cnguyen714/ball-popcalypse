@@ -29,6 +29,7 @@ class Game {
     this.ctx = ctx;
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
+    this.prevTime = (new Date).getTime();
 
     this.state = STATE_INIT;
 
@@ -137,7 +138,8 @@ class Game {
 
   loop() {
     let time = (new Date).getTime();
-    this.timeDelta = time - NORMAL_TIME_DELTA;
+    this.timeDelta = time - this.prevTime;
+    this.prevTime = time;
     this.update();
     this.draw();
     // this.loops++;

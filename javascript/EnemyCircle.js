@@ -1,6 +1,7 @@
 
 import Vector from "./Vector";
 import Player from './Player';
+import GameObject from "./GameObject";
 
 const MAX_SPEED = 3;
 const RADIUS = 6;
@@ -11,13 +12,13 @@ const ENEMY_KNOCKBACK_MULTIPLIER = 5;
 const DAMPENING_COEFFICIENT = 0.7;
 const HEALTH = 100;
 
-class EnemyCircle {
+class EnemyCircle extends GameObject {
   constructor(game) {
     this.game = game;
     this.cvs = game.cvs;
     this.ctx = game.ctx;
-    this.pos = new Vector(0, 0);
     this.maxSpeed = MAX_SPEED;
+    this.pos = new Vector(0, 0);
     this.vel = new Vector(0, 0);
     this.aim = new Vector(0, 0);
     this.accel = ACCEL;
@@ -62,9 +63,8 @@ class EnemyCircle {
     this.aiCallback();
 
     this.dampSpeed();
-    this.pos.x += this.vel.x;
-    this.pos.y += this.vel.y;
-    // this.validatePosition(this.cvs.width, this.cvs.height);
+    this.addVelocityTimeDelta();
+// this.validatePosition(this.cvs.width, this.cvs.height);
 
     this.checkCollision(this.game.players[0]);
   }

@@ -12,6 +12,7 @@ const MIN_SPEED = 0.1;
 const PLAYER_RADIUS = 10;
 const COLOR = 'black';
 const SHOOT_COOLDOWN = 0;
+const MAX_HEALTH = 100;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -43,6 +44,9 @@ class Player {
     this.aim = new Vector();
     this.shootCooldown = 0;
 
+    this.maxHealth = MAX_HEALTH;
+    this.health = MAX_HEALTH;
+
     this.r = PLAYER_RADIUS;
     this.color = COLOR;
     this.keyDown = {
@@ -61,8 +65,11 @@ class Player {
 
   setMousePosition(e) {
     var canvasRect = this.cvs.getBoundingClientRect();
-    this.mousePos.x = e.clientX - canvasRect.left;
-    this.mousePos.y = e.clientY - canvasRect.top;
+    let rect = new Vector(canvasRect.left, canvasRect.top); 
+    let ePos = new Vector(e.clientX, e.clientY);
+    this.mousePos = Vector.difference(ePos, rect)
+    // this.mousePos.x = e.clientX - canvasRect.left;
+    // this.mousePos.y = e.clientY - canvasRect.top;
     this.setAim();
   }
 

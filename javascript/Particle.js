@@ -19,7 +19,7 @@ class Particle {
     this.alive = true;
 
     this.r = RADIUS;
-    this.fillColor = 'red';
+    this.color = 'red';
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -45,8 +45,8 @@ class Particle {
   draw() {
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
-    this.ctx.fillStyle = this.fillColor;
-    this.ctx.strokeStyle = this.fillColor;
+    this.ctx.fillStyle = this.color;
+    this.ctx.strokeStyle = this.color;
     this.ctx.fill();
     this.ctx.stroke();
   }

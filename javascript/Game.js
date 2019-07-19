@@ -14,6 +14,7 @@ const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
+const SP
 
 class Game {
   constructor(cvs, ctx) {
@@ -21,7 +22,9 @@ class Game {
     this.STATE_BEGIN = STATE_BEGIN;
     this.STATE_RUNNING = STATE_RUNNING;
     this.STATE_OVER = STATE_OVER;
-    this.frameCount = 0;
+    this.loopCount = 0;
+    this.difficulty = 1;
+    this.spawnRate = 
 
     this.cvs = cvs;
     this.ctx = ctx;
@@ -74,11 +77,13 @@ class Game {
       case STATE_BEGIN:
         break;
       case STATE_RUNNING:
-        this.frameCount++;
+        this.loopCount++;
         
         this.players.forEach(entity => entity.update());
-        
-        // this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
+
+        if (this.loopCount % 60 === 0) {
+          this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
+        }
         this.entities.forEach(entity => entity.update());
 
         this.particles = this.particles.filter(entity => entity.alive);
@@ -123,6 +128,7 @@ class Game {
       console.log(`fps = ${this.fps} || entities: ${this.particles.length}`);
       this.fps = 0;
       this.nextGameTick += 1000;
+      this.difficulty += 0.01;
     }
     window.requestAnimationFrame(this.loop);
   }

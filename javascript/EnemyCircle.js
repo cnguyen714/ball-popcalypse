@@ -1,10 +1,10 @@
 
 import Vector from "./Vector";
-import { fireBulletAtCursor } from './particle_factory';
 
-const MAX_SPEED = 6;
+const MAX_SPEED = 3;
 const RADIUS = 6;
-const COLOR = 'orange';
+const COLOR = 'red';
+const ACCEL = 1;
 
 class EnemyCircle {
   constructor(game) {
@@ -15,6 +15,7 @@ class EnemyCircle {
     this.maxSpeed = MAX_SPEED;
     this.vel = new Vector(0, 0);
     this.aim = new Vector(0, 0);
+    this.accel = ACCEL;
     this.alive = true;
     this.aiCallback = () => {};
 

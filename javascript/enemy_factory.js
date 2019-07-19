@@ -11,6 +11,7 @@ const MAP = {
 
 const SPAWN_OFFSET = 20;
 
+
 export const randomEdgePos = (canvas) => {
   let side = Math.floor(Math.random() * 4);
 
@@ -38,11 +39,14 @@ export const randomEdgePos = (canvas) => {
 export const spawnCircleRandom = (player) => {
   let enemy = new EnemyCircle(player.game);
   let spawnPos = randomEdgePos(player.cvs);
-  enemy.x = spawnPos.x;
-  enemy.y = spawnPos.y;
+  enemy.pos.x = spawnPos.x;
+  enemy.pos.y = spawnPos.y;
+
 
   enemy.aiCallback = function() {
-    // this.aim.x = 
+    this.aim = Vector.difference(player.pos, this.pos).normalize();
+
+    this.vel.add(this.aim.multiply(this.accel));
   };
 
   return enemy;

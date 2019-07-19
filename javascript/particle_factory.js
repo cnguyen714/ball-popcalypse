@@ -9,6 +9,7 @@ export const fireBulletAtCursor = (player) => {
   let p = new Particle(player.game);
   p.pos.x = player.pos.x;
   p.pos.y = player.pos.y;
+  p.color = 'yellow';
 
   let aim = new Vector(1, 1);
   aim.multiply(player.aim);

@@ -51,6 +51,11 @@ class Vector {
     return this;
   }
 
+  static difference(v1, v2) {
+    let newV = new Vector(1, 1).multiply(v1);
+    return newV.subtract(v2);
+  }
+
   equals(v) {
     return this.x === v.x && this.y === v.y;
   }

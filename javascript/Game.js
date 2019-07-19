@@ -6,6 +6,8 @@ import * as ParticleFactory from './particle_factory';
 import * as EnemyFactory from './enemy_factory';
 
 // My laptop has a performance limit of around 700 particles
+// Delta time is implemented by accelerating movement to perceive less
+// lag, however the game still runs slower
 
 const FPS = 60;
 const NORMAL_TIME_DELTA = 1000 / FPS;
@@ -15,7 +17,7 @@ const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 // const SPAWN_RATE = 180;
-const SPAWN_RATE = 30;
+const SPAWN_RATE = 5;
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.01;
 
@@ -83,9 +85,9 @@ class Game {
         
         this.players.forEach(entity => entity.update());
 
-        // if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
+        if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
-        // }
+        }
         
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
@@ -145,11 +147,9 @@ class Game {
     // this.loops++;
     this.fpsCount++;
     if (time > this.timeTracker) {
-      // console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);
       this.fps = this.fpsCount;
       this.fpsCount = 0;
       this.timeTracker += 1000;
-      // this.difficulty += DIFFICULTY_MULTIPLIER;
     }
     window.requestAnimationFrame(this.loop);
   }

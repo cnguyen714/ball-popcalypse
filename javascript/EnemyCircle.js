@@ -50,7 +50,15 @@ class EnemyCircle extends GameObject {
         this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
         obj.health--;
       } 
+    } else if (obj instanceof EnemyCircle) {
+      if (obj.pos.equals(this.pos)) return;
+      if (this.r * this.r + obj.r * obj.r > distSqr) {
+        diff.normalize();
+        obj.vel.subtract(diff);
+        this.vel.add(diff);
+      }
     }
+
   }
 
   update() {
@@ -61,6 +69,8 @@ class EnemyCircle extends GameObject {
 // this.validatePosition(this.cvs.width, this.cvs.height);
 
     this.checkCollision(this.game.players[0]);
+    // Many-many collision is very heavy - please refactor at some point or implement quadtree
+    this.game.entities.forEach(entity => this.checkCollision(entity));
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])

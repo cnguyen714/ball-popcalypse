@@ -37,6 +37,7 @@ class Particle extends GameObject {
   }
 
   checkCollision (obj) {
+    if (!obj.alive) return; //Don't check collision if object is not alive
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
     if (obj instanceof EnemyCircle) {

@@ -164,7 +164,6 @@ class Player extends GameObject {
         case this.game.STATE_RUNNING:
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
           if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
-          
           break;
         case this.game.STATE_OVER:
           break;

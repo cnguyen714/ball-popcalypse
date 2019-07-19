@@ -17,7 +17,7 @@ const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 // const SPAWN_RATE = 180;
-const SPAWN_RATE = 2; // 5
+const SPAWN_RATE = 4; // 5
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.01;
 
@@ -29,6 +29,9 @@ class Game {
     this.STATE_OVER = STATE_OVER;
     this.cvs = cvs;
     this.ctx = ctx;
+    this.highscore = 0;
+    this.score = 0;
+
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
@@ -52,6 +55,7 @@ class Game {
     this.timeDelta = NORMAL_TIME_DELTA;
     this.normalTimeDelta = NORMAL_TIME_DELTA;
     this.player = new Player(this);
+    this.cameraPos = new Vector(this.player.pos.x, this.player.pos.y);
     this.players = [];
     this.players.push(this.player);
     this.entities = [];
@@ -63,11 +67,17 @@ class Game {
   }
 
   startGame() {
+    this.score = 0;
     this.state = STATE_RUNNING;
   }
 
   endGame() {
     this.state = STATE_OVER;
+  }
+
+  restartGame() {
+    if (this.highscore < this.score) this.highscore = this.score;
+    this.init();
   }
 
   update() {
@@ -97,7 +107,8 @@ class Game {
         if(this.player.health <= 0) this.endGame();
         break;
       case STATE_OVER:
-        this.init();
+
+        this.restartGame();
         break;
       default:
         break;
@@ -117,7 +128,8 @@ class Game {
         this.ctx.fillText(`Press WASD / Arrow Keys to move`, 10, 20);
         this.ctx.fillText(`Aim mouse and left click to shoot`, 10, 40);
         this.ctx.fillText(`Press any of these keys to start`, 10, 60);
-        this.ctx.fillText(`Press any of these keys to start`, 10, 60);
+        this.ctx.fillText(`Score: ${this.score}`, 10, 100);
+        this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 120);
         break;
       case STATE_RUNNING:
 
@@ -128,6 +140,7 @@ class Game {
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
         this.ctx.fillText(`Health: ${this.player.health}`, 10, 20);
+        this.ctx.fillText(`Score: ${this.score}`, 10, 40);
         this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 100, 20);
         this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 100, 40);
 

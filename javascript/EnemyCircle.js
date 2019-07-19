@@ -64,13 +64,16 @@ class EnemyCircle extends GameObject {
   }
 
   update() {
+    if (!this.alive) return;
     this.aiCallback();
 
     this.dampSpeed();
     this.addVelocityTimeDelta();
 // this.validatePosition(this.cvs.width, this.cvs.height);
 
+    // Check collision with player
     this.checkCollision(this.game.players[0]);
+
     // Many-many collision is very heavy - please refactor at some point or implement quadtree
     this.game.entities.forEach(entity => this.checkCollision(entity));
   }

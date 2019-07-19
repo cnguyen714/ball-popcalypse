@@ -4,19 +4,24 @@ import GameObject from "./GameObject";
 import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
 
 const CLAMP_SPAWN = 100; // Offset from edges
-const ACCEL = 3;
 const MAX_SPEED = 6;
-const DASH_MULTIPLIER = 2;
-const MAX_DASH_SPEED = 10;
-const DECEL = 0.9;
 const MIN_SPEED = 0.1;
+const ACCEL = 3;
+const DECEL = 0.9;
+const SPRINT_SPEED = 2;
+const MAX_SPRINT_SPEED = 10;
+const DASH_TIME = 10;
+const DASH_SPEED = 3;
+const DASH_COOLDOWN = 30;
+
 const PLAYER_RADIUS = 10;
 const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const MAX_HEALTH = 10000;
+const MAX_HEALTH = 1000;
+
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -52,6 +57,10 @@ class Player extends GameObject {
     this.aim = new Vector();
     this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.shootCooldown = 0;
+    this.moveState = STATE_WALKING;
+    this.dashDuration = 0;
+    this.dashDirection = new Vector();
+    this.dashCooldown = 0;
 
     this.maxHealth = MAX_HEALTH;
     this.health = MAX_HEALTH;
@@ -82,6 +91,17 @@ class Player extends GameObject {
 
   setAim() {
     this.aim = new Vector(this.mousePos.x - this.pos.x, this.mousePos.y - this.pos.y);
+  }
+
+  dash() {
+    if (this.moveState !== STATE_DASHING) {
+      this.moveState = STATE_DASHING;
+
+      this.setAim();
+      this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
+      this.dashDirection = this.aim;
+      this.dashDuration = DASH_TIME;
+    }
   }
 
   mountController() {
@@ -195,6 +215,7 @@ class Player extends GameObject {
     });
   }
 
+  // Ensure players do not leave the boundaries defined here.
   validatePosition(rectX, rectY) {
     if(this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
     if(this.pos.x - this.r < 0) this.pos.x = this.r;
@@ -205,7 +226,7 @@ class Player extends GameObject {
   dampSpeed() {
     let vel = this.vel.length();
     let maxSpeed = (this.keyDown[KEY.SHIFT] 
-      ? MAX_DASH_SPEED 
+      ? MAX_SPRINT_SPEED 
       : MAX_SPEED)
     if(vel > CLAMP_SPEED) {
       this.vel.normalize().multiply(CLAMP_SPEED);
@@ -227,29 +248,44 @@ class Player extends GameObject {
   }
 
   update() {
-    let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? DASH_MULTIPLIER : 1);
-    if(this.vel.length() < MAX_DASH_SPEED) {
-      if(this.keyDown[KEY.W]) this.vel.y -= offset;
-      if(this.keyDown[KEY.A]) this.vel.x -= offset;
-      if(this.keyDown[KEY.S]) this.vel.y += offset;
-      if(this.keyDown[KEY.D]) this.vel.x += offset;
-    }
-    this.dampSpeed();
-    this.addVelocityTimeDelta();
-    this.applyDecel();
+    if (this.keyDown[KEY.MOUSE_RIGHT] && this.dashCooldown <= 0) this.dash();
 
-    if(this.shootCooldown > 0) this.shootCooldown--;
+    // Calculate facing direction and apply shooting
     this.setAim();
-    if(this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
+    if (this.shootCooldown > 0) this.shootCooldown--;
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
       this.shootCooldown = SHOOT_COOLDOWN;
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
     };
-    if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) {
-      this.game.particles.push(fireBulletAtCursorB(this));
-    };
+
+    // Apply movement
+    if (this.moveState === STATE_WALKING) {
+      let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? SPRINT_SPEED : 1);
+      if (this.vel.length() < MAX_SPRINT_SPEED) {
+        if (this.keyDown[KEY.W]) this.vel.y -= offset;
+        if (this.keyDown[KEY.A]) this.vel.x -= offset;
+        if (this.keyDown[KEY.S]) this.vel.y += offset;
+        if (this.keyDown[KEY.D]) this.vel.x += offset;
+      }
+
+      this.dampSpeed();
+      this.addVelocityTimeDelta();
+      this.applyDecel();
+      this.dashCooldown--;
+    } else  if (this.moveState === STATE_DASHING) {
+      if (this.dashDuration <= 0) {
+        this.moveState = STATE_WALKING;
+        this.dashCooldown = DASH_COOLDOWN;
+      } else {
+        this.dashDuration--;
+        this.vel.add(this.aim.normalize().multiply(DASH_SPEED));
+
+        this.addVelocityTimeDelta();
+      }
+    }
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

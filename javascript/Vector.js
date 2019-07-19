@@ -51,6 +51,16 @@ class Vector {
     return this;
   }
 
+  dup() {
+    return new Vector(this.x, this.y);
+  }
+  
+  invert() {
+    this.x *= -1;
+    this.y *= -1;
+    return this;
+  }
+
   static difference(v1, v2) {
     let newV = new Vector(1, 1).multiply(v1);
     return newV.subtract(v2);

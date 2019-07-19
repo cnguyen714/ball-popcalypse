@@ -40,7 +40,7 @@ class Player {
     this.pos = new Vector(CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2),
                           CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2));
     this.vel = new Vector(); 
-    this.mousePos = new Vector()
+    this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.aim = new Vector();
     this.shootCooldown = 0;
 
@@ -65,11 +65,11 @@ class Player {
 
   setMousePosition(e) {
     var canvasRect = this.cvs.getBoundingClientRect();
-    let rect = new Vector(canvasRect.left, canvasRect.top); 
-    let ePos = new Vector(e.clientX, e.clientY);
-    this.mousePos = Vector.difference(ePos, rect)
-    // this.mousePos.x = e.clientX - canvasRect.left;
-    // this.mousePos.y = e.clientY - canvasRect.top;
+    // let rect = new Vector(canvasRect.left, canvasRect.top); 
+    // let ePos = new Vector(e.clientX, e.clientY);
+    // this.mousePos = Vector.difference(ePos, rect)
+    this.mousePos.x = e.clientX - canvasRect.left;
+    this.mousePos.y = e.clientY - canvasRect.top;
     this.setAim();
   }
 

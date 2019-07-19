@@ -1,5 +1,6 @@
 
 import Vector from "./Vector";
+import Player from './Player';
 
 const MAX_SPEED = 3;
 const RADIUS = 6;
@@ -37,13 +38,26 @@ class EnemyCircle {
     }
   }
 
+  checkCollision(obj) {
+    let diff = Vector.difference(this.pos, obj.pos);
+    let distSqr = diff.dot(diff);
+    if(obj instanceof Player) {
+      if (this.r * this.r + obj.r * obj.r > distSqr) {
+        
+      } 
+    }
+    return false;
+  }
+
   update() {
     this.aiCallback();
 
     this.clampSpeed();
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
-    this.validatePosition(this.cvs.width, this.cvs.height);
+    // this.validatePosition(this.cvs.width, this.cvs.height);
+
+    this.checkCollision(this.game.players[0]);
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
@@ -51,7 +65,7 @@ class EnemyCircle {
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
-    this.ctx.strokeStyle = this.color;
+    this.ctx.strokeStyle = 'black';
     this.ctx.fill();
     this.ctx.stroke();
   }

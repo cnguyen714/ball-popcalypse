@@ -14,7 +14,9 @@ const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
-const SP
+const SPAWN_RATE = 180;
+const DIFFICULTY_INTERVAL = 300;
+const DIFFICULTY_MULTIPLIER = 1.01;
 
 class Game {
   constructor(cvs, ctx) {
@@ -22,17 +24,17 @@ class Game {
     this.STATE_BEGIN = STATE_BEGIN;
     this.STATE_RUNNING = STATE_RUNNING;
     this.STATE_OVER = STATE_OVER;
-    this.loopCount = 0;
-    this.difficulty = 1;
-    this.spawnRate = 
-
     this.cvs = cvs;
     this.ctx = ctx;
+    this.loops = 0;
+    this.loopCount = 0;
+    this.fps = 0;
+
+    this.difficulty = 1;
+    this.spawnRate = SPAWN_RATE;
 
     this.nextGameTick = (new Date).getTime() + NEXT_TICK_TIME;
 
-    this.loops = 0;
-    this.fps = 0;
     this.state = STATE_INIT;
     this.entities = [];
     this.particles =[];
@@ -48,14 +50,6 @@ class Game {
 
     let player = new Player(this);
     this.players.push(player);
-
-    // Test particle callback
-    // let particle = new Particle(this);
-    // particle.cb = function() {
-    //   this.x = player.mouseX;
-    //   this.y = player.mouseY;
-    // };
-    // this.entities.push(particle);
     
     this.players[0].mountController();
     this.state = STATE_BEGIN;
@@ -78,10 +72,13 @@ class Game {
         break;
       case STATE_RUNNING:
         this.loopCount++;
+        if(this.loopCount % DIFFICULTY_INTERVAL === 0) {
+          this.difficulty *= DIFFICULTY_MULTIPLIER;
+        }
         
         this.players.forEach(entity => entity.update());
 
-        if (this.loopCount % 60 === 0) {
+        if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
         }
         this.entities.forEach(entity => entity.update());
@@ -121,14 +118,15 @@ class Game {
   loop() {
     this.update();
     this.draw();
-    this.loops++;
+    // this.loops++;
     this.fps++;
+    
     let time = (new Date).getTime();
     if (time > this.nextGameTick) {
-      console.log(`fps = ${this.fps} || entities: ${this.particles.length}`);
+      console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);
       this.fps = 0;
       this.nextGameTick += 1000;
-      this.difficulty += 0.01;
+      // this.difficulty += DIFFICULTY_MULTIPLIER;
     }
     window.requestAnimationFrame(this.loop);
   }

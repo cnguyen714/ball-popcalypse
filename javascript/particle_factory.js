@@ -21,3 +21,19 @@ export const fireBulletAtCursor = (player) => {
   return p;
 }
 
+export const fireBulletAtCursorB = (player) => {
+  let p = new Particle(player.game);
+  p.pos.x = player.pos.x;
+  p.pos.y = player.pos.y;
+  p.color = 'orange';
+
+  let aim = new Vector(1, 1);
+  aim.multiply(player.aim);
+  aim.normalize();
+  aim.x += Math.random() * (BULLET_SPREAD + BULLET_SPREAD) - BULLET_SPREAD;
+  aim.y += Math.random() * (BULLET_SPREAD + BULLET_SPREAD) - BULLET_SPREAD;
+  aim.normalize();
+  p.vel = aim.multiply(BULLET_SPEED);
+  return p;
+}
+ 

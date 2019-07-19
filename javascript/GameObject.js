@@ -15,6 +15,7 @@ class GameObject {
     this.pos = new Vector();
     this.vel = new Vector();
     this.aim = new Vector();
+    this.alive = true;
 
     this.maxHealth = MAX_HEALTH;
     this.health = MAX_HEALTH;

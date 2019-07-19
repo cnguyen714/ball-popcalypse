@@ -1,7 +1,7 @@
 
 import Vector from "./Vector";
 import GameObject from "./GameObject";
-import { fireBulletAtCursor }from './particle_factory';
+import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
 
 const CLAMP_SPAWN = 100; // Offset from edges
 const ACCEL = 3;
@@ -31,8 +31,15 @@ const KEY = {
   DOWN: 40,
   RIGHT: 39,
   SHIFT: 16,
-  MOUSE: 10000,
+  MOUSE_LEFT: 10000,
+  MOUSE_RIGHT: 10002,
 };
+
+const MOUSE = {
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2,
+}
 
 class Player extends GameObject {
   constructor(game) {
@@ -56,7 +63,8 @@ class Player extends GameObject {
       [KEY.S]: false,
       [KEY.D]: false,
       [KEY.SHIFT]: false,
-      [KEY.MOUSE]: false,
+      [KEY.MOUSE_LEFT]: false,
+      [KEY.MOUSE_RIGHT]: false,
     }
 
     this.setMousePosition = this.setMousePosition.bind(this);
@@ -137,7 +145,16 @@ class Player extends GameObject {
       this.setMousePosition(e);
     };
 
+    // Disable right click context menu
+    document.addEventListener("contextmenu", (e) => { 
+      e.preventDefault();
+      return false;
+    });
+
     document.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      let clickType = e.button;
+
       switch (this.game.state) {
         case this.game.STATE_INIT:
           break;
@@ -145,7 +162,9 @@ class Player extends GameObject {
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
-          this.keyDown[KEY.MOUSE] = true;
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
+          
           break;
         case this.game.STATE_OVER:
           break;
@@ -155,6 +174,9 @@ class Player extends GameObject {
     });
 
     document.addEventListener("mouseup", (e) => {
+      e.preventDefault();
+      let clickType = e.button;
+
       switch (this.game.state) {
         case this.game.STATE_INIT:
           break;
@@ -162,7 +184,8 @@ class Player extends GameObject {
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
-          this.keyDown[KEY.MOUSE] = false;
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = false;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = false;
           break;
         case this.game.STATE_OVER:
           break;
@@ -217,12 +240,15 @@ class Player extends GameObject {
 
     if(this.shootCooldown > 0) this.shootCooldown--;
     this.setAim();
-    if(this.keyDown[KEY.MOUSE] && this.shootCooldown <= 0) {
+    if(this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
       this.shootCooldown = SHOOT_COOLDOWN;
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));
+    };
+    if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) {
+      this.game.particles.push(fireBulletAtCursorB(this));
     };
 
     this.validatePosition(this.cvs.width, this.cvs.height);

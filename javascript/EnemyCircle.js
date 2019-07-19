@@ -14,18 +14,12 @@ const HEALTH = 100;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
-    this.game = game;
-    this.cvs = game.cvs;
-    this.ctx = game.ctx;
+    super(game);
     this.maxSpeed = MAX_SPEED;
-    this.pos = new Vector(0, 0);
-    this.vel = new Vector(0, 0);
-    this.aim = new Vector(0, 0);
     this.accel = ACCEL;
-    this.alive = true;
     this.aiCallback = () => {};
 
-    this.health = 100;
+    this.health = HEALTH;
 
     this.r = RADIUS;
     this.color = COLOR;

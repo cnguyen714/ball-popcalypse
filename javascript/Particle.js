@@ -14,9 +14,7 @@ class Particle extends GameObject {
     vel = new Vector(0,0), 
     cb = () => {} 
   ) {
-    this.game = game;
-    this.cvs = game.cvs;
-    this.ctx = game.ctx;
+    super(game);
     this.pos = new Vector(startX, startY);
     this.vel = vel;
     this.cb = cb;

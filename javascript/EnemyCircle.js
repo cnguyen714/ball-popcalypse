@@ -5,11 +5,12 @@ import GameObject from "./GameObject";
 
 const MAX_SPEED = 3;
 const RADIUS = 6;
-const COLOR = 'red';
+const COLOR = "#a64942";
 const ACCEL = 1;
 const KNOCKBACK = 5;
 const ENEMY_KNOCKBACK_MULTIPLIER = 5;
 const DAMPENING_COEFFICIENT = 0.7;
+const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
 
 class EnemyCircle extends GameObject {
@@ -54,6 +55,7 @@ class EnemyCircle extends GameObject {
       if (obj.pos.equals(this.pos)) return;
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         diff.normalize();
+        diff.multiply(SPREAD_FACTOR);
         obj.vel.subtract(diff);
         this.vel.add(diff);
       }

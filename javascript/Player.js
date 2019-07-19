@@ -11,12 +11,12 @@ const MAX_DASH_SPEED = 10;
 const DECEL = 0.9;
 const MIN_SPEED = 0.1;
 const PLAYER_RADIUS = 10;
-const COLOR = 'black';
+const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const MAX_HEALTH = 100;
+const MAX_HEALTH = 10000;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -34,6 +34,7 @@ const KEY = {
   MOUSE_LEFT: 10000,
   MOUSE_RIGHT: 10002,
 };
+
 
 const MOUSE = {
   LEFT: 0,
@@ -255,15 +256,23 @@ class Player extends GameObject {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
+    this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
-    this.ctx.strokeStyle = this.color;
+    this.ctx.strokeStyle = "white";
+
+    this.ctx.shadowBlur = 6;
+    this.ctx.shadowColor = "white";
+    
     this.ctx.fill();
     this.ctx.stroke();
+    this.ctx.restore();
 
     //draw aim
     this.ctx.beginPath();
+    this.ctx.strokeStyle = "white";
+    
     this.ctx.moveTo(this.pos.x, this.pos.y);
     this.ctx.lineTo(this.pos.x + this.aim.x, this.pos.y + this.aim.y);
     this.ctx.stroke();

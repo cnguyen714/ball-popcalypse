@@ -17,7 +17,7 @@ const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 // const SPAWN_RATE = 180;
-const SPAWN_RATE = 5;
+const SPAWN_RATE = 2; // 5
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.01;
 
@@ -51,14 +51,14 @@ class Game {
     this.fps = 0;
     this.timeDelta = NORMAL_TIME_DELTA;
     this.normalTimeDelta = NORMAL_TIME_DELTA;
+    this.player = new Player(this);
+    this.players = [];
+    this.players.push(this.player);
     this.entities = [];
     this.particles = [];
-    this.players = [];
 
-    let player = new Player(this);
-    this.players.push(player);
     
-    this.players[0].mountController();
+    this.player.mountController();
     this.state = STATE_BEGIN;
   }
 
@@ -83,10 +83,10 @@ class Game {
           this.difficulty *= DIFFICULTY_MULTIPLIER;
         }
         
-        this.players.forEach(entity => entity.update());
+        this.player.update();
 
         if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
-          this.entities.push(EnemyFactory.spawnCircleRandom(this.players[0]));
+          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
         }
         
         this.entities = this.entities.filter(entity => entity.alive);
@@ -94,7 +94,7 @@ class Game {
 
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
-        if(this.players[0].health <= 0) this.endGame();
+        if(this.player.health <= 0) this.endGame();
         break;
       case STATE_OVER:
         this.init();
@@ -117,16 +117,17 @@ class Game {
         this.ctx.fillText(`Press WASD / Arrow Keys to move`, 10, 20);
         this.ctx.fillText(`Aim mouse and left click to shoot`, 10, 40);
         this.ctx.fillText(`Press any of these keys to start`, 10, 60);
+        this.ctx.fillText(`Press any of these keys to start`, 10, 60);
         break;
       case STATE_RUNNING:
 
+        this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
-        this.players.forEach(entity => entity.draw());
 
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
-        this.ctx.fillText(`Health: ${this.players[0].health}`, 10, 20);
+        this.ctx.fillText(`Health: ${this.player.health}`, 10, 20);
         this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 100, 20);
         this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 100, 40);
 

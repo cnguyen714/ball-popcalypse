@@ -5,6 +5,7 @@ import GameObject from "./GameObject";
 const RADIUS = 2;
 const KNOCKBACK = 20;
 const DAMAGE = 50;
+const COLOR = "#14ffec";
 
 class Particle extends GameObject {
   constructor(
@@ -21,7 +22,7 @@ class Particle extends GameObject {
     this.alive = true;
 
     this.r = RADIUS;
-    this.color = 'red';
+    this.color = COLOR;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);

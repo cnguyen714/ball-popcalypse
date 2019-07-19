@@ -2,7 +2,7 @@
 * {cursor: none;}
 
 html, body {
-  background: gray;
+  background: #212121;
   display: block;
   width: 100%;
   height: 100%;
@@ -12,7 +12,7 @@ html, body {
 
 canvas {
   position: absolute;
-  background: teal;
+  background: #212121;
   top: 0;
   left: 0;
   cursor: none;

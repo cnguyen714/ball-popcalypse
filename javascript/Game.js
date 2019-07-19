@@ -44,6 +44,7 @@ class Game {
     this.difficulty = 1;
     this.loopCount = 0;
     this.spawnRate = SPAWN_RATE;
+    this.fpsCount = 0;
     this.fps = 0;
     this.entities = [];
     this.particles = [];
@@ -104,12 +105,24 @@ class Game {
       case STATE_INIT:
         break;
       case STATE_BEGIN:
+        this.ctx.font = '20px sans-serif';
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(`Press WASD / Arrow Keys to move`, 10, 20);
+        this.ctx.fillText(`Aim mouse and left click to shoot`, 10, 40);
+        this.ctx.fillText(`Press any of these keys to start`, 10, 60);
         break;
       case STATE_RUNNING:
 
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
         this.players.forEach(entity => entity.draw());
+
+        this.ctx.font = '20px sans-serif';
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(`Health: ${this.players[0].health}`, 10, 20);
+        this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 100, 20);
+        this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 100, 40);
+
         break;
       case STATE_OVER:
         break;
@@ -122,12 +135,13 @@ class Game {
     this.update();
     this.draw();
     // this.loops++;
-    this.fps++;
+    this.fpsCount++;
 
     let time = (new Date).getTime();
     if (time > this.nextGameTick) {
-      console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);
-      this.fps = 0;
+      // console.log(`fps = ${this.fps} || entities: ${this.particles.length + this.entities.length}`);
+      this.fps = this.fpsCount;
+      this.fpsCount = 0;
       this.nextGameTick += 1000;
       // this.difficulty += DIFFICULTY_MULTIPLIER;
     }

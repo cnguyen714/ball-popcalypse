@@ -27,19 +27,10 @@ class Game {
     this.STATE_OVER = STATE_OVER;
     this.cvs = cvs;
     this.ctx = ctx;
-    this.loops = 0;
-    this.loopCount = 0;
-    this.fps = 0;
-
-    this.difficulty = 1;
-    this.spawnRate = SPAWN_RATE;
 
     this.nextGameTick = (new Date).getTime() + NEXT_TICK_TIME;
 
     this.state = STATE_INIT;
-    this.entities = [];
-    this.particles =[];
-    this.players = [];
 
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
@@ -48,6 +39,15 @@ class Game {
   init() {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
+
+    this.loops = 0;
+    this.difficulty = 1;
+    this.loopCount = 0;
+    this.spawnRate = SPAWN_RATE;
+    this.fps = 0;
+    this.entities = [];
+    this.particles = [];
+    this.players = [];
 
     let player = new Player(this);
     this.players.push(player);
@@ -89,6 +89,7 @@ class Game {
         if(this.players[0].health <= 0) this.endGame();
         break;
       case STATE_OVER:
+        this.init();
         break;
       default:
         break;

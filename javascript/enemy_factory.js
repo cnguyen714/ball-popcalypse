@@ -10,6 +10,7 @@ const MAP = {
 }
 
 const SPAWN_OFFSET = 20;
+const BASE_TURN_RATE = 0.25;
 
 export const randomEdgePos = (canvas) => {
   let side = Math.floor(Math.random() * 4);
@@ -45,6 +46,8 @@ export const spawnCircleRandom = (player) => {
 
   enemy.aiCallback = function() {
     this.aim = Vector.difference(player.pos, this.pos).normalize();
+    let turnRate = BASE_TURN_RATE + player.game.difficulty / 2;
+    this.aim.multiply(turnRate).add(this.vel).normalize();
 
     this.vel.add(this.aim.multiply(this.accel));
   };

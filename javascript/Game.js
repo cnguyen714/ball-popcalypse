@@ -17,7 +17,7 @@ const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 // const SPAWN_RATE = 180;
-const SPAWN_RATE = 2; // 5
+const SPAWN_RATE = 4; // 5
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.05;
 
@@ -100,7 +100,7 @@ class Game {
         this.player.update();
 
         // if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
-        if(this.loopCount % (Math.floor(SPAWN_RATE)) === 0) {
+        if(this.loopCount % (Math.floor(SPAWN_RATE)) === 0 && this.fps >= 50) {
           // for (let i = 0; i < Math.floor(Math.random() * 5 + 3); i++) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
           // }

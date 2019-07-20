@@ -25,7 +25,7 @@ class Slam extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
-    if (this.aliveTime === 10) 
+    if (this.aliveTime === 10) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
     }
     if (this.aliveTime <= 0) {

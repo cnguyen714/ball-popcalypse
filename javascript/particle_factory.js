@@ -17,7 +17,7 @@ export const fireBulletAtCursor = (player) => {
   aim.x += Math.random() * (BULLET_SPREAD + BULLET_SPREAD) - BULLET_SPREAD;
   aim.y += Math.random() * (BULLET_SPREAD + BULLET_SPREAD) - BULLET_SPREAD;
   aim.normalize();
-  p.vel = aim.multiply(BULLET_SPEED);
+  p.vel = aim.multiply(BULLET_SPEED * (1 - BULLET_SPREAD ) + BULLET_SPREAD / 2 + Math.random() * BULLET_SPREAD);
   return p;
 }
 
@@ -36,4 +36,3 @@ export const fireBulletAtCursorB = (player) => {
   p.vel = aim.multiply(BULLET_SPEED);
   return p;
 }
- 

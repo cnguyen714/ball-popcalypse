@@ -18,11 +18,13 @@ class Particle extends GameObject {
     super(game);
     this.pos = new Vector(startX, startY);
     this.vel = vel;
-    this.cb = cb;
-    this.alive = true;
-
     this.r = RADIUS;
     this.color = COLOR;
+    this.damage = DAMAGE;
+    this.knockback = KNOCKBACK;
+    this.cb = cb;
+    this.aliveTime = 1;
+
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -39,17 +41,19 @@ class Particle extends GameObject {
 
   checkCollision (obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
+
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
     if (obj instanceof EnemyCircle) {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         this.alive = false;
         this.vel.normalize();
-        this.vel.multiply(KNOCKBACK);
+        this.vel.multiply(this.knockback);
         obj.vel.add(this.vel);
-        obj.health -= DAMAGE;
+        obj.health -= this.damage;
         if (obj.health <= 0) {
           obj.alive = false;
+          this.game.difficulty += 0.001;
           this.game.score++;
         }
       }
@@ -57,6 +61,7 @@ class Particle extends GameObject {
   }
 
   update() {
+    if (!this.alive) return; //Don't check collision if object is not alive
     this.cb();
     this.addVelocityTimeDelta();
     this.game.entities.forEach(entity => { this.checkCollision(entity) });

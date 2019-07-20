@@ -17,9 +17,9 @@ const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 // const SPAWN_RATE = 180;
-const SPAWN_RATE = 4; // 5
+const SPAWN_RATE = 2; // 5
 const DIFFICULTY_INTERVAL = 300;
-const DIFFICULTY_MULTIPLIER = 1.01;
+const DIFFICULTY_MULTIPLIER = 1.05;
 
 class Game {
   constructor(cvs, ctx) {
@@ -31,7 +31,7 @@ class Game {
     this.ctx = ctx;
     this.highscore = 0;
     this.score = 0;
-
+    this.pauseTime = 0;
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
@@ -47,8 +47,9 @@ class Game {
     this.ctx.canvas.height = window.innerHeight;
 
     this.loops = 0;
-    this.difficulty = 1;
     this.loopCount = 0;
+    this.timeSeconds = 0;
+    this.difficulty = 1;
     this.spawnRate = SPAWN_RATE;
     this.fpsCount = 0;
     this.fps = 0;
@@ -61,7 +62,6 @@ class Game {
     this.entities = [];
     this.particles = [];
 
-    
     this.player.mountController();
     this.state = STATE_BEGIN;
   }
@@ -80,6 +80,10 @@ class Game {
     this.init();
   }
 
+  freeze(n) {
+    this.pauseTime = n;
+  }
+
   update() {
     switch(this.state) {
       case STATE_INIT: 
@@ -95,7 +99,8 @@ class Game {
         
         this.player.update();
 
-        if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
+        // if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
+        if(this.loopCount % (Math.floor(SPAWN_RATE)) === 0) {
           // for (let i = 0; i < Math.floor(Math.random() * 5 + 3); i++) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
           // }
@@ -166,6 +171,8 @@ class Game {
         this.ctx.fillStyle = 'white';
         this.ctx.fillText(`Health: ${this.player.health}`, 10, 20);
         this.ctx.fillText(`Score: ${this.score}`, 10, 40);
+        this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 60);
+        this.ctx.fillText(`Difficulty: ${this.difficulty}`, 10, 80);
         this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 100, 20);
         this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 100, 40);
 
@@ -182,14 +189,20 @@ class Game {
     let time = (new Date).getTime();
     this.timeDelta = time - this.prevTime;
     this.prevTime = time;
-    this.update();
-    this.draw();
-    // this.loops++;
+    
+    if (this.pauseTime === 0) {
+      this.update();
+      this.draw();
+    } else {
+      this.pauseTime--;
+    }
+
     this.fpsCount++;
     if (time > this.timeTracker) {
       this.fps = this.fpsCount;
       this.fpsCount = 0;
       this.timeTracker += 1000;
+      this.timeSeconds++;
     }
     window.requestAnimationFrame(this.loop);
   }

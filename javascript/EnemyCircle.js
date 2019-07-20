@@ -20,7 +20,7 @@ class EnemyCircle extends GameObject {
     this.accel = ACCEL;
     this.aiCallback = () => {};
 
-    this.health = HEALTH;
+    this.health = HEALTH + game.difficulty * 2;
 
     this.r = RADIUS;
     this.color = COLOR;

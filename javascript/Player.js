@@ -1,7 +1,9 @@
 
 import Vector from "./Vector";
 import GameObject from "./GameObject";
+import  Slam from "./Slam";
 import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
+
 
 const CLAMP_SPAWN = 100; // Offset from edges
 const MAX_SPEED = 6;
@@ -32,10 +34,10 @@ const KEY = {
   S: 83,
   D: 68,
   UP: 38,
-  LEFT: 37,
-  DOWN: 40,
-  RIGHT: 39,
-  SHIFT: 16,
+  // LEFT: 37,
+  // DOWN: 40,
+  // RIGHT: 39,
+  // SHIFT: 16,
   MOUSE_LEFT: 10000,
   MOUSE_RIGHT: 10002,
 };
@@ -265,6 +267,8 @@ class Player extends GameObject {
       if (this.dashDuration <= 0) {
         this.moveState = STATE_WALKING;
         this.dashCooldown = DASH_COOLDOWN;
+        this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
+
       } else {
         this.dashDuration--;
         this.vel.add(this.aim.normalize().multiply(DASH_SPEED));

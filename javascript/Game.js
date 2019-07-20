@@ -9,14 +9,15 @@ import * as EnemyFactory from './enemy_factory';
 // Delta time is implemented by accelerating movement to perceive less
 // lag, however the game still runs slower
 
-const FPS = 60;
-const NORMAL_TIME_DELTA = 1000 / FPS;
-// const MAX_FRAME_SKIP = 3;
 const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
-// const SPAWN_RATE = 180;
+
+const FPS = 60;
+const NORMAL_TIME_DELTA = 1000 / FPS;
+const MIN_FRAME_RATE = 54; // Limits enemy production to save frames
+
 const SPAWN_RATE = 4; // 5
 const DIFFICULTY_INTERVAL = 300;
 const DIFFICULTY_MULTIPLIER = 1.05;
@@ -100,7 +101,9 @@ class Game {
         this.player.update();
 
         // if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
-        if(this.loopCount % (Math.floor(SPAWN_RATE)) === 0 && this.fps >= 50) {
+        
+        // Stop making enemies if you miss too many frame deadlines
+        if(this.loopCount % (Math.floor(SPAWN_RATE)) === 0 && this.fps >= MIN_FRAME_RATE) {
           // for (let i = 0; i < Math.floor(Math.random() * 5 + 3); i++) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
           // }

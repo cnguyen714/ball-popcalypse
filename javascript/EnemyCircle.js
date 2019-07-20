@@ -12,6 +12,7 @@ const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
+const DAMAGE = 1;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
@@ -24,6 +25,7 @@ class EnemyCircle extends GameObject {
 
     this.r = RADIUS;
     this.color = COLOR;
+    this.damage = 1;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -47,17 +49,17 @@ class EnemyCircle extends GameObject {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         diff.normalize();
         diff.multiply(KNOCKBACK);
-        obj.vel.subtract(diff);
+        obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));
         this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
-        obj.health--;
+        obj.health -= this.damage;
       } 
     } else if (obj instanceof EnemyCircle) {
       if (obj.pos.equals(this.pos)) return;
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         diff.normalize();
         diff.multiply(SPREAD_FACTOR);
-        obj.vel.subtract(diff);
-        this.vel.add(diff);
+        obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));
+        this.vel.add(diff.dup().multiply(RADIUS / this.r));
       }
     }
 

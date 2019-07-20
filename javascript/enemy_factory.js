@@ -36,14 +36,28 @@ export const randomEdgePos = (canvas) => {
   return pos;
 }
 
+const makeBoss = function() {
+  return Math.floor(Math.random() * 1000) % 100 === 0;
+}
+
 export const spawnCircleRandom = (player) => {
   let enemy = new EnemyCircle(player.game);
   let spawnPos = randomEdgePos(player.cvs);
   enemy.pos.x = spawnPos.x;
   enemy.pos.y = spawnPos.y;
+
+  
   enemy.accel = 0.5 + Math.random() * player.game.difficulty / 2;
   enemy.maxSpeed = 1.5 + Math.random() * player.game.difficulty / 2;
 
+  if (makeBoss()) {
+    enemy.r = 50;
+    enemy.accel = 0.2;
+    enemy.maxSpeed = 0.5;
+    enemy.health = 10000;
+    enemy.damage = 100;
+  }
+  
   enemy.aiCallback = function() {
     this.aim = Vector.difference(player.pos, this.pos).normalize();
     let turnRate = BASE_TURN_RATE + player.game.difficulty / 2;

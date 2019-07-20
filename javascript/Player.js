@@ -99,7 +99,7 @@ class Player extends GameObject {
 
       this.setAim();
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
-      this.dashDirection = this.aim;
+      this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
     }
   }
@@ -114,19 +114,11 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
+          this.keyDown[key] = true;
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
-          if (key === KEY.W) this.keyDown[KEY.W] = true;
-          if (key === KEY.A) this.keyDown[KEY.A] = true;
-          if (key === KEY.S) this.keyDown[KEY.S] = true;
-          if (key === KEY.D) this.keyDown[KEY.D] = true;
-          if (key === KEY.UP) this.keyDown[KEY.W] = true;
-          if (key === KEY.LEFT) this.keyDown[KEY.A] = true;
-          if (key === KEY.DOWN) this.keyDown[KEY.S] = true;
-          if (key === KEY.RIGHT) this.keyDown[KEY.D] = true;
-
-          if (key === KEY.SHIFT) this.keyDown[KEY.SHIFT] = true;
+          this.keyDown[key] = true;
           break;
         case this.game.STATE_OVER:
           break;
@@ -145,15 +137,7 @@ class Player extends GameObject {
           this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
-          if (key === KEY.W) this.keyDown[KEY.W] = false;
-          if (key === KEY.A) this.keyDown[KEY.A] = false;
-          if (key === KEY.S) this.keyDown[KEY.S] = false;
-          if (key === KEY.D) this.keyDown[KEY.D] = false;
-          if (key === KEY.UP) this.keyDown[KEY.W] = false;
-          if (key === KEY.LEFT) this.keyDown[KEY.A] = false;
-          if (key === KEY.DOWN) this.keyDown[KEY.S] = false;
-          if (key === KEY.RIGHT) this.keyDown[KEY.D] = false;
-          if (key === KEY.SHIFT) this.keyDown[KEY.SHIFT] = false;
+          this.keyDown[key] = false;
           break;
         case this.game.STATE_OVER:
           break;
@@ -181,6 +165,8 @@ class Player extends GameObject {
           break;
         case this.game.STATE_BEGIN:
           this.game.startGame();
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
           break;
         case this.game.STATE_RUNNING:
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
@@ -293,7 +279,7 @@ class Player extends GameObject {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     this.ctx.save();
-    this.ctx.beginPath();
+    // this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = "white";
@@ -304,14 +290,6 @@ class Player extends GameObject {
     this.ctx.fill();
     this.ctx.stroke();
     this.ctx.restore();
-
-    //draw aim
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = "white";
-    
-    this.ctx.moveTo(this.pos.x, this.pos.y);
-    this.ctx.lineTo(this.pos.x + this.aim.x, this.pos.y + this.aim.y);
-    this.ctx.stroke();
   }
 }
 

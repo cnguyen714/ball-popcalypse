@@ -96,7 +96,9 @@ class Game {
         this.player.update();
 
         if(this.loopCount % (Math.floor(SPAWN_RATE / this.difficulty)) === 0) {
-          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
+          // for (let i = 0; i < Math.floor(Math.random() * 5 + 3); i++) {
+            this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
+          // }
         }
         
         this.entities = this.entities.filter(entity => entity.alive);
@@ -115,6 +117,26 @@ class Game {
     }
   }
 
+  drawCursor() {
+    this.ctx.beginPath();
+    this.ctx.arc(this.player.pos.x + this.player.aim.x, this.player.pos.y + this.player.aim.y, 4, 0, 2 * Math.PI);
+    this.ctx.fillStyle = "rgba(0,0,0,0)";
+    this.ctx.strokeStyle = "yellow";
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  drawEtc() {
+    // Draw aim
+    this.ctx.strokeStyle = "white";
+
+    this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
+    this.ctx.lineTo(this.player.pos.x + this.player.aim.x, this.player.pos.y + this.player.aim.y);
+    this.ctx.stroke();
+
+    this.drawCursor();
+  }
+
   draw(timeDelta) {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
@@ -126,10 +148,13 @@ class Game {
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
         this.ctx.fillText(`Press WASD / Arrow Keys to move`, 10, 20);
-        this.ctx.fillText(`Aim mouse and left click to shoot`, 10, 40);
+        this.ctx.fillText(`Mouse: left click to shoot, right click to dash`, 10, 40);
         this.ctx.fillText(`Press any of these keys to start`, 10, 60);
         this.ctx.fillText(`Score: ${this.score}`, 10, 100);
         this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 120);
+        this.drawCursor();
+        this.player.draw();
+
         break;
       case STATE_RUNNING:
 
@@ -144,6 +169,7 @@ class Game {
         this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 100, 20);
         this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 100, 40);
 
+        this.drawEtc();
         break;
       case STATE_OVER:
         break;

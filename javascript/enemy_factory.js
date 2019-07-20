@@ -40,8 +40,8 @@ export const spawnCircleRandom = (player) => {
   let spawnPos = randomEdgePos(player.cvs);
   enemy.pos.x = spawnPos.x;
   enemy.pos.y = spawnPos.y;
-  enemy.accel = 1;
-  enemy.maxSpeed = 2;
+  enemy.accel = 0.5 + Math.random();
+  enemy.maxSpeed = 1.5 + Math.random();
 
   enemy.aiCallback = function() {
     this.aim = Vector.difference(player.pos, this.pos).normalize();

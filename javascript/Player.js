@@ -22,7 +22,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const MAX_HEALTH = 1000;
+const MAX_HEALTH = 100;
 
 
 const STATE_WALKING = "STATE_WALKING";
@@ -33,11 +33,12 @@ const KEY = {
   A: 65,
   S: 83,
   D: 68,
-  UP: 38,
+  ENTER: 13,
+  // UP: 38,
   // LEFT: 37,
   // DOWN: 40,
   // RIGHT: 39,
-  // SHIFT: 16,
+  SHIFT: 16,
   MOUSE_LEFT: 10000,
   MOUSE_RIGHT: 10002,
 };
@@ -63,6 +64,8 @@ class Player extends GameObject {
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
+    this.velRestoreDash = new Vector(); 
+
 
     this.maxHealth = MAX_HEALTH;
     this.health = MAX_HEALTH;
@@ -98,9 +101,11 @@ class Player extends GameObject {
   dash() {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
+      this.pauseTime = 3;
 
       this.setAim();
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
+      this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
     }
@@ -116,13 +121,16 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
-          this.keyDown[key] = true;
-          this.game.startGame();
+          if (key !== KEY.ENTER) { 
+            this.keyDown[key] = true;
+            this.game.startGame();
+          }
           break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           break;
         case this.game.STATE_OVER:
+          if (key === KEY.ENTER) this.game.restartGame();
           break;
         default:
           break;
@@ -136,7 +144,6 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
-          this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = false;
@@ -236,6 +243,20 @@ class Player extends GameObject {
   }
 
   update() {
+    if (this.pauseTime > 0) {;
+      this.pauseTime--;
+      if(this.pauseTime === 0) {
+        this.vel = this.velRestoreDash;
+      }
+      return;
+    }
+    if (!this.alive) {
+      this.dampSpeed();
+      this.addVelocityTimeDelta();
+      this.applyDecel();
+      this.validatePosition(this.cvs.width, this.cvs.height);
+      return;
+    }
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.dashCooldown <= 0) this.dash();
 
     // Calculate facing direction and apply shooting
@@ -294,6 +315,8 @@ class Player extends GameObject {
     this.ctx.fill();
     this.ctx.stroke();
     this.ctx.restore();
+
+
   }
 }
 

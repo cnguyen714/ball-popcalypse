@@ -53,7 +53,7 @@ class Particle extends GameObject {
         obj.health -= this.damage;
         if (obj.health <= 0) {
           obj.alive = false;
-          this.game.difficulty += 0.002;
+          this.game.difficulty += 0.002 * this.game.difficultyRate;
           this.game.score++;
         }
       }
@@ -75,7 +75,8 @@ class Particle extends GameObject {
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = this.color;
     this.ctx.fill();
-    this.ctx.stroke();
+    this.ctx.closePath();
+    // this.ctx.stroke();
   }
 }
 

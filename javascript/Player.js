@@ -115,6 +115,8 @@ class Player extends GameObject {
     document.addEventListener('keydown', (e) => {
       let key = e.keyCode;
       if(key === 8) this.health = 0; // BACKSPACE
+      if(key === 187) this.game.difficulty++; //EQUAL
+      if(key === 189) this.health += 100; //MINUS
 
       // Ignore keys that have not been bound
       if (!Object.values(KEY).includes(key)) return;

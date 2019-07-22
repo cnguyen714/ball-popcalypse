@@ -39,10 +39,10 @@ export const randomEdgePos = (canvas, radius) => {
 const makeBoss = function(enemy) {
   if (Math.floor(Math.random() * 1000) % 100 === 0) {
     enemy.r = Math.floor(50 + Math.random() * 50);
-    if (player.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
+    if (enemy.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
     if (Math.floor(Math.random() * 5) % 3 === 0) {
-      enemy.accel = 0.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
-      enemy.maxSpeed = 1.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
+      enemy.accel = 0.5 + Math.random() * Math.pow(enemy.game.difficulty, 1 / 2);
+      enemy.maxSpeed = 1.5 + Math.random() * Math.pow(enemy.game.difficulty, 1 / 2);
     } else {
       enemy.accel = 0.2;
       enemy.maxSpeed = 0.5;

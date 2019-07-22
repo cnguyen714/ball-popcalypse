@@ -8,6 +8,8 @@ Ball-ocolypse (or Ball-Apocolypse, if you will) is a "zombie"-horde survival gam
 
 The goal is to have the game be a physics sandbox that has satisfying interactions. All non-decorative game entities have some collision or other physical interaction, which relies heavily on vector math to handle these emergent interactions. 
 
+![](https://github.com/cnguyen714/ball-ocolypse/blob/master/docs/gameplay.png?raw=true)
+
 ## Architectures and Technologies
 The project uses the following technologies:
 * Vanilla Javascript for game running the game loop and logic

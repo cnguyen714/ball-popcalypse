@@ -66,25 +66,23 @@ class Slam extends Particle {
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = this.color;
+      this.ctx.fill(); 
       this.ctx.strokeStyle = this.color;
-      this.ctx.fill();
       this.ctx.stroke(); 
-      this.ctx.closePath();   
       this.ctx.restore();
     } else {
       this.ctx.save();
 
+      this.r += 10;
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";
+      this.ctx.fill();
       this.ctx.strokeStyle = this.color;
      
       this.ctx.shadowBlur = 30;
       this.ctx.shadowColor = this.color;
-      this.r += 10;
-      this.ctx.fill();
       this.ctx.stroke();  
-      this.ctx.closePath();   
 
       this.ctx.restore();
   

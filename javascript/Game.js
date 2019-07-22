@@ -194,12 +194,12 @@ class Game {
     this.ctx.beginPath();
     // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
     // this.ctx.fillStyle = "rgba(0,0,0,0)";
-    this.ctx.strokeStyle = "green";
+    this.ctx.strokeStyle = "yellow";
     this.ctx.moveTo(this.player.mousePos.x - 5, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x + 5, this.player.mousePos.y);
-    this.ctx.fill();
+    this.ctx.lineTo(this.player.mousePos.x + 5, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - 5);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + 5);
     this.ctx.stroke();
-    this.ctx.closePath();
   }
 
   drawAim() {
@@ -253,7 +253,7 @@ class Game {
         this.ctx.fillText(`Difficulty: ${this.difficulty}`, 10, 80);
         
         this.showFPS();
-        this.drawAim();
+        // this.drawAim();
         break;
       case STATE_OVER:
 

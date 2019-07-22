@@ -43,10 +43,13 @@ class EnemyCircle extends GameObject {
   }
 
   checkCollision(obj) {
+    if (!obj.alive) return;
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
     if(obj instanceof Player) {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
+        let sound = new Audio("../assets/impact.wav");
+        sound.play();
         diff.normalize();
         diff.multiply(KNOCKBACK);
         obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));

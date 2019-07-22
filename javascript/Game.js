@@ -67,8 +67,8 @@ class Game {
     this.players = [];
     this.players.push(this.player);
     this.entities = [];
-    this.entities.push(new Slam(game, this.player.pos.x, this.player.pos.y));
     this.particles = [];
+    this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
 
     this.player.mountController();
     this.state = STATE_BEGIN;
@@ -86,6 +86,8 @@ class Game {
     this.freeze(30);
     this.player.alive = false;
     this.player.color = 'black'; 
+    let sound = new Audio("../assets/DEFEATED.wav");
+    sound.play();
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode1.color = 'white';
@@ -102,7 +104,7 @@ class Game {
     let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode3.color = 'black';
     explode3.knockback = 100; 
-    explode3.damage = 20;
+    explode3.damage = 100;
     explode3.r = 100;
     this.particles.push(explode3);
 
@@ -137,7 +139,12 @@ class Game {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
         }
         
-        this.entities.filter(entity => !entity.alive).forEach(entity => this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y)));
+        this.entities.filter(entity => !entity.alive).forEach(entity => {
+          let sound = new Audio("../assets/boom2.wav");
+          sound.play();
+
+          this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y))
+        });
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
@@ -162,7 +169,13 @@ class Game {
                 entity.alive = false;
               }
         })
-        this.entities.filter(entity => !entity.alive).forEach(entity => this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y)));
+        this.entities.filter(entity => !entity.alive).forEach(entity => {
+          if (this.loopCount % 5 === 0) {
+            let sound = new Audio("../assets/boom2.wav");
+            sound.play();
+          }
+          this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y))
+        });
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
 
@@ -179,11 +192,14 @@ class Game {
 
   drawCursor() {
     this.ctx.beginPath();
-    this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
-    this.ctx.fillStyle = "rgba(0,0,0,0)";
-    this.ctx.strokeStyle = "yellow";
+    // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
+    // this.ctx.fillStyle = "rgba(0,0,0,0)";
+    this.ctx.strokeStyle = "green";
+    this.ctx.moveTo(this.player.mousePos.x - 5, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x + 5, this.player.mousePos.y);
     this.ctx.fill();
     this.ctx.stroke();
+    this.ctx.closePath();
   }
 
   drawAim() {
@@ -192,9 +208,9 @@ class Game {
 
 
     // this.ctx.beginPath();
-    this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
-    this.ctx.stroke();
+    // this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
+    // this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
+    // this.ctx.stroke();
     // this.ctx.closePath();   
     
   }

@@ -3,7 +3,7 @@ import Vector from "./Vector";
 import GameObject from "./GameObject";
 import  Slam from "./Slam";
 import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
-
+// import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
 const MAX_SPEED = 6;
@@ -263,6 +263,11 @@ class Player extends GameObject {
     this.setAim();
     if (this.shootCooldown > 0) this.shootCooldown--;
     if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
+      if (this.game.loopCount % 5 === 0) {
+        let sound = new Audio("../assets/laser7.wav");
+        sound.play();
+      }
+      
       this.shootCooldown = SHOOT_COOLDOWN;
       this.game.particles.push(fireBulletAtCursor(this));
       this.game.particles.push(fireBulletAtCursor(this));

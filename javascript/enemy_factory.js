@@ -36,26 +36,31 @@ export const randomEdgePos = (canvas, radius) => {
   return pos;
 }
 
-const makeBoss = function() {
-  return Math.floor(Math.random() * 1000) % 100 === 0;
+const makeBoss = function(enemy) {
+  if (Math.floor(Math.random() * 1000) % 100 === 0) {
+    enemy.r = Math.floor(50 + Math.random() * 50);
+    if (player.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
+    if (Math.floor(Math.random() * 5) % 3 === 0) {
+      enemy.accel = 0.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
+      enemy.maxSpeed = 1.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
+    } else {
+      enemy.accel = 0.2;
+      enemy.maxSpeed = 0.5;
+    }
+    enemy.health = 10000;
+    enemy.damage = 50;
+    enemy.score = enemy.radius * 2;
+  }
 }
 
 export const spawnCircleRandom = (player) => {
   let enemy = new EnemyCircle(player.game);  
 
-  if (makeBoss()) {
-    enemy.r = 50 + Math.random() * 50;
-    if (player.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
-    enemy.accel = 0.2;
-    enemy.maxSpeed = 0.5;
-    enemy.health = 10000;
-    enemy.damage = 50;
-    enemy.score = 100;
-  }
-
   enemy.accel = 0.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
   enemy.maxSpeed = 1.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
 
+  makeBoss(enemy);
+  
   let spawnPos = randomEdgePos(player.cvs, enemy.r);
   enemy.pos.x = spawnPos.x;
   enemy.pos.y = spawnPos.y;

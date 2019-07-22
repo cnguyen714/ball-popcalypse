@@ -25,7 +25,6 @@ class Particle extends GameObject {
     this.cb = cb;
     this.aliveTime = 1;
 
-
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
   }
@@ -54,7 +53,7 @@ class Particle extends GameObject {
         if (obj.health <= 0) {
           obj.alive = false;
           this.game.difficulty += 0.002 * this.game.difficultyRate;
-          this.game.score++;
+          this.game.score += obj.score;
         }
       }
     }

@@ -15,6 +15,7 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 10;
 const DASH_SPEED = 3;
 const DASH_COOLDOWN = 30;
+const POST_DASH_INVUL = 4;
 
 const PLAYER_RADIUS = 10;
 const COLOR = '#0d7377';
@@ -22,7 +23,6 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const MAX_HEALTH = 100;
 
 
 const STATE_WALKING = "STATE_WALKING";
@@ -64,11 +64,11 @@ class Player extends GameObject {
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
+    this.invul = 0;
     this.velRestoreDash = new Vector(); 
 
-
-    this.maxHealth = MAX_HEALTH;
-    this.health = MAX_HEALTH;
+    this.maxHealth = 100;
+    this.health = this.maxHealth;
 
     this.r = PLAYER_RADIUS;
     this.color = COLOR;
@@ -114,6 +114,7 @@ class Player extends GameObject {
   mountController() {
     document.addEventListener('keydown', (e) => {
       let key = e.keyCode;
+      if(key === 8) this.health = 0; // BACKSPACE
 
       // Ignore keys that have not been bound
       if (!Object.values(KEY).includes(key)) return;
@@ -289,8 +290,10 @@ class Player extends GameObject {
       this.addVelocityTimeDelta();
       this.applyDecel();
       this.dashCooldown--;
+      if (this.invul >= 0) this.invul--;
     } else  if (this.moveState === STATE_DASHING) {
       if (this.dashDuration <= 0) {
+        this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
         this.dashCooldown = DASH_COOLDOWN;
         this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));

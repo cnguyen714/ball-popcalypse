@@ -14,6 +14,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
 const DAMAGE = 1;
+const SCORE = 1;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
@@ -26,7 +27,8 @@ class EnemyCircle extends GameObject {
 
     this.r = RADIUS;
     this.color = COLOR;
-    this.damage = 1;
+    this.damage = DAMAGE;
+    this.score = SCORE;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -48,13 +50,13 @@ class EnemyCircle extends GameObject {
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
     if(obj instanceof Player) {
+      if (obj.moveState === "STATE_DASHING" || obj.invul > 0) return;
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         let sound = new Audio("../assets/impact.wav");
         sound.play();
-        let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2);
+        let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2, this.r * 2);
         explosion.color = 'red';
         explosion.aliveTime = 5;
-        explosion.r = 10;
         obj.game.particles.push(explosion);
 
         diff.normalize();

@@ -49,7 +49,7 @@ const makeBoss = function(enemy) {
     }
     enemy.health = 10000;
     enemy.damage = 50;
-    enemy.score = enemy.radius * 2;
+    enemy.score = enemy.r * 2;
   }
 }
 

@@ -39,6 +39,7 @@ const KEY = {
   // DOWN: 40,
   // RIGHT: 39,
   SHIFT: 16,
+  SPACE: 32,
   MOUSE_LEFT: 10000,
   MOUSE_RIGHT: 10002,
 };
@@ -78,6 +79,7 @@ class Player extends GameObject {
       [KEY.S]: false,
       [KEY.D]: false,
       [KEY.SHIFT]: false,
+      [KEY.SPACE]: false,
       [KEY.MOUSE_LEFT]: false,
       [KEY.MOUSE_RIGHT]: false,
     }

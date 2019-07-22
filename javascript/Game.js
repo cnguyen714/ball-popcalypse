@@ -225,7 +225,9 @@ class Game {
             this.player.pos.y = 200 + Math.random() * (this.cvs.height - 200 * 2);
           }
         }
+        this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
+        this.particles.forEach(entity => entity.update());
 
         break;
       case STATE_RUNNING:
@@ -317,7 +319,7 @@ class Game {
     this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 90, 42);
   }
 
-  draw(timeDelta) {
+  draw() {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
     this.showFPS();
@@ -326,6 +328,8 @@ class Game {
       case STATE_INIT:
         break;
       case STATE_BEGIN:
+        this.particles.forEach(entity => entity.draw());
+        this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
 
@@ -335,6 +339,7 @@ class Game {
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
         this.entities.forEach(entity => entity.draw());
+        this.menus.forEach(entity => entity.draw());
 
         this.ctx.save();
         this.ctx.font = '20px sans-serif';

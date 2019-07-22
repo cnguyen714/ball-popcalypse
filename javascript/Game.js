@@ -83,7 +83,7 @@ class Game {
   endGame() {
     if (this.highscore < this.score) this.highscore = this.score;
     this.state = STATE_OVER;
-    this.freeze(30);
+    this.freeze(15);
     this.player.alive = false;
     this.player.color = 'black'; 
     let sound = new Audio("../assets/DEFEATED.wav");

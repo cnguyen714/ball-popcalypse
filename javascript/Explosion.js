@@ -12,7 +12,8 @@ class Explosion extends Particle {
     this.vel = new Vector();
     this.r = RADIUS;
     this.color = COLOR;
-    this.aliveTime = 10;
+    this.aliveTime = 20;
+    this.initialAliveTime = this.aliveTime;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -29,6 +30,7 @@ class Explosion extends Particle {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
+
     if (this.aliveTime > 5) {
       this.ctx.save();
 
@@ -41,6 +43,7 @@ class Explosion extends Particle {
       this.ctx.closePath();
       this.ctx.restore();
 
+
     } else {
       this.ctx.save();
 
@@ -49,13 +52,14 @@ class Explosion extends Particle {
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.fill();
-      this.ctx.strokeStyle = "white";
+      this.ctx.strokeStyle = this.color;
      
       this.ctx.shadowBlur = 30;
-      this.ctx.shadowColor = this.color;
+      this.ctx.shadowColor =  this.color;
       this.ctx.stroke();  
 
-      this.ctx.restore();    }
+      this.ctx.restore();    
+    }
   }
 }
 

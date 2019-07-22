@@ -2,6 +2,7 @@
 import Vector from "./Vector";
 import Player from './Player';
 import GameObject from "./GameObject";
+import Explosion from "./Explosion";
 
 const MAX_SPEED = 3;
 const RADIUS = 6;
@@ -50,6 +51,12 @@ class EnemyCircle extends GameObject {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         let sound = new Audio("../assets/impact.wav");
         sound.play();
+        let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2);
+        explosion.color = 'red';
+        explosion.aliveTime = 5;
+        explosion.r = 10;
+        obj.game.particles.push(explosion);
+
         diff.normalize();
         diff.multiply(KNOCKBACK);
         obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));

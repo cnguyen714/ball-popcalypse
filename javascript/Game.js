@@ -191,15 +191,19 @@ class Game {
   }
 
   drawCursor() {
+    let cursorSize = 8;
+    this.ctx.save();
     this.ctx.beginPath();
     // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
     // this.ctx.fillStyle = "rgba(0,0,0,0)";
     this.ctx.strokeStyle = "yellow";
-    this.ctx.moveTo(this.player.mousePos.x - 5, this.player.mousePos.y);
-    this.ctx.lineTo(this.player.mousePos.x + 5, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - 5);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + 5);
+    this.ctx.lineWidth = 2;
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
     this.ctx.stroke();
+    this.ctx.restore();
   }
 
   drawAim() {

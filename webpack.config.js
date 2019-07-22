@@ -4,17 +4,7 @@ module.exports = {
   entry: './javascript/main.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, '')
+    path: path.resolve(__dirname, ''),
+    publicPath: "/ceaseless-battle/",
   }
 };
-
-const productionConfig = merge([
-  {
-    entry: './javascript/main.js',
-    output: {
-      filename: 'bundle.js',
-      publicPath: "/ceaseless-battle/",
-    }
-
-  }
-])

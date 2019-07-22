@@ -141,6 +141,7 @@ class Game {
     this.player.alive = false;
     this.player.color = 'black'; 
     let sound = new Audio("../assets/DEFEATED.wav");
+    sound.volume = 0.3;
     sound.play();
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);

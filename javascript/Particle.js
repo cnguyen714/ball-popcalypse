@@ -70,14 +70,16 @@ class Particle extends GameObject {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
+    this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
-    this.ctx.strokeStyle = this.color;
-    this.ctx.stroke();
+    // this.ctx.strokeStyle = this.color;
+    // this.ctx.stroke();
 
-    // this.ctx.closePath();
+    this.ctx.closePath();
+    this.ctx.restore();
   }
 }
 

@@ -32,29 +32,30 @@ class Explosion extends Particle {
     if (this.aliveTime > 5) {
       this.ctx.save();
 
-      // this.ctx.beginPath();
+      this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = this.color;
       this.ctx.strokeStyle = this.color;
       this.ctx.fill();
-      // this.ctx.stroke();
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.restore();
+
     } else {
       this.ctx.save();
 
-      // this.ctx.beginPath();
+      this.r += 2;
+      this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";
-      this.ctx.strokeStyle = "rgba(0,0,0,0)";
-
-      this.ctx.shadowBlur = 20;
-      this.ctx.shadowColor = this.color;
-      this.r += 2;
       this.ctx.fill();
-      // this.ctx.stroke();
+      this.ctx.strokeStyle = "white";
+     
+      this.ctx.shadowBlur = 30;
+      this.ctx.shadowColor = this.color;
+      this.ctx.stroke();  
 
-      this.ctx.restore();
-
-    }
+      this.ctx.restore();    }
   }
 }
 

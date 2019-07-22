@@ -85,12 +85,16 @@ class EnemyCircle extends GameObject {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
+    this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = 'black';
     this.ctx.fill();
     this.ctx.stroke();
+    this.ctx.closePath();
+    this.ctx.restore();
+
   }
 }
 

@@ -236,21 +236,21 @@ class Game {
           this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
         }
         
-        this.player.update();
         
         // Stop making enemies if you miss too many frame deadlines
         let spawnRate = 20 - Math.floor(this.difficulty);
         spawnRate = spawnRate <= 1 ? 1 : spawnRate;
         if (this.loopCount % (BASE_SPAWN_RATE + spawnRate)  === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
-            this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
+          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
         }
         
         this.entities.filter(entity => !entity.alive).forEach(entity => {
           let sound = new Audio("../assets/boom2.wav");
           sound.play();
-
+          
           this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
         });
+        this.player.update();
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);

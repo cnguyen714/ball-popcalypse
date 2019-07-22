@@ -2,20 +2,16 @@ import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
 import Particle from "./Particle";
 
-const RADIUS = 100;
-const KNOCKBACK = 150;
-const DAMAGE = 50;
+const RADIUS = 5;
 const COLOR = "white";
 
-class Slam extends Particle {
+class Explosion extends Particle {
   constructor(game, startX, startY) {
     super(game);
     this.pos = new Vector(startX, startY);
     this.vel = new Vector();
     this.r = RADIUS;
     this.color = COLOR;
-    this.damage = DAMAGE;
-    this.knockback = KNOCKBACK;
     this.aliveTime = 10;
 
     this.update = this.update.bind(this);
@@ -25,14 +21,10 @@ class Slam extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
-    if (this.aliveTime === 10) {
-      this.game.entities.forEach(entity => { this.checkCollision(entity) });
-    }
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
     this.aliveTime--;
-    this.cb();
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
@@ -42,8 +34,8 @@ class Slam extends Particle {
 
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
-      this.ctx.fillStyle = this.game.player.color;
-      this.ctx.strokeStyle = this.game.player.color;
+      this.ctx.fillStyle = this.color;
+      this.ctx.strokeStyle = this.color;
       this.ctx.fill();
       this.ctx.stroke();
     } else {
@@ -55,8 +47,8 @@ class Slam extends Particle {
       this.ctx.strokeStyle = "rgba(0,0,0,0)";
 
       this.ctx.shadowBlur = 20;
-      this.ctx.shadowColor = this.game.player.color;
-      this.r += 10;
+      this.ctx.shadowColor = this.color;
+      this.r += 2;
       this.ctx.fill();
       this.ctx.stroke();
 
@@ -66,4 +58,4 @@ class Slam extends Particle {
   }
 }
 
-export default Slam;
+export default Explosion;

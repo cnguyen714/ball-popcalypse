@@ -5,6 +5,7 @@ import Vector from './Vector';
 import * as ParticleFactory from './particle_factory';
 import * as EnemyFactory from './enemy_factory';
 import Slam from './Slam'; 
+import Explosion from "./Explosion";
 
 // My laptop has a performance limit of around 700 particles
 // Delta time is implemented by accelerating movement to perceive less
@@ -82,7 +83,7 @@ class Game {
   endGame() {
     if (this.highscore < this.score) this.highscore = this.score;
     this.state = STATE_OVER;
-    this.freeze(40);
+    this.freeze(30);
     this.player.alive = false;
     this.player.color = 'black'; 
 
@@ -95,13 +96,13 @@ class Game {
     let explode2 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode2.color = 'gray';
     explode2.knockback = 100;
-    explode2.damage = 0;
+    explode2.damage = 20;
     explode2.r = 300;
     this.particles.push(explode2);
     let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode3.color = 'black';
     explode3.knockback = 100; 
-    explode3.damage = 0;
+    explode3.damage = 20;
     explode3.r = 100;
     this.particles.push(explode3);
 
@@ -136,6 +137,7 @@ class Game {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
         }
         
+        this.entities.filter(entity => !entity.alive).forEach(entity => this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y)));
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
@@ -148,10 +150,19 @@ class Game {
 
         // this.player.update();
 
-        if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
+        // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
-          if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;          
-        }
+          // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;          
+        // }
+        this.entities.forEach(entity => {
+          let diff = Vector.difference(entity.pos, this.player.pos);
+          let distSqr = diff.dot(diff);
+
+          if (entity.r * entity.r + this.player.r * this.player.r  + 100 > distSqr) {
+                entity.alive = false;
+              }
+        })
+        this.entities.filter(entity => !entity.alive).forEach(entity => this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y)));
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
 

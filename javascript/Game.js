@@ -331,7 +331,7 @@ class Game {
         break;
       case STATE_BEGIN:
         this.particles.forEach(entity => entity.draw());
-        this.player.draw();
+        // this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
 

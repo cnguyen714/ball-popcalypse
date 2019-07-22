@@ -314,16 +314,17 @@ class Game {
 
 
   showFPS() {
+    this.ctx.save();
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 90, 22);
     this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 90, 42);
+    this.ctx.restore();
   }
 
   draw() {
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
-    this.showFPS();
 
     switch (this.state) {
       case STATE_INIT:
@@ -366,7 +367,7 @@ class Game {
         break;
     }
     this.drawCursor();
-
+    this.showFPS();
   }
 
   loop() {

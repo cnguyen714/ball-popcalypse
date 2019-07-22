@@ -5,5 +5,17 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, '')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.mp3$/,
+        use: [ 
+          {
+            loader: 'file-loader'
+          }
+        ]
+      }
+    ]
   }
 };

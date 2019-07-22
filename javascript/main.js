@@ -1,5 +1,5 @@
 
-import Game from "./Game";
+import Game from "/javascript/Game";
 
 window.addEventListener("DOMContentLoaded", () => {
   const cvs = document.getElementById('ceaseless-battle');

@@ -1,7 +1,7 @@
 
-import Vector from "./Vector";
-import GameObject from "./GameObject";
-import  Slam from "./Slam";
+import Vector from "/javascript/Vector";
+import GameObject from "/javascript/GameObject";
+import Slam from "/javascript/Slam";
 import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
 // import shotSfx from '../assets/laser7.wav';
 

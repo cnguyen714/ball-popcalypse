@@ -1,6 +1,6 @@
-import Vector from "./Vector";
-import EnemyCircle from "./EnemyCircle";
-import Particle from "./Particle";
+import Vector from "/javascript/Vector";
+import EnemyCircle from "/javascript/EnemyCircle";
+import Particle from "/javascript/Particle";
 
 const RADIUS = 100;
 const KNOCKBACK = 150;

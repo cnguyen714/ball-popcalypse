@@ -106,7 +106,7 @@ class Game {
 
         this.ctx.fillStyle = 'teal';
         this.ctx.font = `${this.cvs.height / 8}px sans-serif`;
-        this.ctx.fillText(`Ball-acolypse.`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
+        this.ctx.fillText(`Ball-ocolypse.`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
         this.ctx.fillStyle = 'gray';
         this.ctx.font = `${this.cvs.height / 32}px sans-serif`;
         this.ctx.fillText(`Can you survive the ball menace?`, this.cvs.width * 0.5 / 16, this.cvs.height * 18/32 );

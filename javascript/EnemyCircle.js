@@ -1,8 +1,8 @@
 
-import Vector from "/javascript/Vector";
-import Player from '/javascript/Player';
-import GameObject from "/javascript/GameObject";
-import Explosion from "/javascript/Explosion";
+import Vector from "./Vector";
+import Player from './Player';
+import GameObject from "./GameObject";
+import Explosion from "./Explosion";
 
 const MAX_SPEED = 3;
 const RADIUS = 6;

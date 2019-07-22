@@ -1,5 +1,5 @@
 
-import Vector from "/javascript/Vector";
+import Vector from "./Vector";
 
 const COLOR = 'black';
 const RADIUS = 3;

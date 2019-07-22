@@ -1,6 +1,6 @@
-import Vector from "/javascript/Vector";
-import EnemyCircle from "/javascript/EnemyCircle";
-import GameObject from "/javascript/GameObject";
+import Vector from "./Vector";
+import EnemyCircle from "./EnemyCircle";
+import GameObject from "./GameObject";
 
 const RADIUS = 2;
 const KNOCKBACK = 20;

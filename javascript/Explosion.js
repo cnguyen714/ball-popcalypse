@@ -1,5 +1,6 @@
-import Vector from "/javascript/Vector";
-import Particle from "/javascript/Particle";
+import Vector from "./Vector";
+import EnemyCircle from "./EnemyCircle";
+import Particle from "./Particle";
 
 const RADIUS = 5;
 const COLOR = "white";

@@ -1,11 +1,11 @@
 
-import Player from '/javascript/Player';
-import Particle from '/javascript/Particle';
-import Vector from '/javascript/Vector';
-import * as ParticleFactory from '/javascript/particle_factory';
-import * as EnemyFactory from '/javascript/enemy_factory';
-import Slam from '/javascript/Slam'; 
-import Explosion from "/javascript/Explosion";
+import Player from './Player';
+import Particle from './Particle';
+import Vector from './Vector';
+import * as ParticleFactory from './particle_factory';
+import * as EnemyFactory from './enemy_factory';
+import Slam from './Slam'; 
+import Explosion from "./Explosion";
 
 // My laptop has a performance limit of around 700 particles
 // Delta time is implemented by accelerating movement to perceive less
@@ -86,7 +86,7 @@ class Game {
     this.freeze(15);
     this.player.alive = false;
     this.player.color = 'black'; 
-    let sound = new Audio("/assets/DEFEATED.wav");
+    let sound = new Audio("../assets/DEFEATED.wav");
     sound.play();
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
@@ -171,7 +171,7 @@ class Game {
         })
         this.entities.filter(entity => !entity.alive).forEach(entity => {
           if (this.loopCount % 5 === 0) {
-            let sound = new Audio("/assets/boom2.wav");
+            let sound = new Audio("../assets/boom2.wav");
             sound.play();
           }
           this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y))

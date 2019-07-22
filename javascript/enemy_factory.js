@@ -1,6 +1,6 @@
 
-import Vector from "/javascript/Vector";
-import EnemyCircle from '/javascript/EnemyCircle';
+import Vector from "./Vector";
+import EnemyCircle from './EnemyCircle';
 
 const MAP = {
   TOP: 0,

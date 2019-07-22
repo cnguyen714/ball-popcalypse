@@ -1,0 +1,31 @@
+{
+  "name": "ceaseless-battle",
+  "version": "1.0.0",
+  "description": "[Link to Website]()",
+  "main": "./javascript/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch --mode=development",
+    "postinstall": "webpack",
+    "deploy": "gh-pages -d build"
+  },
+  "engines": {
+    "node": "10.13.0",
+    "npm": "6.10.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnguyen714/ceaseless-battle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cnguyen714/ceaseless-battle/issues"
+  },
+  "homepage": "https://github.com/cnguyen714/ceaseless-battle#readme",
+  "dependencies": {
+    "gh-pages": "^2.0.1",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
+  }
+}

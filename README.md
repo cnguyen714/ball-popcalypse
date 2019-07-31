@@ -1,4 +1,4 @@
-# Ball-ocolypse
+# Ball-pocolypse
 
 [Link to Live](http://ball-ocolypse.herokuapp.com/)
 

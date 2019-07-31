@@ -17,7 +17,7 @@ const DASH_SPEED = 3;
 const DASH_COOLDOWN = 30;
 const POST_DASH_INVUL = 4;
 
-const PLAYER_RADIUS = 10;
+const PLAYER_RADIUS = 12;
 const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;

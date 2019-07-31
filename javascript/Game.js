@@ -106,10 +106,10 @@ class Game {
 
         this.ctx.fillStyle = 'teal';
         this.ctx.font = `${this.cvs.height / 8}px sans-serif`;
-        this.ctx.fillText(`Ball-popcalypse.`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
+        this.ctx.fillText(`Ball-popcalypse`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
         this.ctx.fillStyle = 'gray';
         this.ctx.font = `${this.cvs.height / 32}px sans-serif`;
-        this.ctx.fillText(`Can you survive the ball menace?`, this.cvs.width * 0.5 / 16, this.cvs.height * 18/32 );
+        // this.ctx.fillText(`Can you survive the ball menace?`, this.cvs.width * 1.5 / 16, this.cvs.height * 19/32 );
       }
       this.ctx.restore();
 
@@ -352,7 +352,7 @@ class Game {
         this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 62);
         this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, 10, 82);
         this.ctx.fillStyle = `rgba(${200 - ( this.player.health / this.player.maxHealth * 200)},${this.player.health / this.player.maxHealth * 120},0)`;
-        this.ctx.fillRect(0,0,this.cvs.width * this.player.health / this.player.maxHealth, 4);
+        this.ctx.fillRect(0,0,this.cvs.width * this.player.health / this.player.maxHealth, 5);
         this.ctx.restore();
         break;
       case STATE_OVER:

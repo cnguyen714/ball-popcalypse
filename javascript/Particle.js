@@ -4,7 +4,7 @@ import GameObject from "./GameObject";
 
 const RADIUS = 2;
 const KNOCKBACK = 20;
-const DAMAGE = 20;
+const DAMAGE = 25;
 const COLOR = "#14ffec";
 
 class Particle extends GameObject {

@@ -5,7 +5,7 @@ import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 
 const MAX_SPEED = 3;
-const RADIUS = 6;
+const RADIUS = 7;
 const COLOR = "#a64942";
 const ACCEL = 1;
 const KNOCKBACK = 10;

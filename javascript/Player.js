@@ -269,7 +269,8 @@ class Player extends GameObject {
     if (this.shootCooldown > 0) this.shootCooldown--;
     if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
       if (this.game.loopCount % 5 === 0) {
-        let sound = new Audio("../assets/laser7.wav");
+        let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/laser7.wav`);
+        sound.volume = 0.7;
         sound.play();
       }
       

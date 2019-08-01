@@ -52,7 +52,7 @@ class EnemyCircle extends GameObject {
     if(obj instanceof Player) {
       if (obj.moveState === "STATE_DASHING" || obj.invul > 0) return;
       if (this.r * this.r + obj.r * obj.r > distSqr) {
-        let sound = new Audio("../assets/impact.wav");
+        let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/impact.wav`);
         sound.play();
         let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2, this.r * 2);
         explosion.color = 'red';

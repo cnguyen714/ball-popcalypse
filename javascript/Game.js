@@ -12,6 +12,7 @@ import GameObject from './GameObject';
 // Delta time is implemented by accelerating movement to perceive less
 // lag, however the game still runs slower
 
+const PATH = document.URL.substr(0, document.URL.lastIndexOf('/'));
 const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
 const STATE_RUNNING = "STATE_RUNNING";
@@ -140,7 +141,7 @@ class Game {
     this.freeze(15);
     this.player.alive = false;
     this.player.color = 'black'; 
-    let sound = new Audio("../assets/DEFEATED.wav");
+    let sound = new Audio(`${PATH}/assets/DEFEATED.wav`);
     sound.volume = 0.3;
     sound.play();
 
@@ -245,7 +246,8 @@ class Game {
         }
         
         this.entities.filter(entity => !entity.alive).forEach(entity => {
-          let sound = new Audio("../assets/boom2.wav");
+          let sound = new Audio(`${PATH}/assets/boom2.wav`);
+          sound.volume = 0.7;
           sound.play();
           
           this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))

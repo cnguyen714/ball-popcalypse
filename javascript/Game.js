@@ -147,20 +147,20 @@ class Game {
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode1.color = 'white';
-    explode1.knockback = 1;
+    explode1.knockback = 200;
     explode1.damage = 0;
     explode1.r = 310;
     this.particles.push(explode1);
     let explode2 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode2.color = 'gray';
-    explode2.knockback = 100;
-    explode2.damage = 20;
+    explode2.knockback = 0;
+    explode2.damage = 50;
     explode2.r = 300;
     this.particles.push(explode2);
     let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode3.color = 'black';
-    explode3.knockback = 100; 
-    explode3.damage = 100;
+    explode3.knockback = 0; 
+    explode3.damage = 1000;
     explode3.r = 100;
     this.particles.push(explode3);
 
@@ -237,7 +237,6 @@ class Game {
           this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
         }
         
-        
         // Stop making enemies if you miss too many frame deadlines
         let spawnRate = 20 - Math.floor(this.difficulty);
         spawnRate = spawnRate <= 1 ? 1 : spawnRate;
@@ -299,6 +298,7 @@ class Game {
   }
 
   drawCursor() {
+
     let cursorSize = 8;
     this.ctx.save();
     this.ctx.beginPath();
@@ -311,6 +311,16 @@ class Game {
     this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
     this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
     this.ctx.stroke();
+    let forward = new Vector(1, 0);
+    // let angle = Math.acos(this.player.aim.dot(forward) / this.player.aim.length());
+    let dot = this.player.aim.dot(forward);
+    let det = this.player.aim.x * forward.y - this.player.aim.y * forward.x;
+    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
+
+    this.ctx.font = '20px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
+
     this.ctx.restore();
   }
 
@@ -339,12 +349,20 @@ class Game {
 
         break;
       case STATE_RUNNING:
+        this.ctx.save();
+        this.ctx.font = '20px sans-serif';
+        this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
+        this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+        this.ctx.fillStyle = `rgba(${200 - (this.player.health / this.player.maxHealth * 200)},${this.player.health / this.player.maxHealth * 120},0)`;
+        this.ctx.fillRect(0, 0, this.cvs.width * this.player.health / this.player.maxHealth, 9);
+        this.ctx.restore();
 
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
 
+        
         this.ctx.save();
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
@@ -353,8 +371,6 @@ class Game {
         this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 42);
         this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 62);
         this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, 10, 82);
-        this.ctx.fillStyle = `rgba(${200 - ( this.player.health / this.player.maxHealth * 200)},${this.player.health / this.player.maxHealth * 120},0)`;
-        this.ctx.fillRect(0,0,this.cvs.width * this.player.health / this.player.maxHealth, 5);
         this.ctx.restore();
         break;
       case STATE_OVER:

@@ -2,7 +2,7 @@
 import Vector from "./Vector";
 import GameObject from "./GameObject";
 import  Slam from "./Slam";
-import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
+import { fireBulletAtCursor, fireBeamAtCursor }from './particle_factory';
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -23,7 +23,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-
+const BEAM_COOLDOWN = 0;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -44,7 +44,6 @@ const KEY = {
   MOUSE_RIGHT: 10002,
 };
 
-
 const MOUSE = {
   LEFT: 0,
   MIDDLE: 1,
@@ -61,6 +60,7 @@ class Player extends GameObject {
     this.aim = new Vector();
     this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.shootCooldown = 0;
+    this.beamCooldown = 0;
     this.moveState = STATE_WALKING;
     this.dashDuration = 0;
     this.dashDirection = new Vector();
@@ -111,6 +111,27 @@ class Player extends GameObject {
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
     }
+  }
+
+  shoot() {
+    if (this.game.loopCount % 5 === 0) {
+      let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/laser7.wav`);
+      sound.volume = 0.7;
+      sound.play();
+    }
+
+    this.shootCooldown = SHOOT_COOLDOWN;
+    this.game.particles.push(fireBulletAtCursor(this));
+    this.game.particles.push(fireBulletAtCursor(this));
+    this.game.particles.push(fireBulletAtCursor(this));
+    this.game.particles.push(fireBulletAtCursor(this));
+  }
+
+  shootBeam() {
+    this.beamCooldown = BEAM_COOLDOWN;
+
+    this.game.particles.push(fireBeamAtCursor(this));
+
   }
 
   mountController() {
@@ -262,24 +283,14 @@ class Player extends GameObject {
       this.validatePosition(this.cvs.width, this.cvs.height);
       return;
     }
-    if (this.keyDown[KEY.MOUSE_RIGHT] && this.dashCooldown <= 0) this.dash();
+    // if (this.keyDown[KEY.MOUSE_RIGHT] && this.dashCooldown <= 0) this.dash();
 
     // Calculate facing direction and apply shooting
     this.setAim();
     if (this.shootCooldown > 0) this.shootCooldown--;
-    if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) {
-      if (this.game.loopCount % 5 === 0) {
-        let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/laser7.wav`);
-        sound.volume = 0.7;
-        sound.play();
-      }
-      
-      this.shootCooldown = SHOOT_COOLDOWN;
-      this.game.particles.push(fireBulletAtCursor(this));
-      this.game.particles.push(fireBulletAtCursor(this));
-      this.game.particles.push(fireBulletAtCursor(this));
-      this.game.particles.push(fireBulletAtCursor(this));
-    };
+    if (this.beamCooldown > 0) this.beamCooldown--;
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) this.shoot();
+    if (this.keyDown[KEY.MOUSE_RIGHT] && this.beamCooldown <= 0) this.shootBeam();
 
     // Apply movement
     if (this.moveState === STATE_WALKING) {

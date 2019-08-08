@@ -1,6 +1,8 @@
 
 import Vector from "./Vector";
 import GameObject from "./GameObject";
+import * as EnemyFactory from './enemy_factory';
+
 import  Slam from "./Slam";
 import { fireBulletAtCursor, fireBeamAtCursor }from './particle_factory';
 // import shotSfx from '../assets/laser7.wav';
@@ -36,7 +38,7 @@ const KEY = {
   ENTER: 13,
   // UP: 38,
   // LEFT: 37,
-  // DOWN: 40,
+  DOWN: 40,
   // RIGHT: 39,
   SHIFT: 16,
   SPACE: 32,
@@ -154,6 +156,7 @@ class Player extends GameObject {
           break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
+          if (key == KEY.DOWN) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
           break;
         case this.game.STATE_OVER:
           if (key === KEY.ENTER) this.game.restartGame();

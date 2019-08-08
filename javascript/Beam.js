@@ -1,9 +1,12 @@
 import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
+import Explosion from "./Explosion";
+
 import Particle from "./Particle";
 
 const WIDTH = 50;
-const KNOCKBACK = 4;
+const LENGTH = 200;
+const KNOCKBACK = 20;
 const DAMAGE = 300;
 // const COLOR = "white";
 
@@ -11,8 +14,11 @@ class Beam extends Particle {
   constructor(game, startX, startY) {
     super(game);
     this.pos = new Vector(startX, startY);
-    this.aim = new Vector();
+    this.aim = this.game.player.aim;
+    this.angle = Math.atan2(this.aim.y, this.aim.x);
     this.width = WIDTH;
+    this.length = LENGTH;
+    this.origin = new Vector(this.pos.x )
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
     this.aliveTime = 5;
@@ -27,17 +33,36 @@ class Beam extends Particle {
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
 
-    let diff = Vector.difference(this.pos, obj.pos);
-    let dist = Math.abs(this.aim.x * diff.y - this.aim.y * diff.x) / this.aim.length();
-
-    
-    // let diff = Vector.difference(this.pos, obj.pos);
-    // let distSqr = diff.dot(diff);
     if (obj instanceof EnemyCircle) {
-      if (this.width / 2 + obj.r > dist) {
-      // if (true) {
+
+      // === Infinite linear collision detection ===
+      // let dist = Math.abs(this.aim.x * diff.y - this.aim.y * diff.x) / this.aim.length();
+      // if (this.width / 2 + obj.r > dist) {
+        // === ===
+
+        // calculate obj's relative position to beam origin
+      // x′=xcosθ−ysinθ
+      
+      // y′=ycosθ + xsinθ
+      // let relativePos = new Vector(x2, y2);
+      let x = this.pos.x;
+      let y = this.pos.y;
+      
+      // Invert Y axis because canvas uses Y axis pointing down, and most cartesian
+      // calculations are using Y axis up
+      let diff = Vector.difference(new Vector(obj.pos.x, -obj.pos.y), new Vector(x, -y));
+
+      let x2 = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
+      let y2 = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
+      // debugger
+      if (
+        x2 + obj.r >= 0 &&
+        x2 - obj.r <= 0 + this.length &&
+        y2 + obj.r >= 0 - this.width / 2&&
+        y2 - obj.r <= 0 + this.width / 2
+      ) {
         diff.normalize();
-        diff.multiply(-1);
+        diff.multiply();
         obj.vel.add(diff.multiply(this.knockback));
         obj.health -= this.damage;
         if (obj.health <= 0) {
@@ -47,15 +72,13 @@ class Beam extends Particle {
           this.game.score++;
         }
       }
-    }
-
+    }    
   }
 
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
     if (this.aliveTime === this.initialTime) {
-      this.aim = this.game.player.aim;
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
     }
@@ -69,36 +92,34 @@ class Beam extends Particle {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     let forward = new Vector(1, 0);
-    let angle = Math.atan2(this.aim.y, this.aim.x);
     if (this.aliveTime > this.initialTime - 2) {
       this.ctx.save();
 
       // this.ctx.beginPath();
       this.ctx.fillStyle = this.color;
       this.ctx.strokeStyle = this.color;
-      this.ctx.translate(this.pos.x + Math.sin(angle) * this.width / 2,
-                         this.pos.y - Math.cos(angle) * this.width / 2);
-      this.ctx.rotate(angle);
-      this.ctx.fillRect(0, 0, 200, this.width);
+      this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,
+                         this.pos.y - Math.cos(this.angle) * this.width / 2);
+      this.ctx.rotate(this.angle);
+      this.ctx.fillRect(0, 0, this.length, this.width);
       this.ctx.restore();
     } else {
       // this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.save();
 
-      this.width += 5;
+      this.width += 2;
       
       this.ctx.shadowBlur = 20;
       this.ctx.shadowColor = "white";
-      this.ctx.fillStyle = this.color;
+      this.ctx.fillStyle = "gray";
 
       // this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.strokeStyle = "white";
-      this.ctx.translate(this.pos.x + Math.sin(angle) * this.width / 2, 
-                         this.pos.y - Math.cos(angle) * this.width / 2);
-      this.ctx.rotate(angle);
-      this.ctx.fillRect(0, 0, 200, this.width);
+      this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2, 
+                         this.pos.y - Math.cos(this.angle) * this.width / 2);
+      this.ctx.rotate(this.angle);
+      this.ctx.fillRect(0, 0, this.length, this.width);
       this.ctx.restore();
-
 
     }
   }

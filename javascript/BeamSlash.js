@@ -9,7 +9,7 @@ const WIDTH = 70;
 const LENGTH = 200;
 const KNOCKBACK = 10;
 const DAMAGE = 200;
-const DURATION = 6;
+const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
 const DIRECTION = {
   CCW: -1,
@@ -23,8 +23,8 @@ const DIRECTION = {
 class BeamSlash extends Particle {
   constructor(game, combo) {
     super(game);
-    this.pos = new Vector();
     this.owner = this.game.player;
+    this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
     this.color = this.owner.color;
     this.width = WIDTH;
     this.length = LENGTH;
@@ -49,7 +49,7 @@ class BeamSlash extends Particle {
       case 3:
         this.direction = DIRECTION.CCW;
         this.arcRate = (ARC_DEGREE_RATE + 10) * Math.PI / 180; 
-        this.aliveTime += 10;
+        this.aliveTime *= 2;
         this.length -= 70;
         this.knockback /= 2;
         this.damage /= 4
@@ -80,8 +80,8 @@ class BeamSlash extends Particle {
   update() {
     if (!this.alive) return; 
 
-    this.pos.x = this.owner.pos.x;
-    this.pos.y = this.owner.pos.y;
+    // this.pos.x = this.owner.pos.x;
+    // this.pos.y = this.owner.pos.y;
 
     
     let arcRate = this.arcRate * this.direction;
@@ -101,10 +101,10 @@ class BeamSlash extends Particle {
     p.damage = this.damage;
     p.knockback = this.knockback;
     if( this.combo === -1) {
-      this.length += 15;
+      this.length += 5;
       this.width += 5;
     } else {
-      this.length -= 3;
+      this.length -= 2;
     }
     this.game.particles.push(p);
 
@@ -116,6 +116,7 @@ class BeamSlash extends Particle {
         slash.damage = this.damage * 20;
         slash.color = "orange";
         slash.knockback = this.knockback * 2;
+        slash.aliveTime += 2;
         this.game.particles.push(slash);
       }
     }

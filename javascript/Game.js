@@ -317,8 +317,8 @@ class Game {
     
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
-    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
-    this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
+    // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
+    // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.restore();
   }
@@ -354,7 +354,7 @@ class Game {
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
         this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-        this.ctx.fillStyle = `rgba(${200 - (this.player.health / this.player.maxHealth * 200)},${this.player.health / this.player.maxHealth * 120},0)`;
+        this.ctx.fillStyle = `rgba(${150 - (this.player.health / this.player.maxHealth * 150)},${this.player.health / this.player.maxHealth * 120},0)`;
         this.ctx.fillRect(0, 0, this.cvs.width * this.player.health / this.player.maxHealth, 9);
         this.ctx.restore();
 

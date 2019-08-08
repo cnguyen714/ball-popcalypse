@@ -117,18 +117,15 @@ class Player extends GameObject {
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
       this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
-      this.dashDuration = DASH_TIME;
-
-      
-      this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
-      
+      this.dashDuration = DASH_TIME;      
       
       if (this.slashCombo === 3) {
         this.dashCooldown = DASH_COOLDOWN + 40;
+        this.slashCombo = 0;
       } else {
         this.dashCooldown = DASH_COOLDOWN;
+        this.slashCombo++;
       }
-      this.slashCombo = (this.slashCombo + 1) % 4;
     }
   }
 
@@ -146,6 +143,7 @@ class Player extends GameObject {
     fireBulletAtCursor(this);
     fireBulletAtCursor(this);
   }
+
 
   mountController() {
     document.addEventListener('keydown', (e) => {
@@ -168,13 +166,9 @@ class Player extends GameObject {
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           if (key == KEY.DOWN) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
-        this.dashCooldown = DASH_COOLDOWN;
           break;
-        this.dashCooldown = DASH_COOLDOWN;
         case this.game.STATE_OVER:
-        this.dashCooldown = DASH_COOLDOWN;
           if (key === KEY.ENTER) this.game.restartGame();
-        this.dashCooldown = DASH_COOLDOWN;
           break;
         default:
           break;
@@ -309,7 +303,6 @@ class Player extends GameObject {
     
     if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
-    // if (this.keyDown[KEY.MOUSE_RIGHT] && this.beamCooldown <= 0) this.dash();
 
     // Apply movement
     if (this.moveState === STATE_WALKING) {
@@ -325,11 +318,13 @@ class Player extends GameObject {
       this.addVelocityTimeDelta();
       this.applyDecel();
       if (this.invul >= 0) this.invul--;
-    } else  if (this.moveState === STATE_DASHING) {
+    } else if (this.moveState === STATE_DASHING) {
+      // dash has ended
       if (this.dashDuration <= 0) {
         this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
         // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
+        this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
 
       } else {
         this.dashDuration--;

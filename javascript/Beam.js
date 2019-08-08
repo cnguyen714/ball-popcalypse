@@ -5,9 +5,8 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 
 const WIDTH = 60;
-const HIT_WIDTH = 55;
 const LENGTH = 200;
-const HIT_LENGTH = 190;
+const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
 const DURATION = 7;
@@ -23,9 +22,7 @@ class Beam extends Particle {
     this.angle = Math.atan2(this.aim.y, this.aim.x);
 
     this.width = WIDTH;
-    this.hitWidth = this.width;
     this.length = LENGTH;
-    this.hitLength = this.length * 0.95;
     this.origin = new Vector(this.pos.x);
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
@@ -42,7 +39,8 @@ class Beam extends Particle {
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
 
-    if (obj instanceof EnemyCircle) {      
+    if (obj instanceof EnemyCircle) {
+
       let x = this.pos.x;
       let y = this.pos.y;
 
@@ -69,9 +67,9 @@ class Beam extends Particle {
       // Use LENGTH > HIT_LENGTH to hide inaccuracy of hitbox
       if ( 
         x2 + obj.r >= 0 &&
-        x2 - obj.r <= 0 + this.hitLength &&
-        y2 + obj.r >= 0 - this.hitWidth / 2 &&
-        y2 - obj.r <= 0 + this.hitWidth / 2
+        x2 - obj.r <= 0 + HITBOX_RATIO * this.length &&
+        y2 + obj.r >= 0 - HITBOX_RATIO * this.width / 2 &&
+        y2 - obj.r <= 0 + HITBOX_RATIO * this.width / 2
       ) {
         diff.normalize();
 

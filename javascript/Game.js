@@ -133,7 +133,6 @@ class Game {
     this.player.maxHealth = STARTING_HEALTH;
     this.player.health = STARTING_HEALTH;
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
-    this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
 
   }
 
@@ -242,7 +241,7 @@ class Game {
         let spawnRate = 20 - Math.floor(this.difficulty);
         spawnRate = spawnRate <= 1 ? 1 : spawnRate;
         if (this.loopCount % (BASE_SPAWN_RATE + spawnRate)  === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
-          // this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
+          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
         }
         
         this.entities.filter(entity => !entity.alive).forEach(entity => {

@@ -21,7 +21,7 @@ class Beam extends Particle {
     this.origin = new Vector(this.pos.x )
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
-    this.aliveTime = 5;
+    this.aliveTime = 7;
     // this.activeTime = 5;
     this.initialTime = this.aliveTime;
 
@@ -92,7 +92,7 @@ class Beam extends Particle {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     let forward = new Vector(1, 0);
-    if (this.aliveTime > this.initialTime - 2) {
+    if (this.aliveTime > this.initialTime - 5) {
       this.ctx.save();
 
       // this.ctx.beginPath();

@@ -113,7 +113,6 @@ class Game {
         // this.ctx.fillText(`Can you survive the ball menace?`, this.cvs.width * 1.5 / 16, this.cvs.height * 19/32 );
       }
       this.ctx.restore();
-
     }
     
     this.menus.push(startGameMenu);
@@ -133,7 +132,6 @@ class Game {
     this.player.maxHealth = STARTING_HEALTH;
     this.player.health = STARTING_HEALTH;
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
-
   }
 
   endGame() {
@@ -189,23 +187,21 @@ class Game {
           this.ctx.fillText(`Time: ${this.time}`, this.cvs.width / 2 - 30, this.cvs.height / 2 );
           this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, this.cvs.width / 2 - 30, this.cvs.height / 2 + 20);
           this.ctx.fillText(`Press [Enter] to restart`, this.cvs.width / 2 - 60, this.cvs.height / 2 + 80);
-
         }
-        this.ctx.restore();        
-
+        this.ctx.restore();
       }
       this.menus.push(endGameMenu);
     }
-
     drawEnd = drawEnd.bind(this);
     setTimeout(drawEnd, 2000);
-
   }
 
   restartGame() {
     this.init();
   }
 
+  // Freezes the entire game state for n frames
+  // Typically use this for hitstop
   freeze(n) {
     this.pauseTime = n;
   }
@@ -214,11 +210,11 @@ class Game {
     this.loopCount++;
     if (this.highscore < this.score) this.highscore = this.score;
 
-
     switch(this.state) {
       case STATE_INIT: 
         this.init();
         break;
+
       case STATE_BEGIN:
         if (this.loopCount % 120 === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
@@ -230,13 +226,14 @@ class Game {
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
         this.particles.forEach(entity => entity.update());
-
         break;
+
       case STATE_RUNNING:
         if(this.loopCount % DIFFICULTY_INTERVAL === 0) {
           this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
         }
         
+        // Generate enemies -
         // Stop making enemies if you miss too many frame deadlines
         let spawnRate = 20 - Math.floor(this.difficulty);
         spawnRate = spawnRate <= 1 ? 1 : spawnRate;
@@ -244,37 +241,43 @@ class Game {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
         }
         
+        // Handle enemy death
         this.entities.filter(entity => !entity.alive).forEach(entity => {
           let sound = new Audio(`${PATH}/assets/boom2.wav`);
           sound.volume = 0.7;
           sound.play();
           
           this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
+
+          this.game.difficulty += 0.002 * this.game.difficultyRate;
+          this.game.score += entity.score;
         });
+
+        // Handle updates
         this.player.update();
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
-        if(this.player.health <= 0) {
-          this.endGame();
-        }
-        break;
-      case STATE_OVER:
 
+        if(this.player.health <= 0) this.endGame();
+        break;
+
+      case STATE_OVER:
         // this.player.update();
 
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
+        if (this.loopCount % 2 === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;          
-        // }
+        }
         this.entities.forEach(entity => {
           let diff = Vector.difference(entity.pos, this.player.pos);
           let distSqr = diff.dot(diff);
 
           if (entity.r * entity.r + this.player.r * this.player.r  + 100 > distSqr) {
-                entity.alive = false;
-              }
+            entity.alive = false;
+          }
         })
         this.entities.filter(entity => !entity.alive).forEach(entity => {
           // if (this.loopCount % 5 === 0) {
@@ -297,8 +300,8 @@ class Game {
     }
   }
 
+  // Draw player reticle at mouse position
   drawCursor() {
-
     let cursorSize = 8;
     this.ctx.save();
     this.ctx.beginPath();
@@ -324,7 +327,6 @@ class Game {
     this.ctx.restore();
   }
 
-
   showFPS() {
     this.ctx.save();
     this.ctx.font = '20px sans-serif';
@@ -335,20 +337,23 @@ class Game {
   }
 
   draw() {
+    // Resize canvas to window every frame
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
 
     switch (this.state) {
       case STATE_INIT:
         break;
+
       case STATE_BEGIN:
         this.particles.forEach(entity => entity.draw());
         // this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
-
         break;
+
       case STATE_RUNNING:
+        // Draw health
         this.ctx.save();
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
@@ -357,12 +362,13 @@ class Game {
         this.ctx.fillRect(0, 0, this.cvs.width * this.player.health / this.player.maxHealth, 9);
         this.ctx.restore();
 
+        // Handle drawing of all game objects
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
 
-        
+        // Draw the UI
         this.ctx.save();
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
@@ -373,13 +379,12 @@ class Game {
         this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, 10, 82);
         this.ctx.restore();
         break;
-      case STATE_OVER:
 
+      case STATE_OVER:
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
         this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
-        
       break;
       default:
         break;

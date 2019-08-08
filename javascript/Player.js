@@ -3,8 +3,9 @@ import Vector from "./Vector";
 import GameObject from "./GameObject";
 import * as EnemyFactory from './enemy_factory';
 
-import  Slam from "./Slam";
 import { fireBulletAtCursor, fireBeamAtCursor }from './particle_factory';
+import Slam from "./Slam";
+import BeamSlash from "./BeamSlash";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -91,6 +92,7 @@ class Player extends GameObject {
     this.draw = this.draw.bind(this);
   }
 
+  // Store mouse position relative to canvas origin
   setMousePosition(e) {
     var canvasRect = this.cvs.getBoundingClientRect();
     this.mousePos.x = e.clientX - canvasRect.left;
@@ -98,10 +100,13 @@ class Player extends GameObject {
     this.setAim();
   }
 
+  // Set player's unnormalized aim relative to stored mouse position
   setAim() {
     this.aim = new Vector(this.mousePos.x - this.pos.x, this.mousePos.y - this.pos.y);
   }
 
+  // Dash in a direction for a few frames
+  // End dash logic is handled in update
   dash() {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
@@ -115,6 +120,7 @@ class Player extends GameObject {
     }
   }
 
+  // Fire
   shoot() {
     if (this.game.loopCount % 5 === 0) {
       let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/laser7.wav`);
@@ -123,10 +129,10 @@ class Player extends GameObject {
     }
 
     this.shootCooldown = SHOOT_COOLDOWN;
-    this.game.particles.push(fireBulletAtCursor(this));
-    this.game.particles.push(fireBulletAtCursor(this));
-    this.game.particles.push(fireBulletAtCursor(this));
-    this.game.particles.push(fireBulletAtCursor(this));
+    fireBulletAtCursor(this);
+    fireBulletAtCursor(this);
+    fireBulletAtCursor(this);
+    fireBulletAtCursor(this);
   }
 
   shootBeam() {

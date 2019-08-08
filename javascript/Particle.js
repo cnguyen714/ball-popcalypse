@@ -50,11 +50,7 @@ class Particle extends GameObject {
         this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
         obj.vel.add(this.vel);
         obj.health -= this.damage;
-        if (obj.health <= 0) {
-          obj.alive = false;
-          this.game.difficulty += 0.002 * this.game.difficultyRate;
-          this.game.score += obj.score;
-        }
+        if (obj.health <= 0) obj.alive = false;
       }
     }
   }

@@ -19,7 +19,7 @@ export const fireBulletAtCursor = (player) => {
   aim.y += Math.random() * (BULLET_SPREAD + BULLET_SPREAD) - BULLET_SPREAD;
   aim.normalize();
   p.vel = aim.multiply(BULLET_SPEED * (1 - BULLET_SPREAD ) + BULLET_SPREAD / 2 + Math.random() * BULLET_SPREAD);
-  return p;
+  player.game.particles.push(p);
 }
 
 export const fireBulletAtCursorB = (player) => {
@@ -39,9 +39,7 @@ export const fireBulletAtCursorB = (player) => {
 }
 
 export const fireBeamAtCursor = (player) => {
-  let p = new Beam(player.game);
-  p.pos.x = player.pos.x;
-  p.pos.y = player.pos.y;
+  let p = new Beam(player.game, player.pos.x, player.pos.y);
   p.color = player.color;
 
   let aim = new Vector(1, 1);
@@ -51,3 +49,4 @@ export const fireBeamAtCursor = (player) => {
   
   return p;
 }
+

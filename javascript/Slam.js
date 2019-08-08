@@ -34,12 +34,7 @@ class Slam extends Particle {
         diff.normalize();
         obj.vel.add(diff.multiply(this.knockback));
         obj.health -= this.damage;
-        if (obj.health <= 0) {
-          obj.alive = false;
-          this.game.difficulty += 0.002 * this.game.difficultyRate;
-
-          this.game.score++;
-        }
+        if (obj.health <= 0) obj.alive = false;
       }
     }
   }

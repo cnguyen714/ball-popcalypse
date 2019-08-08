@@ -5,9 +5,11 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 
 const WIDTH = 50;
+const HIT_WIDTH = 45;
 const LENGTH = 200;
-const KNOCKBACK = 20;
-const DAMAGE = 300;
+const HIT_LENGTH = 190;
+const KNOCKBACK = 10;
+const DAMAGE = 80;
 // const COLOR = "white";
 
 class Beam extends Particle {
@@ -23,6 +25,7 @@ class Beam extends Particle {
     this.knockback = KNOCKBACK;
     this.aliveTime = 7;
     // this.activeTime = 5;
+    this.active = true;
     this.initialTime = this.aliveTime;
 
     // this.update = this.update.bind(this);
@@ -33,44 +36,42 @@ class Beam extends Particle {
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
 
-    if (obj instanceof EnemyCircle) {
+    if (obj instanceof EnemyCircle) {      
+      let x = this.pos.x;
+      let y = this.pos.y;
 
       // === Infinite linear collision detection ===
       // let dist = Math.abs(this.aim.x * diff.y - this.aim.y * diff.x) / this.aim.length();
       // if (this.width / 2 + obj.r > dist) {
-        // === ===
+      // =============
 
-        // calculate obj's relative position to beam origin
-      // x′=xcosθ−ysinθ
-      
-      // y′=ycosθ + xsinθ
-      // let relativePos = new Vector(x2, y2);
-      let x = this.pos.x;
-      let y = this.pos.y;
-      
+      // === Translate positions to unrotated box, then box collision
       // Invert Y axis because canvas uses Y axis pointing down, and most cartesian
       // calculations are using Y axis up
+      // --------------
+      // calculate obj's relative position to beam origin
+      // x′=xcosθ−ysinθ      
+      // y′=ycosθ + xsinθ
       let diff = Vector.difference(new Vector(obj.pos.x, -obj.pos.y), new Vector(x, -y));
 
       let x2 = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
       let y2 = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
-      // debugger
-      if (
+
+      // Collision using obj as a box,
+      // Use LENGTH > HIT_LENGTH to hide inaccuracy of hitbox
+      if ( 
         x2 + obj.r >= 0 &&
-        x2 - obj.r <= 0 + this.length &&
-        y2 + obj.r >= 0 - this.width / 2&&
-        y2 - obj.r <= 0 + this.width / 2
+        x2 - obj.r <= 0 + HIT_LENGTH &&
+        y2 + obj.r >= 0 - HIT_WIDTH / 2 &&
+        y2 - obj.r <= 0 + HIT_WIDTH / 2
       ) {
         diff.normalize();
-        diff.multiply();
+
+        // Invert Y axis again to use diff vector for knockback
+        diff.multiply(new Vector(1, -1));
         obj.vel.add(diff.multiply(this.knockback));
         obj.health -= this.damage;
-        if (obj.health <= 0) {
-          obj.alive = false;
-          this.game.difficulty += 0.002 * this.game.difficultyRate;
-
-          this.game.score++;
-        }
+        if (obj.health <= 0) obj.alive = false;
       }
     }    
   }
@@ -78,7 +79,7 @@ class Beam extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
-    if (this.aliveTime === this.initialTime) {
+    if (this.aliveTime === this.initialTime && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
     }
@@ -95,7 +96,6 @@ class Beam extends Particle {
     if (this.aliveTime > this.initialTime - 5) {
       this.ctx.save();
 
-      // this.ctx.beginPath();
       this.ctx.fillStyle = this.color;
       this.ctx.strokeStyle = this.color;
       this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,

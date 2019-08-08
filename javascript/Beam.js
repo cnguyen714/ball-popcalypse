@@ -4,26 +4,32 @@ import Explosion from "./Explosion";
 
 import Particle from "./Particle";
 
-const WIDTH = 50;
-const HIT_WIDTH = 45;
+const WIDTH = 60;
+const HIT_WIDTH = 55;
 const LENGTH = 200;
 const HIT_LENGTH = 190;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
+const DURATION = 7;
 // const COLOR = "white";
 
 class Beam extends Particle {
-  constructor(game, startX, startY) {
+  constructor(game, startX, startY, aim) {
     super(game);
     this.pos = new Vector(startX, startY);
-    this.aim = this.game.player.aim;
+    this.aim = aim || this.game.player.aim;
+
+    // Formula to get the radian angle between the Y axis and a point
     this.angle = Math.atan2(this.aim.y, this.aim.x);
+
     this.width = WIDTH;
+    this.hitWidth = this.width;
     this.length = LENGTH;
-    this.origin = new Vector(this.pos.x )
+    this.hitLength = this.length * 0.95;
+    this.origin = new Vector(this.pos.x);
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
-    this.aliveTime = 7;
+    this.aliveTime = DURATION;
     // this.activeTime = 5;
     this.active = true;
     this.initialTime = this.aliveTime;
@@ -52,6 +58,8 @@ class Beam extends Particle {
       // calculate obj's relative position to beam origin
       // x′=xcosθ−ysinθ      
       // y′=ycosθ + xsinθ
+      
+      // Get the obj relative position to beam origin pos
       let diff = Vector.difference(new Vector(obj.pos.x, -obj.pos.y), new Vector(x, -y));
 
       let x2 = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
@@ -61,9 +69,9 @@ class Beam extends Particle {
       // Use LENGTH > HIT_LENGTH to hide inaccuracy of hitbox
       if ( 
         x2 + obj.r >= 0 &&
-        x2 - obj.r <= 0 + HIT_LENGTH &&
-        y2 + obj.r >= 0 - HIT_WIDTH / 2 &&
-        y2 - obj.r <= 0 + HIT_WIDTH / 2
+        x2 - obj.r <= 0 + this.hitLength &&
+        y2 + obj.r >= 0 - this.hitWidth / 2 &&
+        y2 - obj.r <= 0 + this.hitWidth / 2
       ) {
         diff.normalize();
 
@@ -76,10 +84,18 @@ class Beam extends Particle {
     }    
   }
 
+  drawRect() {
+    // Offset the rect based on its width but maintain origin
+    this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,
+                       this.pos.y - Math.cos(this.angle) * this.width / 2);
+    this.ctx.rotate(this.angle);
+    this.ctx.fillRect(0, 0, this.length, this.width);
+  }
+
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
-    if (this.aliveTime === this.initialTime && this.active === true) {
+    if (this.aliveTime >= this.initialTime - 1 && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
     }
@@ -98,27 +114,26 @@ class Beam extends Particle {
 
       this.ctx.fillStyle = this.color;
       this.ctx.strokeStyle = this.color;
-      this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,
-                         this.pos.y - Math.cos(this.angle) * this.width / 2);
-      this.ctx.rotate(this.angle);
-      this.ctx.fillRect(0, 0, this.length, this.width);
+      this.ctx.shadowColor = this.color;
+      
+      this.drawRect();
+
       this.ctx.restore();
     } else {
-      // this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.save();
 
       this.width += 2;
       
       this.ctx.shadowBlur = 20;
+      // this.ctx.shadowColor = "white";
       this.ctx.shadowColor = "white";
-      this.ctx.fillStyle = "gray";
+      // this.ctx.fillStyle = "gray";
 
-      // this.ctx.fillStyle = "rgba(0,0,0,0)";
+      this.ctx.fillStyle = "rgba(150,150,150,150)";
       this.ctx.strokeStyle = "white";
-      this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2, 
-                         this.pos.y - Math.cos(this.angle) * this.width / 2);
-      this.ctx.rotate(this.angle);
-      this.ctx.fillRect(0, 0, this.length, this.width);
+
+      this.drawRect();
+
       this.ctx.restore();
 
     }

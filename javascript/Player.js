@@ -15,10 +15,10 @@ const ACCEL = 3;
 const DECEL = 0.9;
 const SPRINT_SPEED = 8;
 const MAX_SPRINT_SPEED = 10;
-const DASH_TIME = 10;
-const DASH_SPEED = 3;
-const DASH_COOLDOWN = 30;
-const POST_DASH_INVUL = 4;
+const DASH_TIME = 2;
+const DASH_SPEED = 7;
+const DASH_COOLDOWN = 12;
+const POST_DASH_INVUL = 2;
 
 const PLAYER_RADIUS = 12;
 const COLOR = '#0d7377';
@@ -26,7 +26,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const BEAM_COOLDOWN = 0;
+const BEAM_COOLDOWN = 20;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -63,7 +63,8 @@ class Player extends GameObject {
     this.aim = new Vector();
     this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.shootCooldown = 0;
-    this.beamCooldown = 0;
+    this.slashReset = 0;
+    this.slashCombo = 0;
     this.moveState = STATE_WALKING;
     this.dashDuration = 0;
     this.dashDirection = new Vector();
@@ -117,6 +118,17 @@ class Player extends GameObject {
       this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
+
+      
+      this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
+      
+      
+      if (this.slashCombo === 3) {
+        this.dashCooldown = DASH_COOLDOWN + 40;
+      } else {
+        this.dashCooldown = DASH_COOLDOWN;
+      }
+      this.slashCombo = (this.slashCombo + 1) % 4;
     }
   }
 
@@ -133,13 +145,6 @@ class Player extends GameObject {
     fireBulletAtCursor(this);
     fireBulletAtCursor(this);
     fireBulletAtCursor(this);
-  }
-
-  shootBeam() {
-    this.beamCooldown = BEAM_COOLDOWN;
-
-    this.game.particles.push(fireBeamAtCursor(this));
-
   }
 
   mountController() {
@@ -163,9 +168,13 @@ class Player extends GameObject {
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           if (key == KEY.DOWN) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
+        this.dashCooldown = DASH_COOLDOWN;
           break;
+        this.dashCooldown = DASH_COOLDOWN;
         case this.game.STATE_OVER:
+        this.dashCooldown = DASH_COOLDOWN;
           if (key === KEY.ENTER) this.game.restartGame();
+        this.dashCooldown = DASH_COOLDOWN;
           break;
         default:
           break;
@@ -292,14 +301,15 @@ class Player extends GameObject {
       this.validatePosition(this.cvs.width, this.cvs.height);
       return;
     }
-    // if (this.keyDown[KEY.MOUSE_RIGHT] && this.dashCooldown <= 0) this.dash();
-
+    
     // Calculate facing direction and apply shooting
     this.setAim();
     if (this.shootCooldown > 0) this.shootCooldown--;
-    if (this.beamCooldown > 0) this.beamCooldown--;
-    if (this.keyDown[KEY.MOUSE_LEFT] && this.shootCooldown <= 0) this.shoot();
-    if (this.keyDown[KEY.MOUSE_RIGHT] && this.beamCooldown <= 0) this.shootBeam();
+    if (this.dashCooldown > 0) this.dashCooldown--;
+    
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
+    if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
+    // if (this.keyDown[KEY.MOUSE_RIGHT] && this.beamCooldown <= 0) this.dash();
 
     // Apply movement
     if (this.moveState === STATE_WALKING) {
@@ -314,14 +324,12 @@ class Player extends GameObject {
       this.dampSpeed();
       this.addVelocityTimeDelta();
       this.applyDecel();
-      this.dashCooldown--;
       if (this.invul >= 0) this.invul--;
     } else  if (this.moveState === STATE_DASHING) {
       if (this.dashDuration <= 0) {
         this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
-        this.dashCooldown = DASH_COOLDOWN;
-        this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
+        // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
 
       } else {
         this.dashDuration--;

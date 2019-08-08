@@ -37,7 +37,7 @@ export const randomEdgePos = (canvas, radius) => {
 }
 
 const makeBoss = function(enemy) {
-  if (Math.floor(Math.random() * 1000) % 100 === 0) {
+  if (Math.floor(Math.random() * 1000) % 80 === 0) {
     enemy.r = Math.floor(50 + Math.random() * 50);
     if (enemy.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
     if (Math.floor(Math.random() * 5) % 3 === 0) {

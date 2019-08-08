@@ -249,8 +249,8 @@ class Game {
           
           this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
 
-          this.game.difficulty += 0.002 * this.game.difficultyRate;
-          this.game.score += entity.score;
+          this.difficulty += 0.002 * this.difficultyRate;
+          this.score += entity.score;
         });
 
         // Handle updates
@@ -314,14 +314,10 @@ class Game {
     this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
     this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
     this.ctx.stroke();
-    let forward = new Vector(1, 0);
-    // let angle = Math.acos(this.player.aim.dot(forward) / this.player.aim.length());
-    let dot = this.player.aim.dot(forward);
-    let det = this.player.aim.x * forward.y - this.player.aim.y * forward.x;
-    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
-
+    
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
+    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
     this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.restore();

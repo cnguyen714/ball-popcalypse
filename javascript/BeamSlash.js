@@ -50,7 +50,7 @@ class BeamSlash extends Particle {
         this.direction = DIRECTION.CCW;
         this.arcRate = (ARC_DEGREE_RATE + 10) * Math.PI / 180; 
         this.aliveTime *= 2;
-        this.length -= 70;
+        this.length *= 0.6;
         this.knockback /= 2;
         this.damage /= 4
         break;
@@ -103,6 +103,10 @@ class BeamSlash extends Particle {
     if( this.combo === -1) {
       this.length += 5;
       this.width += 5;
+    } else if (this.combo === 3) {
+      this.pos.x = this.owner.pos.x;
+      this.pos.y = this.owner.pos.y;
+      this.length -= 2;
     } else {
       this.length -= 2;
     }
@@ -111,12 +115,17 @@ class BeamSlash extends Particle {
     if (this.aliveTime <= 0) {
       this.alive = false;
       
+      if (this.combo === -1) {
+        
+      }
+
       if (this.combo === 3) {
         let slash = new BeamSlash(this.game, -1);
         slash.damage = this.damage * 20;
         slash.color = "orange";
         slash.knockback = this.knockback * 2;
         slash.aliveTime += 2;
+        slash.length += 30;
         this.game.particles.push(slash);
       }
     }

@@ -3,7 +3,7 @@ import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 
 const RADIUS = 2;
-const KNOCKBACK = 20;
+const KNOCKBACK = 10;
 const DAMAGE = 25;
 const COLOR = "#14ffec";
 

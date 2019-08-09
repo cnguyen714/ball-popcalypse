@@ -28,7 +28,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const BEAM_COOLDOWN = 20;
+const BEAM_COOLDOWN = 120;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -71,6 +71,7 @@ class Player extends GameObject {
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
+    this.beamCooldown = 0;
     this.invul = 0;
     this.velRestoreDash = new Vector(); 
     this.charge = CHARGE_MAX;
@@ -124,7 +125,7 @@ class Player extends GameObject {
     }
   }
 
-  beam() {
+  fireBeam() {
     if (this.charge >= CHARGE_MAX) {
       let beam = new Beam(this.game, this.pos.x, this.pos.y);
       beam.width = 300;
@@ -134,7 +135,7 @@ class Player extends GameObject {
       beam.color = "red";
       this.game.particles.push(beam);
       this.charge -= CHARGE_MAX;
-      this.beamCooldown = 120;
+      this.beamCooldown = BEAM_COOLDOWN;
       this.game.particles.push(beam);
     }
   }
@@ -315,7 +316,7 @@ class Player extends GameObject {
     
     if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
-    if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.beam();
+    if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
 
     // Apply movement
     if (this.moveState === STATE_WALKING) {

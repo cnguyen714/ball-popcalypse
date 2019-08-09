@@ -321,8 +321,8 @@ class Game {
     // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
     this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
-    this.ctx.fillStyle = this.player.charge >= 100 ? 'red' : "yellow";
-    this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 8, this.player.charge >= 100 ? 50 : this.player.charge / 2, 3);
+    this.ctx.fillStyle = this.player.charge >= 40 ? 'red' : "yellow";
+    this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 8, this.player.charge >= 40 ? 40 : this.player.charge / 2, 3);
 
 
     this.ctx.restore();

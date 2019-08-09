@@ -114,10 +114,6 @@ class BeamSlash extends Particle {
 
     if (this.aliveTime <= 0) {
       this.alive = false;
-      
-      if (this.combo === -1) {
-        
-      }
 
       if (this.combo === 3) {
         let slash = new BeamSlash(this.game, -1);

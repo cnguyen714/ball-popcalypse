@@ -1,6 +1,6 @@
 # Ball-popcalypse
 
-[Link to Live](http://ball-ocolypse.herokuapp.com/)
+[Link to Live](https://cnguyen714.github.io/ball-popcalypse/)
 
 ## Background and Overview
 

@@ -107,13 +107,14 @@ class Beam extends Particle {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
     let forward = new Vector(1, 0);
-    if (this.aliveTime > this.initialTime - 5) {
+    if (this.aliveTime > this.initialTime - 3) {
       this.ctx.save();
 
       this.ctx.fillStyle = this.color;
       this.ctx.strokeStyle = this.color;
       this.ctx.shadowColor = this.color;
-      
+      this.ctx.strokeStyle = "black";
+
       this.drawRect();
 
       this.ctx.restore();
@@ -127,7 +128,7 @@ class Beam extends Particle {
       this.ctx.shadowColor = "white";
       // this.ctx.fillStyle = "gray";
 
-      this.ctx.fillStyle = "rgba(150,150,150,150)";
+      this.ctx.fillStyle = `rgba(${150 * this.aliveTime / (this.initialTime - 5)},${150 * this.aliveTime / (this.initialTime - 5)},${150 * this.aliveTime / (this.initialTime - 5)},0.7)`;
       this.ctx.strokeStyle = "white";
 
       this.drawRect();

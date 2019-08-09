@@ -2,9 +2,9 @@ import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 
-const RADIUS = 2;
+const RADIUS = 4;
 const KNOCKBACK = 10;
-const DAMAGE = 25;
+const DAMAGE = 37;
 const COLOR = "#14ffec";
 
 class Particle extends GameObject {

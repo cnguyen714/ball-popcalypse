@@ -21,7 +21,7 @@ const DIRECTION = {
 // Beam factory that creates a new Beams in an arc over a duration
 //
 class BeamSlash extends Particle {
-  constructor(game, combo) {
+  constructor(game, combo, addOffset = 0) {
     super(game);
     this.owner = this.game.player;
     this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
@@ -58,7 +58,7 @@ class BeamSlash extends Particle {
           break;
     }
 
-    this.startOffsetDegree = ARC_DEGREE_RATE * (this.aliveTime / 2);
+    this.startOffsetDegree = -addOffset + ARC_DEGREE_RATE * (this.aliveTime / 2);
 
 
     this.aim = this.owner.aim;
@@ -116,7 +116,7 @@ class BeamSlash extends Particle {
       this.alive = false;
 
       if (this.combo === 3) {
-        let slash = new BeamSlash(this.game, -1);
+        let slash = new BeamSlash(this.game, -1, 40);
         slash.damage = this.damage * 20;
         slash.color = "orange";
         slash.knockback = this.knockback * 2;

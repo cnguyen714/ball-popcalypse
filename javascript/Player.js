@@ -21,6 +21,7 @@ const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
 const POST_DASH_INVUL = 3;
 const CHARGE_MAX = 40;
+const CHARGE_STACKS = 2;
 
 const PLAYER_RADIUS = 12;
 const COLOR = '#0d7377';
@@ -75,6 +76,7 @@ class Player extends GameObject {
     this.invul = 0;
     this.velRestoreDash = new Vector(); 
     this.charge = CHARGE_MAX;
+    this.chargeMax = CHARGE_MAX;
 
     this.maxHealth = 100;
     this.health = this.maxHealth;
@@ -115,7 +117,8 @@ class Player extends GameObject {
   dash() {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
-      this.pauseTime = 0;
+      // this.pauseTime = 2;
+      this.invul = DASH_TIME;
 
       this.setAim();
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
@@ -293,6 +296,15 @@ class Player extends GameObject {
   }
 
   update() {
+    if (this.shootCooldown > 0) this.shootCooldown--;
+    if (this.dashCooldown > 0) this.dashCooldown--;
+    if (this.beamCooldown > 0) this.beamCooldown--;
+    if (this.slashReset > 0) {
+      this.slashReset--;
+    } else {
+      this.slashCombo = 0;
+    }
+    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = CHARGE_MAX * CHARGE_STACKS;
     if (this.pauseTime > 0) {;
       this.pauseTime--;
       if(this.pauseTime === 0) {
@@ -310,9 +322,6 @@ class Player extends GameObject {
     
     // Calculate facing direction and apply shooting
     this.setAim();
-    if (this.shootCooldown > 0) this.shootCooldown--;
-    if (this.dashCooldown > 0) this.dashCooldown--;
-    if (this.beamCooldown > 0) this.beamCooldown--;
     
     if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
@@ -343,15 +352,16 @@ class Player extends GameObject {
         
         this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
         if (this.slashCombo === 3) {
-          this.dashCooldown = DASH_COOLDOWN + 40;
+          this.dashCooldown = DASH_COOLDOWN + 50;
           this.slashCombo = 0;
-          this.shootCooldown = this.dashCooldown - 20;
+          this.shootCooldown = this.dashCooldown - 30;
 
-          // this.pauseTime = 15;
+          this.pauseTime = 5;
         } else {
           this.dashCooldown = DASH_COOLDOWN;
           this.shootCooldown = this.dashCooldown + 5;
           this.slashCombo++;
+          this.slashReset = DASH_COOLDOWN * 3;
         }
       } else {
         this.dashDuration--;

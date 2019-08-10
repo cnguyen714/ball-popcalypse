@@ -7,6 +7,7 @@ import { fireBulletAtCursor, fireBeamAtCursor }from './particle_factory';
 import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
+import { timingSafeEqual } from "crypto";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -19,8 +20,8 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 2;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
-const POST_DASH_INVUL = 3;
-const CHARGE_MAX = 40;
+const POST_DASH_INVUL = 4;
+const CHARGE_MAX = 60;
 const CHARGE_STACKS = 2;
 
 const PLAYER_RADIUS = 12;
@@ -118,7 +119,7 @@ class Player extends GameObject {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
       // this.pauseTime = 2;
-      this.invul = DASH_TIME;
+      this.invul = 5;
 
       this.setAim();
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
@@ -140,6 +141,12 @@ class Player extends GameObject {
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.particles.push(beam);
+      this.game.freeze(10);
+      
+      let kb = this.aim.dup().normalize();
+      kb.multiply(100);
+      kb.multiply(-1);
+      this.vel.add(kb);
     }
   }
 
@@ -347,8 +354,6 @@ class Player extends GameObject {
         this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
         // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
-        
-
         
         this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
         if (this.slashCombo === 3) {

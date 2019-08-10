@@ -3,9 +3,10 @@ import EnemyCircle from "./EnemyCircle";
 import Explosion from "./Explosion";
 
 import Particle from "./Particle";
+import SlashSpark from "./SlashSpark";
 
 const WIDTH = 60;
-const LENGTH = 200;
+const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
@@ -78,6 +79,9 @@ class Beam extends Particle {
         obj.vel.add(diff.multiply(this.knockback));
         obj.health -= this.damage;
         if (obj.health <= 0) obj.alive = false;
+        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 1, 60));
+        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 1, 60));
+        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 3, 110));
       }
     }    
   }
@@ -106,7 +110,6 @@ class Beam extends Particle {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
-    let forward = new Vector(1, 0);
     if (this.aliveTime > this.initialTime - 3) {
       this.ctx.save();
 

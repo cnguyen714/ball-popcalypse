@@ -75,6 +75,7 @@ class Game {
     
     this.entities = [];
     this.particles = [];
+    this.vanity = [];
     this.menus = [];
 
     this.player.mountController();
@@ -128,6 +129,7 @@ class Game {
     this.state = STATE_RUNNING;
     this.menus = [];
     this.entities = [];
+    this.vanity = [];
     this.player.alive = true;
     this.player.maxHealth = STARTING_HEALTH;
     this.player.health = STARTING_HEALTH;
@@ -256,6 +258,8 @@ class Game {
 
         // Handle updates
         this.player.update();
+        this.vanity = this.vanity.filter(entity => entity.alive);
+        this.vanity.forEach(entity => entity.update());
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
         this.particles = this.particles.filter(entity => entity.alive);
@@ -303,7 +307,7 @@ class Game {
 
   // Draw player reticle at mouse position
   drawCursor() {
-    let cursorSize = 8;
+    let cursorSize = 10;
     this.ctx.save();
     this.ctx.beginPath();
     // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
@@ -322,15 +326,26 @@ class Game {
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
-    if (this.player.charge >= this.player.chargeMax) {
-      this.ctx.fillStyle = this.loopCount % 4 === 0 ? 'white' : "red";
+    if (this.player.beamCooldown > 0) {
+      this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
+      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 7, this.player.beamCooldown, 4);
+      this.ctx.font = '11px sans-serif';
+
+      this.ctx.fillText(`Cooling`, this.player.mousePos.x + 3, this.player.mousePos.y - 9);
+    } else if (this.player.charge >= this.player.chargeMax) {
+      this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "red";
       this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 6,this.player.chargeMax, 3);
       this.ctx.font = '10px sans-serif';
 
-      this.ctx.fillText(`Ready`, this.player.mousePos.x + 3, this.player.mousePos.y - 7);
+      this.ctx.fillText(`Ready`, this.player.mousePos.x + 3, this.player.mousePos.y - 8);
     } else {
       this.ctx.fillStyle = "yellow";
-      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 6, this.player.charge / 2, 3);
+      this.ctx.font = '13px sans-serif';
+      this.ctx.fillText(`${this.player.charge}`, this.player.mousePos.x + 3, this.player.mousePos.y - 8);
+      this.ctx.fillStyle = "olive";      
+      this.ctx.font = '9px sans-serif';
+      this.ctx.fillText(`/${this.player.chargeMax}`, this.player.mousePos.x + 20, this.player.mousePos.y - 8);
+      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 6, this.player.charge, 3);
     }
 
 
@@ -373,10 +388,12 @@ class Game {
         this.ctx.restore();
 
         // Handle drawing of all game objects
+
         this.particles.forEach(entity => entity.draw());
-        this.player.draw();
-        this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
+        this.entities.forEach(entity => entity.draw());
+        this.vanity.forEach(entity => entity.draw());
+        this.player.draw();
 
         // Draw the UI
         this.ctx.save();
@@ -408,7 +425,7 @@ class Game {
     this.timeDelta = time - this.prevTime;
     this.prevTime = time;
     
-    if (this.pauseTime === 0) {
+    if (this.pauseTime <= 0) {
       this.update();
       this.draw();
     } else {

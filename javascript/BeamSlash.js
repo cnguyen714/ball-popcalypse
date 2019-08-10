@@ -5,8 +5,8 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import Beam from "./Beam";
 
-const WIDTH = 70;
-const LENGTH = 200;
+const WIDTH = 45;
+const LENGTH = 150;
 const KNOCKBACK = 10;
 const DAMAGE = 200;
 const DURATION = 7;

@@ -5,6 +5,7 @@ import Vector from './Vector';
 import * as ParticleFactory from './particle_factory';
 import * as EnemyFactory from './enemy_factory';
 import Slam from './Slam'; 
+import Beam from './Beam'; 
 import Explosion from "./Explosion";
 import GameObject from './GameObject';
 
@@ -249,7 +250,7 @@ class Game {
           sound.volume = 0.7;
           sound.play();
           
-          this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
+          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
 
           this.difficulty += 0.002 * this.difficultyRate;
           this.score += entity.score;
@@ -262,6 +263,16 @@ class Game {
         this.vanity.forEach(entity => entity.update());
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
+        this.particles.filter(entity => !entity.alive).forEach(entity => {
+          if (entity instanceof Particle && !(entity instanceof Beam)) {
+            let hitspark = new Slam(this, entity.pos.x, entity.pos.y);
+            hitspark.aliveTime = 4;
+            hitspark.growthRate = 1;
+            hitspark.r = 1;
+            hitspark.damage = 
+            this.vanity.push(hitspark);
+          }
+        });
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
 
@@ -326,7 +337,8 @@ class Game {
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
-    if (this.player.beamCooldown > 0) {
+    if (this.state !== STATE_RUNNING) {
+    } else if (this.player.beamCooldown > 0) {
       this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
       this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 7, this.player.beamCooldown, 4);
       this.ctx.font = '11px sans-serif';

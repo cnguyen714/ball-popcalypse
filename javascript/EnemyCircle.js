@@ -57,7 +57,7 @@ class EnemyCircle extends GameObject {
         let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2, this.r * 2);
         explosion.color = 'red';
         explosion.aliveTime = 5;
-        obj.game.particles.push(explosion);
+        obj.game.vanity.push(explosion);
 
         diff.normalize();
         diff.multiply(KNOCKBACK);

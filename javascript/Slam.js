@@ -5,6 +5,7 @@ import Particle from "./Particle";
 const RADIUS = 100;
 const KNOCKBACK = 150;
 const DAMAGE = 70;
+const GROWTH_RATE = 10;
 // const COLOR = "white";
 
 class Slam extends Particle {
@@ -18,6 +19,7 @@ class Slam extends Particle {
     this.knockback = KNOCKBACK;
     this.aliveTime = 10;
     this.initialTime= this.aliveTime;
+    this.growthRate = GROWTH_RATE;
 
     // this.update = this.update.bind(this);
     // this.draw = this.draw.bind(this);
@@ -68,7 +70,7 @@ class Slam extends Particle {
     } else {
       this.ctx.save();
 
-      this.r += 10;
+      this.r += this.growthRate;
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";

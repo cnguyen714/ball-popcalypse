@@ -6,6 +6,7 @@ const RADIUS = 4;
 const KNOCKBACK = 10;
 const DAMAGE = 37;
 const COLOR = "#14ffec";
+const VELOCITY = 10;
 
 class Particle extends GameObject {
   constructor(
@@ -17,7 +18,7 @@ class Particle extends GameObject {
   ) {
     super(game);
     this.pos = new Vector(startX, startY);
-    this.vel = vel;
+    this.vel = vel || VELOCITY;
     this.r = RADIUS;
     this.color = COLOR;
     this.damage = DAMAGE;

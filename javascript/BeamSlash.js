@@ -84,7 +84,7 @@ class BeamSlash extends Particle {
     // this.pos.y = this.owner.pos.y;
 
     
-    let arcRate = this.arcRate * this.direction;
+    let arcRate = this.arcRate * this.direction ;
     let newAim = this.aim.dup();
     newAim.multiply(1, -1);
     
@@ -119,7 +119,7 @@ class BeamSlash extends Particle {
         let slash = new BeamSlash(this.game, -1, 40);
         slash.damage = this.damage * 20;
         slash.color = "orange";
-        slash.knockback = this.knockback * 2;
+        slash.knockback = this.knockback * 2.5;
         slash.aliveTime += 2;
         slash.length += 30;
         this.game.particles.push(slash);

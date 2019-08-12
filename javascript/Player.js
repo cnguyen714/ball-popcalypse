@@ -137,11 +137,12 @@ class Player extends GameObject {
       beam.damage = 3000;
       beam.knockback = 70;
       beam.color = "red";
+      beam.combo = -2;
       this.game.particles.push(beam);
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.particles.push(beam);
-      this.game.freeze(10);
+      this.game.freeze(14);
       
       let kb = this.aim.dup().normalize();
       kb.multiply(100);

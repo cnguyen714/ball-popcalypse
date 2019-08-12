@@ -318,13 +318,26 @@ class Game {
 
   // Draw player reticle at mouse position
   drawCursor() {
-    let cursorSize = 10;
+    let cursorSize = 15;
     this.ctx.save();
     this.ctx.beginPath();
     // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
     // this.ctx.fillStyle = "rgba(0,0,0,0)";
-    this.ctx.strokeStyle = "yellow";
+    this.ctx.strokeStyle = "black";
+    this.ctx.lineWidth = 4;
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowColor = 'white';
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
+    this.ctx.stroke();
+    this.ctx.closePath();
+    this.ctx.beginPath();
+    cursorSize = 14;
+    this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "yellow";
     this.ctx.moveTo(this.player.mousePos.x - cursorSize, this.player.mousePos.y);
     this.ctx.lineTo(this.player.mousePos.x + cursorSize, this.player.mousePos.y);
     this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
@@ -333,8 +346,8 @@ class Game {
     
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
-    // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
-    // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
+    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
+    this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
     if (this.state !== STATE_RUNNING) {
@@ -393,14 +406,19 @@ class Game {
         // Draw health
         this.ctx.save();
         this.ctx.font = '20px sans-serif';
-        this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
-        this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-        this.ctx.fillStyle = `rgba(${150 - (this.player.health / this.player.maxHealth * 150)},${this.player.health / this.player.maxHealth * 120},0)`;
-        this.ctx.fillRect(0, 0, this.cvs.width * this.player.health / this.player.maxHealth, 9);
+        // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
+        // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+        this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
+        this.ctx.fillRect(this.cvs.width / 2 - 1, this.cvs.height - 50, this.player.health / 2, 20);
+        this.ctx.fillRect(this.cvs.width / 2 + 1, this.cvs.height - 50, -1 * this.player.health / 2, 20);
+        this.ctx.fillStyle = 'white';
+        this.ctx.shadowBlur = 2;
+        this.ctx.shadowColor = 'black';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${this.player.health}`, this.cvs.width / 2, this.cvs.height - 33);
         this.ctx.restore();
 
         // Handle drawing of all game objects
-
         this.particles.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         this.entities.forEach(entity => entity.draw());
@@ -411,7 +429,6 @@ class Game {
         this.ctx.save();
         this.ctx.font = '20px sans-serif';
         this.ctx.fillStyle = 'white';
-        this.ctx.fillText(`Health: ${this.player.health}`, this.cvs.width / 2, 22);
         this.ctx.fillText(`Score: ${this.score}`, 10, 22);
         this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 42);
         this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 62);

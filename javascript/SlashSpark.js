@@ -7,21 +7,30 @@ const LENGTH = 60;
 
 const DURATION = 20;
 
-const COLOR = "white";
-
+const COLOR = {
+  NORMAL: [255, 255, 255],
+  CRIT: [255, 255, 0],
+  CANNON: [0, 0, 0]
+}
 //
 // hitspark for beams
 //
 class SlashSpark extends Particle {
-  constructor(game, x, y, color, width, length) {
+  constructor(game, x, y, combo, width, length) {
     super(game);
     this.pos = new Vector(x, y);
-    this.color = color || COLOR;
+    this.combo = combo || 0;
     this.width = width || WIDTH;
     this.length = length || LENGTH;
     this.aliveTime = DURATION;
     this.initialTime = this.aliveTime;
 
+    this.offsets = [];
+    this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
+    this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
+    this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
+    this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
+    this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
 
     // this.angle = Math.atan2(this.aim.y, this.aim.x);
 
@@ -34,6 +43,19 @@ class SlashSpark extends Particle {
     // let y2 = newAim.y * Math.cos(angle) + newAim.x * Math.sin(angle);
     // // debugger
     // this.aim = new Vector(-x2, -y2);
+
+    switch(this.combo) {
+      case -2:
+        this.angle = (Math.atan2(this.game.player.aim.y, this.game.player.aim.x));
+        this.color = COLOR.CANNON;
+        break;
+      case -1:
+        this.color = COLOR.CRIT;
+        break;
+      default:
+        this.color = COLOR.NORMAL;
+        break;
+    }
   }
 
   checkCollision(obj) {
@@ -45,7 +67,13 @@ class SlashSpark extends Particle {
 
     let percent = this.aliveTime / this.initialTime;
     let color;
-    this.aliveTime === this.initialTime ? color = `rgba(255,255,255,${percent})` : color = `rgba(255,255,255,${percent - 0.3})`
+    if (this.combo === -1) {
+      this.aliveTime >= this.initialTime - 2 ? color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${1})` : color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${percent})`
+    } else{
+      this.aliveTime >= this.initialTime - 1
+        ? color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`
+        : color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent - 0.3})`
+    }
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
     // Offset the rect based on its width but maintain origin
@@ -65,7 +93,12 @@ class SlashSpark extends Particle {
 
   draw() {
     this.drawRect(0);
-    this.drawRect(Math.PI);
+    if (this.combo === -2) {
+      this.drawRect(this.offsets[0]);
+      this.drawRect(this.offsets[1]);
+    } else {
+      this.drawRect(Math.PI);
+    }
   }
 }
 

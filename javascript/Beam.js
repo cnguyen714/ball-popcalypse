@@ -13,11 +13,17 @@ const DAMAGE = 80;
 const DURATION = 7;
 // const COLOR = "white";
 
+const COLOR = {
+  NORMAL: [255,255,255],
+  CRIT: [255,255,0],
+  CANNON: [0,0,0]
+}
+
 class Beam extends Particle {
-  constructor(game, startX, startY, aim) {
-    super(game);
-    this.pos = new Vector(startX, startY);
+  constructor(game, startX, startY, aim, combo = 0) {
+    super(game, startX, startY);
     this.aim = aim || this.game.player.aim;
+    this.combo = combo || 0;
 
     // Formula to get the radian angle between the Y axis and a point
     this.angle = Math.atan2(this.aim.y, this.aim.x);
@@ -79,9 +85,23 @@ class Beam extends Particle {
         obj.vel.add(diff.multiply(this.knockback));
         obj.health -= this.damage;
         if (obj.health <= 0) obj.alive = false;
-        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 1, 60));
-        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 1, 60));
-        this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.color, 3, 110));
+        let color;
+        switch (this.combo) {
+          case -2:
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 8, 120));
+            break;
+          case -1:
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 70));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 80));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 4, 150));
+            break;
+          default:
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 30));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 50));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 90));
+            break;
+        }
       }
     }    
   }

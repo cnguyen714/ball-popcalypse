@@ -94,7 +94,7 @@ class BeamSlash extends Particle {
     // debugger
     this.aim = new Vector(x2, y2);
     
-    let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
+    let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim, this.combo);
     p.color = this.color;
     p.length = this.length;
     p.width = this.width;

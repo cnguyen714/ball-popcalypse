@@ -62,7 +62,8 @@ class SlashSpark extends Particle {
     // SlashSpark does not check collision
   }
 
-  drawRect(offset) {
+  drawRect(offset, widthMod = 1, lengthMod = 1) {
+    
     this.ctx.save();
 
     let percent = this.aliveTime / this.initialTime;
@@ -77,10 +78,10 @@ class SlashSpark extends Particle {
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
     // Offset the rect based on its width but maintain origin
-    this.ctx.translate(this.pos.x + Math.sin(this.angle + offset) * this.width / 2,
-                       this.pos.y - Math.cos(this.angle + offset) * this.width / 2);
+    this.ctx.translate(this.pos.x + Math.sin(this.angle + offset) * widthMod * this.width / 2,
+                       this.pos.y - Math.cos(this.angle + offset) * widthMod * this.width / 2);
     this.ctx.rotate(this.angle + offset);
-    this.ctx.fillRect(0, 0, this.length, this.width);
+    this.ctx.fillRect(0, 0, this.length * lengthMod, widthMod * this.width);
     this.ctx.restore();
   }
 
@@ -94,8 +95,9 @@ class SlashSpark extends Particle {
   draw() {
     this.drawRect(0);
     if (this.combo === -2) {
-      this.drawRect(this.offsets[0]);
-      this.drawRect(this.offsets[1]);
+      this.drawRect(0, 1 / 2, 1.5);
+      this.drawRect(0, 1 / 3, 1.75);
+      // this.drawRect(this.offsets[1]);
     } else {
       this.drawRect(Math.PI);
     }

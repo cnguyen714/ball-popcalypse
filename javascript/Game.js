@@ -346,8 +346,10 @@ class Game {
     
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
-    let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
-    this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
+
+    // === DEBUG SHOW ANGLE
+    // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
+    // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
     this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
     if (this.state !== STATE_RUNNING) {

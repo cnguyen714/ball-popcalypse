@@ -88,7 +88,7 @@ class Beam extends Particle {
         let color;
         switch (this.combo) {
           case -2:
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 8, 120));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2 * obj.r, obj.r * 10));
             break;
           case -1:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 70));

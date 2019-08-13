@@ -10,7 +10,7 @@ const DURATION = 20;
 const COLOR = {
   NORMAL: [255, 255, 255],
   CRIT: [255, 255, 0],
-  CANNON: [0, 0, 0]
+  CANNON: [0, 0, 0],
 }
 //
 // hitspark for beams
@@ -45,11 +45,14 @@ class SlashSpark extends Particle {
     // this.aim = new Vector(-x2, -y2);
 
     switch(this.combo) {
+      case -1:
+        this.color = COLOR.CRIT;
+        break;
       case -2:
         this.angle = (Math.atan2(this.game.player.aim.y, this.game.player.aim.x));
         this.color = COLOR.CANNON;
         break;
-      case -1:
+      case -3:
         this.color = COLOR.CRIT;
         break;
       default:

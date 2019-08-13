@@ -8,6 +8,7 @@ import Slam from './Slam';
 import Beam from './Beam'; 
 import Explosion from "./Explosion";
 import GameObject from './GameObject';
+import SlashSpark from './SlashSpark';
 
 
 // My laptop has a performance limit of around 700 particles
@@ -384,6 +385,8 @@ class Game {
     this.ctx.save();
     this.ctx.fillStyle = 'white';
     this.ctx.font = '12px sans-serif';
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowColor = 'black';
     let xOffset = this.cvs.width - 50;
     let yOffset = 80;
     this.ctx.fillText(`FPS: ${this.fps}`, xOffset, yOffset += 20);
@@ -396,6 +399,8 @@ class Game {
     this.ctx.save();
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowColor = 'black';
     let xOffset = 10;
     let yOffset = 2;
 
@@ -420,58 +425,73 @@ class Game {
   drawHealth() {
     this.ctx.save();
     this.ctx.font = '20px sans-serif';
-    let center = this.cvs.width / 2;
+    let xOffset = this.cvs.width / 2
+    let yOffset = this.cvs.height - 82;
     // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
     // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
     this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
-    this.ctx.fillRect(center - this.player.health / 2, this.cvs.height - 50, this.player.health, 20);
+    this.ctx.fillRect(xOffset - this.player.health / 2, yOffset, this.player.health, 20);
     this.ctx.fillStyle = 'white';
-    this.ctx.shadowBlur = 2;
+    this.ctx.shadowBlur = 3;
     this.ctx.shadowColor = 'black';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(`${this.player.health}`, center, this.cvs.height - 33);
+    this.ctx.fillText(`${this.player.health}`, xOffset, yOffset + 17);
     this.ctx.restore();
   }
 
   drawChargeBar() {
-    let center = this.cvs.width / 2;
+    let xOffset = this.cvs.width / 2;
 
     this.ctx.save();
     this.ctx.textAlign = 'center';
     if (this.player.charge >= this.player.chargeMax) {
 
       this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "red";
-      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
+      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
       if (this.player.beamCooldown === 0) {
         this.ctx.font = '12px sans-serif';
-        if (this.player.chargeMax * 2 === this.player.charge) {
+        if (this.player.chargeMax * 2 <= this.player.charge) {
           this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
           this.ctx.font = '14px sans-serif';
+          this.vanity.push(new SlashSpark(this, xOffset - this.player.chargeMax * 2 + (Math.random() * 2 * this.player.chargeMax) * 2, this.cvs.height - 57, -3, 1, 10));
+          this.ctx.shadowBlur = 2;
+          this.ctx.shadowColor = 'black';
+          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'darkblue' : 'yellow';
+          this.ctx.fillText(`OVERCHARGE!!`, xOffset, this.cvs.height - 40);
+        } else {
+          this.ctx.shadowBlur = 2;
+          this.ctx.shadowColor = 'black';
+          this.ctx.fillText(`READY!!`, xOffset, this.cvs.height - 40);
         }
-        this.ctx.fillText(`READY!!`, center, this.cvs.height - 62);
       }
       this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
       let charge = this.player.charge < this.player.chargeMax * 2 ? this.player.charge % this.player.chargeMax : this.player.chargeMax;
-      this.ctx.fillRect(center - charge * 2, this.cvs.height - 59, charge * 4, 6);
+      this.ctx.fillRect(xOffset - charge * 2, this.cvs.height - 59, charge * 4, 6);
     } else {
-      this.ctx.fillStyle = "yellow";
-      this.ctx.font = '17px sans-serif';
+      this.ctx.fillStyle = "olive";
+      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
+      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+      this.ctx.fillRect(xOffset + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
       if (this.player.beamCooldown === 0) {
-        this.ctx.fillText(`${this.player.charge}`, center, this.cvs.height - 60);
+        this.ctx.shadowBlur = 4;
+        this.ctx.shadowColor = 'black';
+
+        this.ctx.fillStyle = "yellow";
+        this.ctx.font = '17px sans-serif';
+        this.ctx.clearRect(xOffset - 12, this.cvs.height - 57, 24, 6);
+        this.ctx.fillText(`${this.player.charge}`, xOffset, this.cvs.height - 47);
         this.ctx.fillStyle = "olive";
         this.ctx.font = '12px sans-serif';
-        this.ctx.fillText(`/${this.player.chargeMax}`, center + 22, this.cvs.height - 60);
+        this.ctx.fillText(`/${this.player.chargeMax}`, xOffset + 20, this.cvs.height - 41);
       }
-      this.ctx.fillStyle = "olive";
-      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
-      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
-      this.ctx.fillRect(center + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
     }
     if (this.player.beamCooldown > 0) {
       this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
-      this.ctx.fillRect(center - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
+      this.ctx.fillRect(xOffset - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
       this.ctx.font = '13px sans-serif';
-      this.ctx.fillText(`!!! COOLDOWN !!!`, center, this.cvs.height - 62);
+      this.ctx.shadowBlur = 2;
+      this.ctx.shadowColor = 'black';
+      this.ctx.fillText(`!!! COOLDOWN !!!`, xOffset, this.cvs.height - 40);
     }
     this.ctx.restore();
   }
@@ -494,20 +514,17 @@ class Game {
 
       case STATE_RUNNING:
         // Handle drawing of all game objects
+        
         this.particles.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         this.entities.forEach(entity => entity.draw());
+
+        this.drawChargeBar();
         this.vanity.forEach(entity => entity.draw());
         this.player.draw();
 
         this.drawUI();
-
-        // Draw health
         this.drawHealth();
-        
-        
-        // Draw chargebars
-        this.drawChargeBar();
         break;
 
       case STATE_OVER:

@@ -51,12 +51,18 @@ class Game {
     this.highscore = 0;
     this.score = 0;
     this.pauseTime = 0;
+    this.mute = false;
+    this.filePath = PATH;
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
 
     this.state = STATE_INIT;
 
+    this.defeatSfx = new Audio(`${PATH}/assets/DEFEATED.wav`);
+    this.enemyDeathSfx = new Audio(`${PATH}/assets/boom2.wav`);
+    this.playerShootSfx = new Audio(`${PATH}/assets/laser7.wav`);
+    
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
   }
@@ -151,9 +157,7 @@ class Game {
     this.freeze(15);
     this.player.alive = false;
     this.player.color = 'black'; 
-    let sound = new Audio(`${PATH}/assets/DEFEATED.wav`);
-    sound.volume = 0.3;
-    sound.play();
+    this.playSound(this.defeatSfx, 0.3);
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode1.color = 'white';
@@ -202,7 +206,7 @@ class Game {
         }
         this.ctx.restore();
       }
-      this.menus.push(endGameMenu);
+      if (this.state === STATE_OVER) this.menus.push(endGameMenu);
     }
     drawEnd = drawEnd.bind(this);
     setTimeout(drawEnd, 2000);
@@ -210,6 +214,19 @@ class Game {
 
   restartGame() {
     this.init();
+  }
+
+  playSound(sound, vol = 1) {
+    if (this.mute) return;
+    sound.volume = vol;
+    sound.play();
+  }
+
+  playSoundMany(path, vol = 1) {
+    if (this.mute) return;
+    let sound = new Audio(path);
+    sound.volume = vol;
+    sound.play();
   }
 
   // Freezes the entire game state for n frames
@@ -255,10 +272,8 @@ class Game {
         
         // Handle enemy death
         this.entities.filter(entity => !entity.alive).forEach(entity => {
-          let sound = new Audio(`${PATH}/assets/boom2.wav`);
-          sound.volume = 0.7;
-          sound.play();
-          
+          this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.7);
+
           this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
 
           this.difficulty += 0.002 * this.difficultyRate;
@@ -365,12 +380,99 @@ class Game {
     this.ctx.restore();
   }
 
-  showFPS() {
+  drawFPS() {
+    this.ctx.save();
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '12px sans-serif';
+    let xOffset = this.cvs.width - 50;
+    let yOffset = 80;
+    this.ctx.fillText(`FPS: ${this.fps}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, xOffset, yOffset += 20);
+
+    this.ctx.restore();
+  }
+
+  drawUI() {
     this.ctx.save();
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`FPS: ${this.fps}`, this.cvs.width - 90, 22);
-    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, this.cvs.width - 90, 42);
+    let xOffset = 10;
+    let yOffset = 2;
+
+    this.ctx.fillText(`Score: ${this.score}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`Highscore: ${this.highscore}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`Time: ${this.timeSeconds}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, xOffset, yOffset += 20);
+    this.ctx.restore();
+    this.drawFPS();
+  }
+
+  drawVolControls() {
+    this.ctx.save();
+    if (this.mute) {
+      this.ctx.drawImage(MUTE, this.cvs.width - 85, 10);
+    } else {
+      this.ctx.drawImage(VOL, this.cvs.width - 80, 10);
+    }
+    this.ctx.restore();
+  }
+
+  drawHealth() {
+    this.ctx.save();
+    this.ctx.font = '20px sans-serif';
+    let center = this.cvs.width / 2;
+    // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
+    // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+    this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
+    this.ctx.fillRect(center - this.player.health / 2, this.cvs.height - 50, this.player.health, 20);
+    this.ctx.fillStyle = 'white';
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowColor = 'black';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(`${this.player.health}`, center, this.cvs.height - 33);
+    this.ctx.restore();
+  }
+
+  drawChargeBar() {
+    let center = this.cvs.width / 2;
+
+    this.ctx.save();
+    this.ctx.textAlign = 'center';
+    if (this.player.charge >= this.player.chargeMax) {
+
+      this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "red";
+      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
+      if (this.player.beamCooldown === 0) {
+        this.ctx.font = '12px sans-serif';
+        if (this.player.chargeMax * 2 === this.player.charge) {
+          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
+          this.ctx.font = '14px sans-serif';
+        }
+        this.ctx.fillText(`READY!!`, center, this.cvs.height - 62);
+      }
+      this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
+      let charge = this.player.charge < this.player.chargeMax * 2 ? this.player.charge % this.player.chargeMax : this.player.chargeMax;
+      this.ctx.fillRect(center - charge * 2, this.cvs.height - 59, charge * 4, 6);
+    } else {
+      this.ctx.fillStyle = "yellow";
+      this.ctx.font = '17px sans-serif';
+      if (this.player.beamCooldown === 0) {
+        this.ctx.fillText(`${this.player.charge}`, center, this.cvs.height - 60);
+        this.ctx.fillStyle = "olive";
+        this.ctx.font = '12px sans-serif';
+        this.ctx.fillText(`/${this.player.chargeMax}`, center + 22, this.cvs.height - 60);
+      }
+      this.ctx.fillStyle = "olive";
+      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
+      this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+      this.ctx.fillRect(center + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+    }
+    if (this.player.beamCooldown > 0) {
+      this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
+      this.ctx.fillRect(center - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
+      this.ctx.font = '13px sans-serif';
+      this.ctx.fillText(`!!! COOLDOWN !!!`, center, this.cvs.height - 62);
+    }
     this.ctx.restore();
   }
 
@@ -378,7 +480,6 @@ class Game {
     // Resize canvas to window every frame
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
-    this.ctx.drawImage(MUTE, this.cvs.width - 200, 10);
 
     switch (this.state) {
       case STATE_INIT:
@@ -399,71 +500,14 @@ class Game {
         this.vanity.forEach(entity => entity.draw());
         this.player.draw();
 
-        // Draw the UI
-        this.ctx.save();
-        this.ctx.font = '20px sans-serif';
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillText(`Score: ${this.score}`, 10, 22);
-        this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 42);
-        this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 62);
-        this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, 10, 82);
+        this.drawUI();
 
         // Draw health
-        this.ctx.save();
-        this.ctx.font = '20px sans-serif';
-        let center = this.cvs.width / 2;
-        // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
-        // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-        this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
-        this.ctx.fillRect(center - this.player.health / 2, this.cvs.height - 50, this.player.health, 20);
-        this.ctx.fillStyle = 'white';
-        this.ctx.shadowBlur = 2;
-        this.ctx.shadowColor = 'black';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(`${this.player.health}`, center, this.cvs.height - 33);
-        this.ctx.restore();
+        this.drawHealth();
         
         
         // Draw chargebars
-
-        this.ctx.save();
-        this.ctx.textAlign = 'center';
-        if (this.player.charge >= this.player.chargeMax) {
-          
-          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "red";
-          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
-          if (this.player.beamCooldown === 0) {
-            this.ctx.font = '12px sans-serif';
-            if (this.player.chargeMax * 2 === this.player.charge) {
-              this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
-              this.ctx.font = '14px sans-serif';
-            }
-            this.ctx.fillText(`READY!!`, center, this.cvs.height - 62);
-          }
-          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
-          let charge = this.player.charge < this.player.chargeMax * 2 ? this.player.charge % this.player.chargeMax : this.player.chargeMax;
-          this.ctx.fillRect(center - charge * 2, this.cvs.height - 59, charge * 4, 6);
-        } else {
-          this.ctx.fillStyle = "yellow";
-          this.ctx.font = '17px sans-serif';
-          if (this.player.beamCooldown === 0) {
-            this.ctx.fillText(`${this.player.charge}`, center, this.cvs.height - 60);
-            this.ctx.fillStyle = "olive";
-            this.ctx.font = '12px sans-serif';
-            this.ctx.fillText(`/${this.player.chargeMax}`, center + 22, this.cvs.height - 60);
-          }
-          this.ctx.fillStyle = "olive";
-          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
-          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
-          this.ctx.fillRect(center + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
-        }
-        if (this.player.beamCooldown > 0) {
-          this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
-          this.ctx.fillRect(center - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
-          this.ctx.font = '13px sans-serif';
-          this.ctx.fillText(`!!! COOLDOWN !!!`, center, this.cvs.height - 62);
-        }
-        this.ctx.restore();
+        this.drawChargeBar();
         break;
 
       case STATE_OVER:
@@ -476,7 +520,7 @@ class Game {
         break;
     }
     this.drawCursor();
-    this.showFPS();
+    this.drawVolControls();
   }
 
   loop() {

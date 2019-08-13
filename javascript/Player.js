@@ -154,9 +154,7 @@ class Player extends GameObject {
   // Fire
   shoot() {
     if (this.game.loopCount % 5 === 0) {
-      let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/laser7.wav`);
-      sound.volume = 0.7;
-      sound.play();
+      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.7);
     }
 
     this.shootCooldown = SHOOT_COOLDOWN;
@@ -247,6 +245,14 @@ class Player extends GameObject {
         default:
           break;
       }
+
+      if (
+        this.mousePos.x >= this.cvs.width - 100 &&
+        this.mousePos.x <= this.cvs.width  &&
+        this.mousePos.y >= 0  &&
+        this.mousePos.y <= 100 ) {
+          this.game.mute = !this.game.mute;
+        }
     });
 
     document.addEventListener("mouseup", (e) => {

@@ -135,7 +135,7 @@ class Player extends GameObject {
       beam.width = 300;
       beam.length = 3000;
       beam.damage = 3000;
-      beam.knockback = 70;
+      beam.knockback = 30;
       beam.color = "red";
       beam.combo = -2;
       this.game.particles.push(beam);

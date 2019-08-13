@@ -296,7 +296,7 @@ class Game {
         this.entities.filter(entity => !entity.alive).forEach(entity => {
           this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.7);
 
-          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
+          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
 
           this.difficulty += 0.002 * this.difficultyRate;
           this.score += entity.score;

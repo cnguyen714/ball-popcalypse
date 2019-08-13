@@ -6,11 +6,11 @@ const RADIUS = 5;
 const COLOR = "white";
 
 class Explosion extends Particle {
-  constructor(game, startX, startY, startR = RADIUS) {
+  constructor(game, startX, startY, startR, vel) {
     super(game);
     this.pos = new Vector(startX, startY);
-    this.vel = new Vector();
-    this.r = startR;
+    this.vel = vel || new Vector();
+    this.r = startR || RADIUS;
     this.color = COLOR;
     this.aliveTime = 20;
     this.initialAliveTime = this.aliveTime;
@@ -22,6 +22,7 @@ class Explosion extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
+    this.pos.add(this.vel);
     if (this.aliveTime <= 0) {
       this.alive = false;
     }

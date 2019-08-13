@@ -293,9 +293,11 @@ class Game {
         let soundLimit = 3;
         let soundCount = 0;
         this.entities.filter(entity => !entity.alive).forEach(entity => {
-          if (soundCount >= soundLimit) return;
-          this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
-          soundCount++;
+          if (soundCount <= soundLimit) {
+            this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
+          } else {
+            soundCount++;
+          }
           this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
 
           this.difficulty += 0.002 * this.difficultyRate;

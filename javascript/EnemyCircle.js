@@ -45,36 +45,52 @@ class EnemyCircle extends GameObject {
     }
   }
 
-  checkCollision(obj) {
-    if (!obj.alive) return;
+  // Check if enemies collide with the player
+  checkAndHitPlayer(player) {
+    let diff = Vector.difference(this.pos, player.pos);
+    let distSqr = diff.dot(diff);
+
+    if (player.moveState === "STATE_DASHING" || player.invul > 0) return;
+    if (this.r * this.r + player.r * player.r > distSqr) {
+      let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/impact.wav`);
+      sound.play();
+      let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
+      explosion.color = 'red';
+      explosion.aliveTime = 5;
+      player.game.vanity.push(explosion);
+
+      diff.normalize();
+      diff.multiply(KNOCKBACK);
+      player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
+      this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
+      player.health -= this.damage;
+      player.charge += this.damage;
+    } 
+  }
+
+  // Check if enemies are colliding and push them away
+  checkAndSpreadEnemy(obj) {
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
-    if(obj instanceof Player) {
-      if (obj.moveState === "STATE_DASHING" || obj.invul > 0) return;
-      if (this.r * this.r + obj.r * obj.r > distSqr) {
-        let sound = new Audio(`${document.URL.substr(0, document.URL.lastIndexOf('/'))}/assets/impact.wav`);
-        sound.play();
-        let explosion = new Explosion(game, obj.pos.x + diff.x / 2, obj.pos.y + diff.y / 2, this.r * 2);
-        explosion.color = 'red';
-        explosion.aliveTime = 5;
-        obj.game.vanity.push(explosion);
 
-        diff.normalize();
-        diff.multiply(KNOCKBACK);
-        obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));
-        this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
-        obj.health -= this.damage;
-      } 
-    } else if (obj instanceof EnemyCircle) {
-      if (obj.pos.equals(this.pos)) return;
-      if (this.r * this.r + obj.r * obj.r > distSqr) {
-        diff.normalize();
-        diff.multiply(SPREAD_FACTOR);
-        obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));
-        this.vel.add(diff.dup().multiply(RADIUS / this.r));
-      }
+    // Don't collide objects that are standing directly on each other
+    if (obj.pos.equals(this.pos)) return;
+    if (this.r * this.r + obj.r * obj.r > distSqr) {
+      diff.normalize();
+      diff.multiply(SPREAD_FACTOR);
+      obj.vel.subtract(diff.dup().multiply(this.r / RADIUS));
+      this.vel.add(diff.dup().multiply(RADIUS / this.r));
     }
+  }
 
+  checkCollision(obj) {
+    if (!obj.alive) return;
+
+    if(obj instanceof Player) {
+      this.checkAndHitPlayer(obj);
+    } else if (obj instanceof EnemyCircle) {
+      this.checkAndSpreadEnemy(obj);
+    }
   }
 
   update() {

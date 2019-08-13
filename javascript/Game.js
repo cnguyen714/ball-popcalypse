@@ -9,6 +9,7 @@ import Beam from './Beam';
 import Explosion from "./Explosion";
 import GameObject from './GameObject';
 
+
 // My laptop has a performance limit of around 700 particles
 // Delta time is implemented by accelerating movement to perceive less
 // lag, however the game still runs slower
@@ -30,6 +31,14 @@ const DIFFICULTY_MULTIPLIER = 0.05;
 const DIFFICULTY_RATE = 4;
 
 const STARTING_HEALTH = 250;
+
+const MUTE = new Image(50,50);
+MUTE.src = `${PATH}/assets/mute.png`;
+const VOL = new Image(50, 50);
+VOL.src = `${PATH}/assets/volume.png`;
+const WASD = new Image();
+WASD.src = `${PATH}/assets/WASD.png`;
+
 
 class Game {
   constructor(cvs, ctx) {
@@ -269,7 +278,7 @@ class Game {
             hitspark.aliveTime = 4;
             hitspark.growthRate = 1;
             hitspark.r = 1;
-            hitspark.damage = 
+            hitspark.damage = 0;
             this.vanity.push(hitspark);
           }
         });
@@ -327,10 +336,10 @@ class Game {
     this.ctx.lineWidth = 4;
     this.ctx.shadowBlur = 2;
     this.ctx.shadowColor = 'white';
-    this.ctx.moveTo(this.player.mousePos.x - cursorSize, this.player.mousePos.y);
-    this.ctx.lineTo(this.player.mousePos.x + cursorSize, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.dashCooldown / 2, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.dashCooldown / 2, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.dashCooldown / 2);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.dashCooldown / 2);
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.beginPath();
@@ -338,10 +347,10 @@ class Game {
     this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = "yellow";
-    this.ctx.moveTo(this.player.mousePos.x - cursorSize, this.player.mousePos.y);
-    this.ctx.lineTo(this.player.mousePos.x + cursorSize, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize);
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.dashCooldown / 2, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.dashCooldown / 2, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.dashCooldown / 2);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.dashCooldown / 2);
     this.ctx.stroke();
     
     this.ctx.font = '20px sans-serif';
@@ -351,30 +360,7 @@ class Game {
     // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
 
-    this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
-    if (this.state !== STATE_RUNNING) {
-    } else if (this.player.beamCooldown > 0) {
-      this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
-      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 7, this.player.beamCooldown, 4);
-      this.ctx.font = '11px sans-serif';
-
-      this.ctx.fillText(`Cooling`, this.player.mousePos.x + 3, this.player.mousePos.y - 9);
-    } else if (this.player.charge >= this.player.chargeMax) {
-      this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "red";
-      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 6,this.player.chargeMax, 3);
-      this.ctx.font = '10px sans-serif';
-
-      this.ctx.fillText(`Ready`, this.player.mousePos.x + 3, this.player.mousePos.y - 8);
-    } else {
-      this.ctx.fillStyle = "yellow";
-      this.ctx.font = '13px sans-serif';
-      this.ctx.fillText(`${this.player.charge}`, this.player.mousePos.x + 3, this.player.mousePos.y - 8);
-      this.ctx.fillStyle = "olive";      
-      this.ctx.font = '9px sans-serif';
-      this.ctx.fillText(`/${this.player.chargeMax}`, this.player.mousePos.x + 20, this.player.mousePos.y - 8);
-      this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y - 6, this.player.charge, 3);
-    }
-
+    // this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
 
     this.ctx.restore();
   }
@@ -392,6 +378,7 @@ class Game {
     // Resize canvas to window every frame
     this.ctx.canvas.width = window.innerWidth;
     this.ctx.canvas.height = window.innerHeight;
+    this.ctx.drawImage(MUTE, this.cvs.width - 200, 10);
 
     switch (this.state) {
       case STATE_INIT:
@@ -405,21 +392,6 @@ class Game {
         break;
 
       case STATE_RUNNING:
-        // Draw health
-        this.ctx.save();
-        this.ctx.font = '20px sans-serif';
-        // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
-        // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-        this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
-        this.ctx.fillRect(this.cvs.width / 2 - 1, this.cvs.height - 50, this.player.health / 2, 20);
-        this.ctx.fillRect(this.cvs.width / 2 + 1, this.cvs.height - 50, -1 * this.player.health / 2, 20);
-        this.ctx.fillStyle = 'white';
-        this.ctx.shadowBlur = 2;
-        this.ctx.shadowColor = 'black';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText(`${this.player.health}`, this.cvs.width / 2, this.cvs.height - 33);
-        this.ctx.restore();
-
         // Handle drawing of all game objects
         this.particles.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
@@ -435,6 +407,62 @@ class Game {
         this.ctx.fillText(`Highscore: ${this.highscore}`, 10, 42);
         this.ctx.fillText(`Time: ${this.timeSeconds}`, 10, 62);
         this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, 10, 82);
+
+        // Draw health
+        this.ctx.save();
+        this.ctx.font = '20px sans-serif';
+        let center = this.cvs.width / 2;
+        // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
+        // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+        this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
+        this.ctx.fillRect(center - this.player.health / 2, this.cvs.height - 50, this.player.health, 20);
+        this.ctx.fillStyle = 'white';
+        this.ctx.shadowBlur = 2;
+        this.ctx.shadowColor = 'black';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${this.player.health}`, center, this.cvs.height - 33);
+        this.ctx.restore();
+        
+        
+        // Draw chargebars
+
+        this.ctx.save();
+        this.ctx.textAlign = 'center';
+        if (this.player.charge >= this.player.chargeMax) {
+          
+          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "red";
+          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
+          if (this.player.beamCooldown === 0) {
+            this.ctx.font = '12px sans-serif';
+            if (this.player.chargeMax * 2 === this.player.charge) {
+              this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
+              this.ctx.font = '14px sans-serif';
+            }
+            this.ctx.fillText(`READY!!`, center, this.cvs.height - 62);
+          }
+          this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
+          let charge = this.player.charge < this.player.chargeMax * 2 ? this.player.charge % this.player.chargeMax : this.player.chargeMax;
+          this.ctx.fillRect(center - charge * 2, this.cvs.height - 59, charge * 4, 6);
+        } else {
+          this.ctx.fillStyle = "yellow";
+          this.ctx.font = '17px sans-serif';
+          if (this.player.beamCooldown === 0) {
+            this.ctx.fillText(`${this.player.charge}`, center, this.cvs.height - 60);
+            this.ctx.fillStyle = "olive";
+            this.ctx.font = '12px sans-serif';
+            this.ctx.fillText(`/${this.player.chargeMax}`, center + 22, this.cvs.height - 60);
+          }
+          this.ctx.fillStyle = "olive";
+          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
+          this.ctx.fillRect(center - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+          this.ctx.fillRect(center + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+        }
+        if (this.player.beamCooldown > 0) {
+          this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
+          this.ctx.fillRect(center - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
+          this.ctx.font = '13px sans-serif';
+          this.ctx.fillText(`!!! COOLDOWN !!!`, center, this.cvs.height - 62);
+        }
         this.ctx.restore();
         break;
 

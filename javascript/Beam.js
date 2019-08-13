@@ -78,16 +78,19 @@ class Beam extends Particle {
         y2 + obj.r >= 0 - HITBOX_RATIO * this.width / 2 &&
         y2 - obj.r <= 0 + HITBOX_RATIO * this.width / 2
       ) {
-        diff.normalize();
+        diff = new Vector(1,0);
+        let x = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
+        let y = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
 
         // Invert Y axis again to use diff vector for knockback
-        diff.multiply(new Vector(1, -1));
-        if (this.combo === -2) {
-          let knockStraight = this.game.player.aim.dup().normalize();
+        // diff.multiply(new Vector(1, -1));
+        // if (this.combo === -2) {
+          let knockStraight = new Vector(x, y);
+          // let knockStraight = this.game.player.aim.dup().normalize();
           obj.vel.add(knockStraight.multiply(this.knockback));
-        } else {
-          obj.vel.add(diff.multiply(this.knockback));
-        }
+        // } else {
+        //   obj.vel.add(diff.multiply(this.knockback));
+        // }
         obj.health -= this.damage;
         if (obj.health <= 0) obj.alive = false;
         let color;

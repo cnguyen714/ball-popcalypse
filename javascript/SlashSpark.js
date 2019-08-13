@@ -100,9 +100,9 @@ class SlashSpark extends Particle {
   draw() {
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     if (this.combo === -2) {
-      this.drawRect(0, color, 1, 2);
-      this.drawRect(0, color, 3 / 4, 2.05);
-      this.drawRect(0, color, 1 / 3, 2.08);
+      this.drawRect(0, color, 1, 1.5);
+      this.drawRect(0, color, 3 / 4, 1.55);
+      this.drawRect(0, color, 1 / 3, 1.58);
       // this.drawRect(this.offsets[1]);
     } else {
       this.drawRect(0, color);

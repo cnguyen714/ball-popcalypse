@@ -39,7 +39,12 @@ const VOL = new Image(50, 50);
 VOL.src = `${PATH}/assets/volume.png`;
 const WASD = new Image();
 WASD.src = `${PATH}/assets/WASD.png`;
-
+const LEFT_MOUSE_ICON = new Image();
+LEFT_MOUSE_ICON.src = `${PATH}/assets/left.png`;
+const RIGHT_MOUSE_ICON = new Image();
+RIGHT_MOUSE_ICON.src = `${PATH}/assets/right.png`;
+const SPACEBAR_ICON = new Image();
+SPACEBAR_ICON.src = `${PATH}/assets/spacebar.png`;
 
 class Game {
   constructor(cvs, ctx) {
@@ -113,22 +118,38 @@ class Game {
       this.ctx.fillStyle = this.color;
       this.ctx.fillRect(0, this.cvs.height / 2 - this.cvs.height / 8 * (60 - this.aliveTime) / 60, this.cvs.width, this.cvs.height / 4 * (60 - this.aliveTime) / 60);
       if (this.aliveTime <= 0) {
-        this.aliveTime = 0;
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '20px sans-serif';
-        this.ctx.fillText(`Use the [WASD] keys to move around`, this.cvs.width / 2 - 150, this.cvs.height - 160);
-        this.ctx.fillText(`Hold [SHIFT] to move faster`, this.cvs.width / 2 - 150, this.cvs.height - 140);
-        this.ctx.fillText(`Use your mouse to aim, hold [LeftClick] to fire bullets`, this.cvs.width / 2 - 150, this.cvs.height - 120);
-        this.ctx.fillText(`Tap [RightClick] to dash and push enemies away!`, this.cvs.width / 2 - 150, this.cvs.height - 100);
-        this.ctx.fillText(`Press any of these keys to start!`, this.cvs.width / 2 - 150, this.cvs.height - 80);
-        this.ctx.fillText(`Highscore: ${this.game.highscore}`, this.cvs.width / 2 - 60, this.cvs.height - 40);
+        let xOffset = this.cvs.width / 2;
+        let yOffset = this.cvs.height - 200;
 
+        this.aliveTime = 0;
         this.ctx.fillStyle = 'teal';
         this.ctx.font = `${this.cvs.height / 8}px sans-serif`;
         this.ctx.fillText(`Ball-popcalypse`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
         this.ctx.fillStyle = 'gray';
         this.ctx.font = `${this.cvs.height / 32}px sans-serif`;
         // this.ctx.fillText(`Can you survive the ball menace?`, this.cvs.width * 1.5 / 16, this.cvs.height * 19/32 );
+
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '20px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.shadowBlur = 4;
+        this.ctx.shadowColor = 'black';
+
+
+        // this.ctx.fillText(`Hold [SHIFT] to move faster`, this.cvs.width / 2 - 150, this.cvs.height - 140);
+        // this.ctx.fillText(`Use your mouse to aim, hold [LeftClick] to fire bullets`, this.cvs.width / 2 - 150, this.cvs.height - 120);
+        // this.ctx.fillText(`Tap [RightClick] to dash and push enemies away!`, this.cvs.width / 2 - 150, this.cvs.height - 100);
+        // this.ctx.fillText(`Press any of these keys to start!`, this.cvs.width / 2 - 150, this.cvs.height - 80);
+        // this.ctx.fillText(`Highscore: ${this.game.highscore}`, this.cvs.width / 2 - 60, this.cvs.height - 40);
+        this.ctx.drawImage(WASD, xOffset -= 400, yOffset, 200, 200);
+        this.ctx.fillText(`Movement`, xOffset + 100, yOffset + 30);
+        this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 200, yOffset, 200, 180);
+        this.ctx.fillText(`Slash`, xOffset + 100, yOffset + 30);
+        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 200, yOffset += 28, 120, 150);
+        this.ctx.fillText(`Blaster`, xOffset + 50, yOffset);
+        this.ctx.drawImage(SPACEBAR_ICON, xOffset += 200, yOffset += 20, 200, 80);
+        this.ctx.fillText(`Cannon`, xOffset + 80, yOffset);
+        this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 40);
       }
       this.ctx.restore();
     }

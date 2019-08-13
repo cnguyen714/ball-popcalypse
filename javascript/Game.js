@@ -362,7 +362,13 @@ class Game {
     cursorSize = 14;
     this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = "yellow";
+    if (this.player.charge >= this.player.chargeMax * 2) {
+      this.ctx.strokeStyle = "lightblue";
+    } else if (this.player.charge >= this.player.chargeMax) {
+      this.ctx.strokeStyle = "red";
+    } else {
+      this.ctx.strokeStyle = "yellow";
+    }
     this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.dashCooldown / 2, this.player.mousePos.y);
     this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.dashCooldown / 2, this.player.mousePos.y);
     this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.dashCooldown / 2);

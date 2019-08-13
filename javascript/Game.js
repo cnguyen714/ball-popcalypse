@@ -414,10 +414,10 @@ class Game {
     this.ctx.font = '12px sans-serif';
     this.ctx.shadowBlur = 2;
     this.ctx.shadowColor = 'black';
-    let xOffset = this.cvs.width - 50;
-    let yOffset = 80;
+    let xOffset = this.cvs.width - 55;
+    let yOffset = 70;
     this.ctx.fillText(`FPS: ${this.fps}`, xOffset, yOffset += 20);
-    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length + this.vanity.length}`, xOffset, yOffset += 20);
 
     this.ctx.restore();
   }
@@ -442,7 +442,7 @@ class Game {
   drawVolControls() {
     this.ctx.save();
     if (this.mute) {
-      this.ctx.drawImage(MUTE, this.cvs.width - 85, 10);
+      this.ctx.drawImage(MUTE, this.cvs.width - 83, 15, 54, 54);
     } else {
       this.ctx.drawImage(VOL, this.cvs.width - 80, 10);
     }

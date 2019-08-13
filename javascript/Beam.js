@@ -93,13 +93,13 @@ class Beam extends Particle {
           case -1:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 80));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 4, 150));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 150, 40));
             break;
           default:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 30));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 30));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 50));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 90));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 90, 30));
             break;
         }
       }

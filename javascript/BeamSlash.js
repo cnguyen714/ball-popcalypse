@@ -7,7 +7,7 @@ import Beam from "./Beam";
 
 const WIDTH = 45;
 const LENGTH = 150;
-const KNOCKBACK = 10;
+const KNOCKBACK = 7;
 const DAMAGE = 200;
 const DURATION = 7;
 const ARC_DEGREE_RATE = 20;

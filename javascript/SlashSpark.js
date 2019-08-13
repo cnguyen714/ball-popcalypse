@@ -16,13 +16,13 @@ const COLOR = {
 // hitspark for beams
 //
 class SlashSpark extends Particle {
-  constructor(game, x, y, combo, width, length) {
+  constructor(game, x, y, combo, width, length, duration) {
     super(game);
     this.pos = new Vector(x, y);
     this.combo = combo || 0;
     this.width = width || WIDTH;
     this.length = length || LENGTH;
-    this.aliveTime = DURATION;
+    this.aliveTime = duration || DURATION;
     this.initialTime = this.aliveTime;
 
     this.offsets = [];
@@ -65,14 +65,16 @@ class SlashSpark extends Particle {
     // SlashSpark does not check collision
   }
 
-  drawRect(offset, widthMod = 1, lengthMod = 1) {
+  drawRect(offset, colorIn, widthMod = 1, lengthMod = 1) {
     
     this.ctx.save();
 
     let percent = this.aliveTime / this.initialTime;
     let color;
     if (this.combo === -1) {
-      this.aliveTime >= this.initialTime - 2 ? color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${1})` : color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${percent})`
+      this.aliveTime >= this.initialTime - 2 
+      ? color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${1})` 
+      : color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${percent})`
     } else{
       this.aliveTime >= this.initialTime - 1
         ? color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`
@@ -96,13 +98,15 @@ class SlashSpark extends Particle {
   }
 
   draw() {
-    this.drawRect(0);
+    let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     if (this.combo === -2) {
-      this.drawRect(0, 1 / 2, 1.5);
-      this.drawRect(0, 1 / 3, 1.75);
+      this.drawRect(0, color, 1, 2);
+      this.drawRect(0, color, 3 / 4, 2.05);
+      this.drawRect(0, color, 1 / 3, 2.08);
       // this.drawRect(this.offsets[1]);
     } else {
-      this.drawRect(Math.PI);
+      this.drawRect(0, color);
+      this.drawRect(Math.PI, color);
     }
   }
 }

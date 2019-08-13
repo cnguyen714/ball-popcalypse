@@ -154,7 +154,7 @@ class Player extends GameObject {
   // Fire
   shoot() {
     if (this.game.loopCount % 5 === 0) {
-      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.7);
+      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
     }
 
     this.shootCooldown = SHOOT_COOLDOWN;

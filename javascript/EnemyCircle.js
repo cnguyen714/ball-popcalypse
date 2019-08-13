@@ -52,7 +52,7 @@ class EnemyCircle extends GameObject {
 
     if (player.moveState === "STATE_DASHING" || player.invul > 0) return;
     if (this.r * this.r + player.r * player.r > distSqr) {
-      this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.7);
+      this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
       explosion.color = 'red';
       explosion.aliveTime = 5;

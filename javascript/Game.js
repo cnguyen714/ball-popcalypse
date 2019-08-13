@@ -179,7 +179,7 @@ class Game {
     this.freeze(15);
     this.player.alive = false;
     this.player.color = 'black'; 
-    this.playSound(this.defeatSfx, 0.3);
+    this.playSound(this.defeatSfx, 0.2);
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode1.color = 'white';
@@ -293,9 +293,12 @@ class Game {
         }
         
         // Handle enemy death
+        let soundLimit = 3;
+        let soundCount = 0;
         this.entities.filter(entity => !entity.alive).forEach(entity => {
-          this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.7);
-
+          if (soundCount >= soundLimit) return;
+          this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
+          soundCount++;
           this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
 
           this.difficulty += 0.002 * this.difficultyRate;

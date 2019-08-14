@@ -19,8 +19,8 @@ import SlashSpark from './SlashSpark';
 /*
 To-do:
 
-- Flash white ==> black on beam
-- Update
+- Impact frame? Flash white ==> black on beam shadow / etcs
+- Style Score box
 
 
 */

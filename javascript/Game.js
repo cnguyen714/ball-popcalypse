@@ -15,6 +15,16 @@ import SlashSpark from './SlashSpark';
 // Delta time is implemented by accelerating movement to perceive less
 // lag, however the game still runs slower
 
+
+/*
+To-do:
+
+- Flash white ==> black on beam
+- Update
+
+
+*/
+
 const PATH = document.URL.substr(0, document.URL.lastIndexOf('/'));
 const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";

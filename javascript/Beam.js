@@ -46,6 +46,9 @@ class Beam extends Particle {
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
 
+    if(!this.hitWidth) this.hitWidth = this.width * HITBOX_RATIO;
+    if(!this.hitLength) this.hitLength = this.length * HITBOX_RATIO;
+
     if (obj instanceof EnemyCircle) {
 
       let x = this.pos.x;
@@ -74,9 +77,9 @@ class Beam extends Particle {
       // Use LENGTH > HIT_LENGTH to hide inaccuracy of hitbox
       if ( 
         x2 + obj.r >= 0 &&
-        x2 - obj.r <= 0 + HITBOX_RATIO * this.length &&
-        y2 + obj.r >= 0 - HITBOX_RATIO * this.width / 2 &&
-        y2 - obj.r <= 0 + HITBOX_RATIO * this.width / 2
+        x2 - obj.r <= 0 + this.hitLength &&
+        y2 + obj.r >= 0 - this.hitWidth / 2 &&
+        y2 - obj.r <= 0 + this.hitWidth / 2
       ) {
         diff = new Vector(1,0);
         let x = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
@@ -96,18 +99,18 @@ class Beam extends Particle {
         let color;
         switch (this.combo) {
           case -2:
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2 * obj.r, obj.r * 10));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20));
             break;
           case -1:
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 70));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 2, 80));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 150, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
             break;
           default:
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 30));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 30));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 1, 50));
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 90, 30));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 7, 90, 40));
             break;
         }
       }
@@ -152,7 +155,7 @@ class Beam extends Particle {
     } else {
       this.ctx.save();
 
-      this.width += 2;
+      this.width *= 0.85;
       
       this.ctx.shadowBlur = 20;
       // this.ctx.shadowColor = "white";

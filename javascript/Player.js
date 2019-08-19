@@ -8,6 +8,7 @@ import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
 import { timingSafeEqual } from "crypto";
+import SlashSpark from "./SlashSpark";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -138,11 +139,13 @@ class Player extends GameObject {
       beam.knockback = 40;
       beam.color = "red";
       beam.combo = -2;
-      this.game.particles.push(beam);
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
-      this.game.particles.push(beam);
-      this.game.freeze(14);
+      this.game.delayedParticles.push(beam);
+      this.game.freeze(5);
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, 0, Math.PI / 16, false));
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, Math.PI / 3, Math.PI / 16, false));
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, Math.PI * 2 / 3, Math.PI / 16, false));
       
       let kb = this.aim.dup().normalize();
       kb.multiply(100);

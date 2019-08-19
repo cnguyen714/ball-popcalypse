@@ -41,6 +41,9 @@ class BeamSlash extends Particle {
     switch(this.combo) {
       case 0:
         break;
+      case -1:
+        this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
+        break;
       case 1:
         this.direction = DIRECTION.CCW;
         break;
@@ -115,6 +118,7 @@ class BeamSlash extends Particle {
     if (this.aliveTime <= 0) {
       this.alive = false;
 
+      // combo finisher
       if (this.combo === 3) {
         let slash = new BeamSlash(this.game, -1, 40);
         slash.damage = this.damage * 20;

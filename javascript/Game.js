@@ -16,12 +16,19 @@ import SlashSpark from './SlashSpark';
 // lag, however the game still runs slower
 
 
+
 /*
+Access this on localhost:8000 by running both:
+npm start
+python -m SimpleHTTPServer
+
+===
+
 To-do:
 
 - Impact frame? Flash white ==> black on beam shadow / etcs
 - Style Score box
-
+- Sword sound/ Beam sound
 
 */
 
@@ -107,6 +114,7 @@ class Game {
     
     this.entities = [];
     this.particles = [];
+    this.delayedParticles = [];
     this.vanity = [];
     this.menus = [];
 
@@ -262,6 +270,7 @@ class Game {
   // Typically use this for hitstop
   freeze(n) {
     this.pauseTime = n;
+    this.vanity.forEach(entity => entity.paused = true);
   }
 
   update() {
@@ -287,54 +296,66 @@ class Game {
         break;
 
       case STATE_RUNNING:
-        if(this.loopCount % DIFFICULTY_INTERVAL === 0) {
-          this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
+
+        if (this.pauseTime === 0) {
+          this.vanity.forEach(entity => entity.paused = false);
+          this.particles = this.particles.concat(this.delayedParticles);
+          this.delayedParticles = [];
         }
-        
-        // Generate enemies -
-        // Stop making enemies if you miss too many frame deadlines
-        let spawnRate = 20 - Math.floor(this.difficulty);
-        spawnRate = spawnRate <= 1 ? 1 : spawnRate;
-        if (this.loopCount % (BASE_SPAWN_RATE + spawnRate)  === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
-          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));            
+
+        if (this.pauseTime > 0) {
+          this.vanity = this.vanity.filter(entity => entity.alive);
+          this.vanity.filter(entity => !entity.paused).forEach(entity => entity.update());
+        } else {
+          if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
+            this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
+          }
+
+          // Generate enemies -
+          // Stop making enemies if you miss too many frame deadlines
+          let spawnRate = 20 - Math.floor(this.difficulty);
+          spawnRate = spawnRate <= 1 ? 1 : spawnRate;
+          if (this.loopCount % (BASE_SPAWN_RATE + spawnRate) === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
+            this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
+          }
+
+          // Handle enemy death
+          let soundLimit = 3;
+          let soundCount = 0;
+          this.entities.filter(entity => !entity.alive).forEach(entity => {
+            if (soundCount <= soundLimit) {
+              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
+            } else {
+              soundCount++;
+            }
+            this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
+
+            this.difficulty += 0.002 * this.difficultyRate;
+            this.score += entity.score;
+            this.player.charge++;
+          });
+
+          // Handle updates
+          this.player.update();
+          this.vanity = this.vanity.filter(entity => entity.alive);
+          this.vanity.forEach(entity => entity.update());
+          this.entities = this.entities.filter(entity => entity.alive);
+          this.entities.forEach(entity => entity.update());
+          this.particles.filter(entity => !entity.alive).forEach(entity => {
+            if (entity instanceof Particle && !(entity instanceof Beam)) {
+              let hitspark = new Slam(this, entity.pos.x, entity.pos.y);
+              hitspark.aliveTime = 4;
+              hitspark.growthRate = 1;
+              hitspark.r = 1;
+              hitspark.damage = 0;
+              this.vanity.push(hitspark);
+            }
+          });
+          this.particles = this.particles.filter(entity => entity.alive);
+          this.particles.forEach(entity => entity.update());
+
+          if (this.player.health <= 0) this.endGame();
         }
-        
-        // Handle enemy death
-        let soundLimit = 3;
-        let soundCount = 0;
-        this.entities.filter(entity => !entity.alive).forEach(entity => {
-          if (soundCount <= soundLimit) {
-            this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
-          } else {
-            soundCount++;
-          }
-          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
-
-          this.difficulty += 0.002 * this.difficultyRate;
-          this.score += entity.score;
-          this.player.charge++;
-        });
-
-        // Handle updates
-        this.player.update();
-        this.vanity = this.vanity.filter(entity => entity.alive);
-        this.vanity.forEach(entity => entity.update());
-        this.entities = this.entities.filter(entity => entity.alive);
-        this.entities.forEach(entity => entity.update());
-        this.particles.filter(entity => !entity.alive).forEach(entity => {
-          if (entity instanceof Particle && !(entity instanceof Beam)) {
-            let hitspark = new Slam(this, entity.pos.x, entity.pos.y);
-            hitspark.aliveTime = 4;
-            hitspark.growthRate = 1;
-            hitspark.r = 1;
-            hitspark.damage = 0;
-            this.vanity.push(hitspark);
-          }
-        });
-        this.particles = this.particles.filter(entity => entity.alive);
-        this.particles.forEach(entity => entity.update());
-
-        if(this.player.health <= 0) this.endGame();
         break;
 
       case STATE_OVER:
@@ -584,12 +605,9 @@ class Game {
     this.timeDelta = time - this.prevTime;
     this.prevTime = time;
     
-    if (this.pauseTime <= 0) {
-      this.update();
-      this.draw();
-    } else {
-      this.pauseTime--;
-    }
+    if (this.pauseTime > 0) this.pauseTime--;
+    this.update();
+    this.draw();
 
     this.fpsCount++;
     if (time > this.timeTracker) {

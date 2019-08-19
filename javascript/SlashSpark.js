@@ -16,14 +16,23 @@ const COLOR = {
 // hitspark for beams
 //
 class SlashSpark extends Particle {
-  constructor(game, x, y, combo, width, length, duration) {
+  constructor(game, x, y, 
+      combo = 0, 
+      width = WIDTH, 
+      length = LENGTH, 
+      duration = DURATION, 
+      angle = Math.floor(Math.random() * 360) * Math.PI / 180, 
+      rotation = 0, 
+      pauseState = true) {
     super(game);
     this.pos = new Vector(x, y);
-    this.combo = combo || 0;
-    this.width = width || WIDTH;
-    this.length = length || LENGTH;
-    this.aliveTime = duration || DURATION;
+    this.combo = combo;
+    this.width = width;
+    this.length = length;
+    this.aliveTime = duration;
     this.initialTime = this.aliveTime;
+    this.rotation = rotation;
+    this.paused = pauseState;
 
     this.offsets = [];
     this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
@@ -34,8 +43,7 @@ class SlashSpark extends Particle {
 
     // this.angle = Math.atan2(this.aim.y, this.aim.x);
 
-
-    this.angle = Math.floor(Math.random() * 360) * Math.PI / 180;
+    this.angle = angle;
     // let newAim = new Vector(1, 0);
     // newAim.multiply(1, -1);
 
@@ -73,9 +81,13 @@ class SlashSpark extends Particle {
     let color;
     if (this.combo === -1) {
       this.aliveTime >= this.initialTime - 2 
-      ? color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${1})` 
-      : color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${percent})`
-    } else{
+        ? color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${1})` 
+        : color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${percent})`
+    } else if (this.combo === -2) {
+      this.aliveTime >= this.initialTime - 2 
+        ? color = `rgba(255,255,255,${1})`
+        : color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`
+    } else {
       this.aliveTime >= this.initialTime - 1
         ? color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`
         : color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent - 0.3})`
@@ -91,6 +103,16 @@ class SlashSpark extends Particle {
   }
 
   update() {
+    this.angle += this.rotation;
+    // transient effect
+    this.width *= 0.85;
+    if(this.combo === -1) {
+      this.length *= 1.005;
+    } else {
+      // this will alias the edges
+      this.length *= 1.001;
+    }
+
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
@@ -100,11 +122,17 @@ class SlashSpark extends Particle {
   draw() {
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     if (this.combo === -2) {
+      if (this.aliveTime >= this.initialTime - 10) {
+        color = [255, 255, 255]
+      } else {
+        color = [0, 0, 0]
+      }
       this.drawRect(0, color, 1, 1.5);
       this.drawRect(0, color, 3 / 4, 1.55);
       this.drawRect(0, color, 1 / 3, 1.58);
       // this.drawRect(this.offsets[1]);
     } else {
+
       this.drawRect(0, color);
       this.drawRect(Math.PI, color);
     }

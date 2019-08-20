@@ -50,20 +50,25 @@ class EnemyCircle extends GameObject {
     let diff = Vector.difference(this.pos, player.pos);
     let distSqr = diff.dot(diff);
 
-    if (player.moveState === "STATE_DASHING" || player.invul > 0) return;
+    if (player.moveState === "STATE_DASHING") return;
     if (this.r * this.r + player.r * player.r > distSqr) {
       this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
       explosion.color = 'red';
       explosion.aliveTime = 5;
-      player.game.vanity.push(explosion);
-
+      
       diff.normalize();
       diff.multiply(KNOCKBACK);
       player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
       this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
-      player.health -= this.damage;
-      player.charge += this.damage;
+      if (player.invul > 0) {
+        explosion.color = 'lightblue';
+      } else {
+        player.health -= this.damage;
+        player.charge += this.damage;
+      }
+      if (this.r > RADIUS) player.invul = 45;
+      player.game.vanity.push(explosion);
     } 
   }
 

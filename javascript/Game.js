@@ -614,13 +614,17 @@ class Game {
   loop() {
     let time = (new Date).getTime();
     this.timeDelta = time - this.prevTime;
-    this.prevTime = time;
     
-    if (this.pauseTime > 0) this.pauseTime--;
-    this.update();
-    this.draw();
+    if (this.timeDelta < NORMAL_TIME_DELTA * 0.90) {
 
-    this.fpsCount++;
+    } else {
+      if (this.pauseTime > 0) this.pauseTime--;
+      this.prevTime = time;
+      this.update();
+      this.draw();
+      this.fpsCount++;
+    }
+
     if (time > this.timeTracker) {
       this.fps = this.fpsCount;
       this.fpsCount = 0;

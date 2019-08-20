@@ -88,7 +88,9 @@ class Game {
     this.playerSlashSfx = new Audio(`${PATH}/assets/SE_00064.wav`);
     this.playerBeamSfx = new Audio(`${PATH}/assets/SE_00049.wav`);
     this.playerChargeSfx = new Audio(`${PATH}/assets/SE_00016.wav`);
-    
+    this.bgm = new Audio(`${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`);
+    this.bgm.loop = true;
+
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
   }
@@ -190,6 +192,8 @@ class Game {
     this.player.maxHealth = STARTING_HEALTH;
     this.player.health = STARTING_HEALTH;
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
+    this.playSound(this.bgm, 0.4);
+    this.bgm.currentTime = 0;
   }
 
   endGame() {

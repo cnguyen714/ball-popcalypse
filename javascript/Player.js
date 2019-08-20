@@ -182,7 +182,6 @@ class Player extends GameObject {
         this.game.playSound(this.game.playerBeamSfx, 0.4);
       }
       setTimeout(soundCb.bind(this), this.game.normalTimeDelta * freezeTime);
-      
     }
   }
 
@@ -287,6 +286,13 @@ class Player extends GameObject {
         this.mousePos.y >= 0  &&
         this.mousePos.y <= 100 ) {
           this.game.mute = !this.game.mute;
+          if (this.game.bgm.volume === 0) {
+            this.game.bgm.volume = 0.4;
+            this.game.bgm.play();
+          } else {
+            this.game.bgm.volume = 0;
+            this.game.bgm.pause();
+          }
         }
     });
 

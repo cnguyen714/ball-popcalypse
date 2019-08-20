@@ -180,6 +180,8 @@ class Game {
     this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
     this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
     this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
+
+    this.bgm.pause();
   }
 
   startGame() {

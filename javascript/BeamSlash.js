@@ -124,6 +124,7 @@ class BeamSlash extends Particle {
 
       // combo finisher
       if (this.combo === 3) {
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
         let slash = new BeamSlash(this.game, -1, 40);
         slash.damage = this.damage * 20;
         slash.color = "orange";

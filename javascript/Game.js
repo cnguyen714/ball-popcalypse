@@ -85,6 +85,9 @@ class Game {
     this.defeatSfx = new Audio(`${PATH}/assets/DEFEATED.wav`);
     this.enemyDeathSfx = new Audio(`${PATH}/assets/boom2.wav`);
     this.playerShootSfx = new Audio(`${PATH}/assets/laser7.wav`);
+    this.playerSlashSfx = new Audio(`${PATH}/assets/SE_00064.wav`);
+    this.playerBeamSfx = new Audio(`${PATH}/assets/SE_00049.wav`);
+    this.playerChargeSfx = new Audio(`${PATH}/assets/SE_00016.wav`);
     
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
@@ -324,7 +327,7 @@ class Game {
           let soundCount = 0;
           this.entities.filter(entity => !entity.alive).forEach(entity => {
             if (soundCount <= soundLimit) {
-              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
+              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.2);
             } else {
               soundCount++;
             }

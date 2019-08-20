@@ -95,7 +95,11 @@ class Beam extends Particle {
         //   obj.vel.add(diff.multiply(this.knockback));
         // }
         obj.health -= this.damage;
-        if (obj.health <= 0) obj.alive = false;
+        if (obj.health <= 0) {
+          obj.alive = false;
+        } else {
+          this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.15);
+        }
         let color;
         switch (this.combo) {
           case -2:

@@ -130,7 +130,9 @@ class Player extends GameObject {
       this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
       this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
-      this.dashDuration = DASH_TIME;      
+      this.dashDuration = DASH_TIME;
+      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
+
     }
   }
 
@@ -146,8 +148,11 @@ class Player extends GameObject {
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.delayedParticles.push(beam);
-      this.game.freeze(15);
+      let freezeTime = 15;
+      this.game.freeze(freezeTime);
       this.invul = 5;
+      let kb = this.aim.dup().normalize().multiply(-75);
+      this.vel.add(kb);
 
       let cb = function() {
         this.length *= 0.70;
@@ -170,8 +175,14 @@ class Player extends GameObject {
       explosion2.aliveTime = 5;
       this.game.vanity.push(explosion2);
 
-      let kb = this.aim.dup().normalize().multiply(-75);
-      this.vel.add(kb);
+      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
+
+      let soundCb = function() {
+        // this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
+        this.game.playSound(this.game.playerBeamSfx, 0.4);
+      }
+      setTimeout(soundCb.bind(this), this.game.normalTimeDelta * freezeTime);
+      
     }
   }
 

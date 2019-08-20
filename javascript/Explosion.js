@@ -48,7 +48,7 @@ class Explosion extends Particle {
     } else {
       this.ctx.save();
 
-      this.r += 2;
+      this.r *= 1.1;
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";

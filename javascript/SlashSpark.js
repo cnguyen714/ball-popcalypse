@@ -33,6 +33,7 @@ class SlashSpark extends Particle {
     this.initialTime = this.aliveTime;
     this.rotation = rotation;
     this.paused = pauseState;
+    this.cb = () => {};
 
     this.offsets = [];
     this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
@@ -57,7 +58,7 @@ class SlashSpark extends Particle {
         this.color = COLOR.CRIT;
         break;
       case -2:
-        this.angle = (Math.atan2(this.game.player.aim.y, this.game.player.aim.x));
+        // this.angle = (Math.atan2(this.aim.y, this.aim.x));
         this.color = COLOR.CANNON;
         break;
       case -3:
@@ -106,17 +107,25 @@ class SlashSpark extends Particle {
     this.angle += this.rotation;
     // transient effect
     this.width *= 0.85;
-    if(this.combo === -1) {
-      this.length *= 1.005;
-    } else {
+    switch(this.combo) {
+      case -1:
+        this.length *= 1.005;
+        break;
+      case -2:
+        this.length *= 0.95;
+        break;
+      default:
       // this will alias the edges
-      this.length *= 1.001;
+        this.length *= 1.001;
+        break;
     }
 
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
     this.aliveTime--;
+    this.cb();
+
   }
 
   draw() {
@@ -127,7 +136,7 @@ class SlashSpark extends Particle {
       } else {
         color = [0, 0, 0]
       }
-      this.drawRect(0, color, 1, 1.5);
+      this.drawRect(0, color, 1    , 1.5);
       this.drawRect(0, color, 3 / 4, 1.55);
       this.drawRect(0, color, 1 / 3, 1.58);
       // this.drawRect(this.offsets[1]);

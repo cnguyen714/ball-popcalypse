@@ -5,7 +5,7 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import Beam from "./Beam";
 
-const WIDTH = 45;
+const WIDTH = 65;
 const LENGTH = 150;
 const KNOCKBACK = 7;
 const DAMAGE = 200;
@@ -21,13 +21,17 @@ const DIRECTION = {
 // Beam factory that creates a new Beams in an arc over a duration
 //
 class BeamSlash extends Particle {
-  constructor(game, combo, addOffset = 0) {
+  constructor(game, 
+      combo, 
+      addOffset = 0,
+      width = WIDTH,
+      length = LENGTH) {
     super(game);
     this.owner = this.game.player;
     this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
     this.color = this.owner.color;
-    this.width = WIDTH;
-    this.length = LENGTH;
+    this.width = width;
+    this.length = length;
     this.damage = DAMAGE;
     this.aliveTime = DURATION;
     this.directions = DIRECTION;

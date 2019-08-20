@@ -3,10 +3,12 @@ import Vector from "./Vector";
 import GameObject from "./GameObject";
 import * as EnemyFactory from './enemy_factory';
 
-import { fireBulletAtCursor, fireBeamAtCursor }from './particle_factory';
+import { fireBulletAtCursor }from './particle_factory';
 import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
+import Explosion from "./Explosion";
+
 import { timingSafeEqual } from "crypto";
 import SlashSpark from "./SlashSpark";
 // import shotSfx from '../assets/laser7.wav';
@@ -18,7 +20,7 @@ const ACCEL = 3;
 const DECEL = 0.9;
 const SPRINT_SPEED = 8;
 const MAX_SPRINT_SPEED = 10;
-const DASH_TIME = 2;
+const DASH_TIME = 1;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
 const POST_DASH_INVUL = 4;
@@ -142,14 +144,25 @@ class Player extends GameObject {
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.delayedParticles.push(beam);
-      this.game.freeze(5);
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, 0, Math.PI / 16, false));
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, Math.PI / 3, Math.PI / 16, false));
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 11, 200, 20, Math.PI * 2 / 3, Math.PI / 16, false));
-      
-      let kb = this.aim.dup().normalize();
-      kb.multiply(100);
-      kb.multiply(-1);
+      this.game.freeze(10);
+      // this.pauseTime = 10;
+
+      let cb = function() {
+        this.length *= 0.70;
+        this.width *= 0.70;
+      }
+      let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, 0, Math.PI / 20, false);
+      let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, Math.PI / 2, Math.PI / 20, false);
+      spark1.cb = cb;
+      spark2.cb = cb;
+      this.game.vanity.push(spark1);
+      this.game.vanity.push(spark2);
+
+      let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
+      explosion1.aliveTime = 5;
+      this.game.vanity.push(explosion1);
+
+      let kb = this.aim.dup().normalize().multiply(-150);
       this.vel.add(kb);
     }
   }
@@ -405,8 +418,6 @@ class Player extends GameObject {
     this.ctx.closePath();
 
     this.ctx.restore();
-
-
   }
 }
 

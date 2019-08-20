@@ -22,7 +22,7 @@ const COLOR = {
 class Beam extends Particle {
   constructor(game, startX, startY, aim, combo = 0) {
     super(game, startX, startY);
-    this.aim = aim || this.game.player.aim;
+    this.aim = aim || this.game.player.aim.dup();
     this.combo = combo || 0;
 
     // Formula to get the radian angle between the Y axis and a point
@@ -99,18 +99,26 @@ class Beam extends Particle {
         let color;
         switch (this.combo) {
           case -2:
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             break;
           case -1:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
+            let explosion1 = new Explosion(this.game, obj.pos.x, obj.pos.y, 50);
+            explosion1.aliveTime = 3;
+            this.game.vanity.push(explosion1);
+
             break;
           default:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 7, 90, 40));
+            let explosion = new Explosion(this.game, obj.pos.x, obj.pos.y, 30);
+            explosion.aliveTime = 3;
+            this.game.vanity.push(explosion);
+
             break;
         }
       }

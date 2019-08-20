@@ -191,7 +191,7 @@ class Game {
 
   endGame() {
     this.state = STATE_OVER;
-    this.freeze(15);
+    this.freeze(10);
     this.player.alive = false;
     this.player.color = 'black'; 
     this.playSound(this.defeatSfx, 0.2);
@@ -359,6 +359,8 @@ class Game {
         break;
 
       case STATE_OVER:
+        if (this.pauseTime > 0) return;
+
         // this.player.update();
 
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
@@ -556,6 +558,13 @@ class Game {
     this.ctx.restore();
   }
 
+  drawFreeze() {
+    this.ctx.save();
+    this.ctx.fillStyle = `rgba(0,0,0,${this.pauseTime / 15})`;
+    this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+    this.ctx.restore();
+  }
+
   draw() {
     // Resize canvas to window every frame
     this.ctx.canvas.width = window.innerWidth;
@@ -574,7 +583,7 @@ class Game {
 
       case STATE_RUNNING:
         // Handle drawing of all game objects
-        
+        this.drawFreeze();;
         this.particles.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         this.entities.forEach(entity => entity.draw());
@@ -588,6 +597,8 @@ class Game {
         break;
 
       case STATE_OVER:
+        this.drawFreeze(); 
+
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
         this.entities.forEach(entity => entity.draw());

@@ -25,6 +25,7 @@ const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
 const POST_DASH_INVUL = 4;
 const CHARGE_MAX = 60;
+// const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2;
 
 const PLAYER_RADIUS = 12;
@@ -34,6 +35,7 @@ const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
 const BEAM_COOLDOWN = 120;
+// const BEAM_COOLDOWN = 10;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -144,25 +146,31 @@ class Player extends GameObject {
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.delayedParticles.push(beam);
-      this.game.freeze(10);
-      // this.pauseTime = 10;
+      this.game.freeze(15);
+      this.invul = 5;
 
       let cb = function() {
         this.length *= 0.70;
         this.width *= 0.70;
       }
-      let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, 0, Math.PI / 20, false);
-      let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, Math.PI / 2, Math.PI / 20, false);
+      let baseAngle = Math.floor(Math.random() * 360) * Math.PI / 180;
+      let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle, Math.PI / 20, false);
+      let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle + Math.PI / 2, Math.PI / 20, false);
       spark1.cb = cb;
       spark2.cb = cb;
       this.game.vanity.push(spark1);
       this.game.vanity.push(spark2);
 
-      let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
-      explosion1.aliveTime = 5;
+      let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
+      explosion1.aliveTime = 7;
+      explosion1.color = "rgba(255,255,255,.1)";
       this.game.vanity.push(explosion1);
 
-      let kb = this.aim.dup().normalize().multiply(-150);
+      let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
+      explosion2.aliveTime = 5;
+      this.game.vanity.push(explosion2);
+
+      let kb = this.aim.dup().normalize().multiply(-75);
       this.vel.add(kb);
     }
   }

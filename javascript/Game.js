@@ -560,7 +560,7 @@ class Game {
 
   drawFreeze() {
     this.ctx.save();
-    this.ctx.fillStyle = `rgba(0,0,0,${this.pauseTime / 15})`;
+    this.ctx.fillStyle = `rgba(0,0,0,${this.pauseTime / 10})`;
     this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
     this.ctx.restore();
   }

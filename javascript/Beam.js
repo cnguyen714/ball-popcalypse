@@ -139,6 +139,12 @@ class Beam extends Particle {
     if (this.aliveTime >= this.initialTime - 1 && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
+      if( this.combo === -2) {
+        let explosion = new Explosion(this.game, this.pos.x, this.pos.y, 100);
+        explosion.color = "red";
+        explosion.aliveTime = 7;
+        this.game.vanity.push(explosion);
+      }
     }
     if (this.aliveTime <= 0) {
       this.alive = false;

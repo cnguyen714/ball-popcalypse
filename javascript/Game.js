@@ -319,10 +319,10 @@ class Game {
           }
 
           // Generate enemies -
-          // Stop making enemies if you miss too many frame deadlines
+          // Stop making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam
           let spawnRate = 20 - Math.floor(this.difficulty);
           spawnRate = spawnRate <= 1 ? 1 : spawnRate;
-          if (this.loopCount % (BASE_SPAWN_RATE + spawnRate) === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
+          if (this.loopCount % (BASE_SPAWN_RATE + spawnRate) === 0 && (this.fps >= MIN_FRAME_RATE || this.player.beamCooldown > 0) && this.loopCount > 60) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           }
 
@@ -331,8 +331,7 @@ class Game {
           let soundCount = 0;
           this.entities.filter(entity => !entity.alive).forEach(entity => {
             if (soundCount <= soundLimit) {
-              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.2);
-            } else {
+              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
               soundCount++;
             }
             this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r, entity.vel))
@@ -396,6 +395,8 @@ class Game {
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
 
+        this.vanity = this.vanity.filter(entity => entity.alive);
+        this.vanity.forEach(entity => entity.update());
 
         // this.restartGame();
         break;
@@ -608,6 +609,7 @@ class Game {
 
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
+        this.vanity.forEach(entity => entity.draw());
         this.player.draw();
         this.menus.forEach(entity => entity.draw());
         this.drawFPS();

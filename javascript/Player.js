@@ -132,7 +132,6 @@ class Player extends GameObject {
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
-
     }
   }
 
@@ -177,11 +176,9 @@ class Player extends GameObject {
 
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
 
-      let soundCb = function() {
-        // this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
+      setTimeout(function() {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.4);
-      }
-      setTimeout(soundCb.bind(this), this.game.normalTimeDelta * freezeTime);
+      }, this.game.normalTimeDelta * freezeTime);
     }
   }
 

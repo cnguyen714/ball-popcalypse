@@ -606,10 +606,11 @@ class Game {
       case STATE_OVER:
         this.drawFreeze(); 
 
+        this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
         this.player.draw();
-        this.entities.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
+        this.drawFPS();
       break;
       default:
         break;

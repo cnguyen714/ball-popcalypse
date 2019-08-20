@@ -27,6 +27,11 @@ class Explosion extends Particle {
       this.alive = false;
     }
     this.aliveTime--;
+
+    if (this.aliveTime <= 5) {
+      this.r *= 1.11;
+    }
+
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
@@ -48,7 +53,6 @@ class Explosion extends Particle {
     } else {
       this.ctx.save();
 
-      this.r *= 1.11;
       this.ctx.beginPath();
       this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
       this.ctx.fillStyle = "rgba(0,0,0,0)";

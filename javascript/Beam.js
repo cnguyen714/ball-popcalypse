@@ -10,7 +10,7 @@ const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
-const DURATION = 7;
+const DURATION = 8;
 // const COLOR = "white";
 
 const COLOR = {
@@ -159,7 +159,7 @@ class Beam extends Particle {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
-    if (this.aliveTime > this.initialTime - 3) {
+    if (this.aliveTime > this.initialTime - 2) {
       this.ctx.save();
 
       this.ctx.fillStyle = this.color;
@@ -170,17 +170,18 @@ class Beam extends Particle {
       this.drawRect();
 
       this.ctx.restore();
+      this.width *= 1.1;
     } else {
       this.ctx.save();
 
-      this.width *= 0.85;
+      this.width *= 0.7;
       
       this.ctx.shadowBlur = 20;
       // this.ctx.shadowColor = "white";
       this.ctx.shadowColor = "white";
       // this.ctx.fillStyle = "gray";
 
-      this.ctx.fillStyle = `rgba(${150 * this.aliveTime / (this.initialTime - 5)},${150 * this.aliveTime / (this.initialTime - 5)},${150 * this.aliveTime / (this.initialTime - 5)},0.7)`;
+      this.ctx.fillStyle = `rgba(200,200,200,${this.aliveTime / (this.initialTime - 5) * 0.7})`;
       this.ctx.strokeStyle = "white";
 
       this.drawRect();

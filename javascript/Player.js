@@ -147,7 +147,7 @@ class Player extends GameObject {
       this.charge -= CHARGE_MAX;
       this.beamCooldown = BEAM_COOLDOWN;
       this.game.delayedParticles.push(beam);
-      let freezeTime = 15;
+      let freezeTime = 18;
       this.game.freeze(freezeTime);
       this.invul = 5;
       let kb = this.aim.dup().normalize().multiply(-75);

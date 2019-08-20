@@ -40,7 +40,7 @@ const STATE_OVER = "STATE_OVER";
 
 const FPS = 60;
 const NORMAL_TIME_DELTA = 1000 / FPS;
-const MIN_FRAME_RATE = 54; // Limits enemy production to save frames
+const MIN_FRAME_RATE = 50; // Limits enemy production to save frames
 
 const BASE_SPAWN_RATE = 4; // 5
 const DIFFICULTY_START = 1;

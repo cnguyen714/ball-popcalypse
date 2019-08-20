@@ -23,7 +23,7 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 1;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
-const POST_DASH_INVUL = 4;
+const POST_DASH_INVUL = 2;
 const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2;
@@ -34,7 +34,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const SHOOT_COOLDOWN = 0;
-const BEAM_COOLDOWN = 120;
+const BEAM_COOLDOWN = 90;
 // const BEAM_COOLDOWN = 10;
 
 const STATE_WALKING = "STATE_WALKING";
@@ -141,7 +141,7 @@ class Player extends GameObject {
       let beam = new Beam(this.game, this.pos.x, this.pos.y);
       beam.width = 300;
       beam.length = 3000;
-      beam.damage = 3000;
+      beam.damage = 3500;
       beam.knockback = 40;
       beam.color = "red";
       beam.combo = -2;
@@ -179,7 +179,7 @@ class Player extends GameObject {
 
       let soundCb = function() {
         // this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
-        this.game.playSound(this.game.playerBeamSfx, 0.4);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.4);
       }
       setTimeout(soundCb.bind(this), this.game.normalTimeDelta * freezeTime);
     }
@@ -423,6 +423,15 @@ class Player extends GameObject {
         this.addVelocityTimeDelta();
       }
     }
+
+    if (this.game.loopCount % 2) {
+      if (this.charge >= this.chargeMax * 2) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -1, 3, this.r * 2));
+      } else if (this.charge >= this.chargeMax) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -3, 2, this.r * 1.5));
+      }
+    }
+ 
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

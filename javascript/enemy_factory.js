@@ -47,7 +47,7 @@ const makeBoss = function(enemy) {
       enemy.accel = 0.2;
       enemy.maxSpeed = 0.5;
     }
-    enemy.health = 10000;
+    enemy.health = 13000;
     enemy.damage = 50;
     enemy.score = enemy.r * 2;
   }

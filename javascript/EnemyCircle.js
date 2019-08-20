@@ -66,8 +66,8 @@ class EnemyCircle extends GameObject {
       } else {
         player.health -= this.damage;
         player.charge += this.damage;
+        if (this.r > RADIUS) player.invul = 45;
       }
-      if (this.r > RADIUS) player.invul = 45;
       player.game.vanity.push(explosion);
     } 
   }

@@ -170,7 +170,6 @@ class Beam extends Particle {
       this.drawRect();
 
       this.ctx.restore();
-      this.width *= 1.1;
     } else {
       this.ctx.save();
 

@@ -131,7 +131,7 @@ class Player extends GameObject {
       this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
-      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
+      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
     }
   }
 

@@ -44,10 +44,10 @@ const MIN_FRAME_RATE = 50; // Limits enemy production to save frames
 
 const BASE_SPAWN_RATE = 4; // 5
 const DIFFICULTY_START = 1;
-const DIFFICULTY_INTERVAL = 400;
-const DIFFICULTY_MULTIPLIER = 0.05;
-const DIFFICULTY_RATE = 4;
-const MAX_DIFFICULTY = 100;
+const DIFFICULTY_INTERVAL = 60;
+const DIFFICULTY_MULTIPLIER = 0.015;
+const DIFFICULTY_RATE = 1;
+const MAX_DIFFICULTY = 80;
 
 
 const STARTING_HEALTH = 250;
@@ -320,7 +320,7 @@ class Game {
           this.vanity.filter(entity => !entity.paused).forEach(entity => entity.update());
         } else {
           if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
-            this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
+            this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * this.difficultyRate;
           }
           if (this.difficulty > 100) this.difficulty = MAX_DIFFICULTY;
 

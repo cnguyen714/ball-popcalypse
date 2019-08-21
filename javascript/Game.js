@@ -160,16 +160,17 @@ class Game {
         this.ctx.font = '20px sans-serif';
         this.ctx.shadowBlur = 4;
         this.ctx.shadowColor = 'black';
-
+        
+        this.ctx.fillText(`Press a key or mousebutton to start`, xOffset , yOffset);
         this.ctx.drawImage(WASD, xOffset -= 350, yOffset + 40, 180, 150);
-        this.ctx.fillText(`Movement`, xOffset + 85, yOffset + 30);
-        this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 200, yOffset + 3, 200, 180);
-        this.ctx.fillText(`Slash`, xOffset + 100, yOffset + 30);
-        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 200, yOffset + 33, 120, 150);
-        this.ctx.fillText(`Blaster`, xOffset + 50, yOffset + 30);
-        this.ctx.drawImage(SPACEBAR_ICON, xOffset += 200, yOffset + 73, 200, 80);
-        this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 30);
-        this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 110);
+        this.ctx.fillText(`Movement`, xOffset + 85, yOffset + 210);
+        this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 190, yOffset + 13, 200, 180);
+        this.ctx.fillText(`Slash`, xOffset + 100, yOffset + 210);
+        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 190, yOffset + 43, 120, 150);
+        this.ctx.fillText(`Blaster`, xOffset + 50, yOffset + 210);
+        this.ctx.drawImage(SPACEBAR_ICON, xOffset += 170, yOffset + 113, 200, 80);
+        this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 210);
+        this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 150);
       }
       this.ctx.restore();
     }

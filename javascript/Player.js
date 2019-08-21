@@ -20,7 +20,7 @@ const ACCEL = 3;
 const DECEL = 0.9;
 const SPRINT_SPEED = 8;
 const MAX_SPRINT_SPEED = 10;
-const DASH_TIME = 1;
+const DASH_TIME = 0;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
 const POST_DASH_INVUL = 2;
@@ -28,7 +28,7 @@ const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2;
 
-const PLAYER_RADIUS = 12;
+const PLAYER_RADIUS = 11;
 const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
@@ -123,12 +123,12 @@ class Player extends GameObject {
   dash() {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
-      // this.pauseTime = 2;
+      // this.pauseTime = 3;
       this.invul = 5;
 
       this.setAim();
-      this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
-      this.velRestoreDash = this.vel.dup();
+      // this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
+      // this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
@@ -209,7 +209,7 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
-          if (key !== KEY.ENTER) { 
+          if (key !== KEY.ENTER && key !== KEY.SPACE) { 
             this.keyDown[key] = true;
             this.game.startGame();
           }
@@ -348,22 +348,7 @@ class Player extends GameObject {
   }
 
   update() {
-    if (this.shootCooldown > 0) this.shootCooldown--;
-    if (this.dashCooldown > 0) this.dashCooldown--;
-    if (this.beamCooldown > 0) this.beamCooldown--;
-    if (this.slashReset > 0) {
-      this.slashReset--;
-    } else {
-      this.slashCombo = 0;
-    }
-    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = CHARGE_MAX * CHARGE_STACKS;
-    if (this.pauseTime > 0) {;
-      this.pauseTime--;
-      if(this.pauseTime === 0) {
-        this.vel = this.velRestoreDash;
-      }
-      return;
-    }
+    // if player is dead, simplify update loop
     if (!this.alive) {
       this.dampSpeed();
       this.addVelocityTimeDelta();
@@ -371,10 +356,42 @@ class Player extends GameObject {
       this.validatePosition(this.cvs.width, this.cvs.height);
       return;
     }
+
+    if (this.shootCooldown > 0) this.shootCooldown--;
+    if (this.dashCooldown > 0) this.dashCooldown--;
+    if (this.beamCooldown > 0) this.beamCooldown--;
+    if (this.invul >= 0) this.invul--;
+    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = CHARGE_MAX * CHARGE_STACKS;
+
+    // handle combo reset logic
+    if (this.slashReset > 0) {
+      this.slashReset--;
+    } else {
+      this.slashCombo = 0;
+    }
+
+    // add sparks for charge level
+    if (this.game.loopCount % 2) {
+      if (this.charge >= this.chargeMax * 2) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -1, 3, this.r * 2));
+      } else if (this.charge >= this.chargeMax) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -3, 2, this.r * 1.5));
+      }
+    }
     
-    // Calculate facing direction and apply shooting
+    // if player is paused, do not apply movement or actions
+    if (this.pauseTime > 0) {
+      this.pauseTime--;
+      if(this.pauseTime === 0) {
+        // this.vel = this.velRestoreDash;
+      } else {
+        return;
+      }
+    }
+
+    // Calculate facing direction and apply shooting controls
     this.setAim();
-    
+
     if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
@@ -392,7 +409,6 @@ class Player extends GameObject {
       this.dampSpeed();
       this.addVelocityTimeDelta();
       this.applyDecel();
-      if (this.invul >= 0) this.invul--;
     } else if (this.moveState === STATE_DASHING) {
       // dash has ended
       if (this.dashDuration <= 0) {
@@ -419,16 +435,7 @@ class Player extends GameObject {
 
         this.addVelocityTimeDelta();
       }
-    }
-
-    if (this.game.loopCount % 2) {
-      if (this.charge >= this.chargeMax * 2) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -1, 3, this.r * 2));
-      } else if (this.charge >= this.chargeMax) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -3, 2, this.r * 1.5));
-      }
-    }
- 
+    } 
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

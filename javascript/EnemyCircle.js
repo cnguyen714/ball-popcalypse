@@ -13,6 +13,7 @@ const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
+const HEALTH_CAP = 200;
 const DAMAGE = 1;
 const SCORE = 1;
 
@@ -24,6 +25,7 @@ class EnemyCircle extends GameObject {
     this.aiCallback = () => {};
 
     this.health = HEALTH + game.difficulty * 2;
+    if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 
     this.r = RADIUS;
     this.color = COLOR;

@@ -10,7 +10,7 @@ const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
-const DURATION = 8;
+const DURATION = 20;
 // const COLOR = "white";
 
 const COLOR = {
@@ -140,6 +140,7 @@ class Beam extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
+    //
     if (this.aliveTime >= this.initialTime - 1 && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
@@ -150,6 +151,16 @@ class Beam extends Particle {
         this.game.vanity.push(explosion);
       }
     }
+
+    if (this.aliveTime === this.initialTime - 2) {
+      this.width *= 1.5;
+    }
+    if (this.aliveTime > this.initialTime - 2) {
+    } else {
+      this.width *= 0.8;
+      this.length *= 0.99;
+    }
+
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
@@ -173,14 +184,12 @@ class Beam extends Particle {
     } else {
       this.ctx.save();
 
-      this.width *= 0.7;
-      
       this.ctx.shadowBlur = 20;
       // this.ctx.shadowColor = "white";
-      this.ctx.shadowColor = "white";
+      this.ctx.shadowColor = `rgba(230,230,230,${Math.pow(this.aliveTime, 6)/ Math.pow(this.initialTime - 2, 6)})`;
       // this.ctx.fillStyle = "gray";
 
-      this.ctx.fillStyle = `rgba(200,200,200,${this.aliveTime / (this.initialTime - 5) * 0.7})`;
+      this.ctx.fillStyle = `rgba(230,230,230,${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`;
       this.ctx.strokeStyle = "white";
 
       this.drawRect();

@@ -9,7 +9,7 @@ const WIDTH = 65;
 const LENGTH = 150;
 const KNOCKBACK = 7;
 const DAMAGE = 200;
-const DURATION = 7;
+const DURATION = 3;
 const ARC_DEGREE_RATE = 20;
 const DIRECTION = {
   CCW: -1,
@@ -56,7 +56,7 @@ class BeamSlash extends Particle {
       case 3:
         this.direction = DIRECTION.CCW;
         this.arcRate = (ARC_DEGREE_RATE + 10) * Math.PI / 180; 
-        this.aliveTime *= 2;
+        this.aliveTime *= 3;
         this.length *= 0.6;
         this.knockback /= 2;
         this.damage /= 4
@@ -80,6 +80,36 @@ class BeamSlash extends Particle {
     this.aim = new Vector(-x2, -y2);
   }
 
+  iterBeamArc() {
+    let arcRate = this.arcRate * this.direction;
+    let newAim = this.aim.dup();
+    newAim.multiply(1, -1);
+
+    let x2 = newAim.x * Math.cos(arcRate) - newAim.y * Math.sin(arcRate);
+    let y2 = newAim.y * Math.cos(arcRate) + newAim.x * Math.sin(arcRate);
+
+    // debugger
+    this.aim = new Vector(x2, y2);
+
+    let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim, this.combo);
+    p.color = this.color;
+    p.length = this.length;
+    p.width = this.width;
+    p.damage = this.damage;
+    p.knockback = this.knockback;
+    if (this.combo === -1) {
+      this.length += 5;
+      this.width += 5;
+    } else if (this.combo === 3) {
+      this.pos.x = this.owner.pos.x;
+      this.pos.y = this.owner.pos.y;
+      this.length -= 2;
+    } else {
+      this.length -= 2;
+    }
+    this.game.particles.push(p);
+  }
+
   checkCollision(obj) {
     // BeamSlash does not check collision
   }
@@ -91,33 +121,8 @@ class BeamSlash extends Particle {
     // this.pos.y = this.owner.pos.y;
 
     
-    let arcRate = this.arcRate * this.direction ;
-    let newAim = this.aim.dup();
-    newAim.multiply(1, -1);
-    
-    let x2 = newAim.x * Math.cos(arcRate) - newAim.y * Math.sin(arcRate);
-    let y2 = newAim.y * Math.cos(arcRate) + newAim.x * Math.sin(arcRate);
-    
-    // debugger
-    this.aim = new Vector(x2, y2);
-    
-    let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim, this.combo);
-    p.color = this.color;
-    p.length = this.length;
-    p.width = this.width;
-    p.damage = this.damage;
-    p.knockback = this.knockback;
-    if( this.combo === -1) {
-      this.length += 5;
-      this.width += 5;
-    } else if (this.combo === 3) {
-      this.pos.x = this.owner.pos.x;
-      this.pos.y = this.owner.pos.y;
-      this.length -= 2;
-    } else {
-      this.length -= 2;
-    }
-    this.game.particles.push(p);
+    this.iterBeamArc();
+    this.iterBeamArc();
 
     if (this.aliveTime <= 0) {
       this.alive = false;
@@ -126,9 +131,9 @@ class BeamSlash extends Particle {
       if (this.combo === 3) {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.22);
         let slash = new BeamSlash(this.game, -1, 40);
-        slash.damage = this.damage * 20;
+        slash.damage = this.damage * 12;
         slash.color = "orange";
-        slash.knockback = this.knockback * 2.5;
+        slash.knockback = this.knockback * 2;
         slash.aliveTime += 2;
         slash.length += 30;
         this.game.particles.push(slash);

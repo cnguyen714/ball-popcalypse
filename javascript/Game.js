@@ -47,6 +47,8 @@ const DIFFICULTY_START = 1;
 const DIFFICULTY_INTERVAL = 400;
 const DIFFICULTY_MULTIPLIER = 0.05;
 const DIFFICULTY_RATE = 4;
+const MAX_DIFFICULTY = 120;
+
 
 const STARTING_HEALTH = 250;
 
@@ -320,6 +322,7 @@ class Game {
           if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
             this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * DIFFICULTY_RATE;
           }
+          if (this.difficulty > 100) this.difficulty = MAX_DIFFICULTY;
 
           // Generate enemies -
           // Stop making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam

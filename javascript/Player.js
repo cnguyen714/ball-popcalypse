@@ -22,20 +22,20 @@ const SPRINT_SPEED = 8;
 const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 0;
 const DASH_SPEED = 7;
-const DASH_COOLDOWN = 12;
-const POST_DASH_INVUL = 2;
+const DASH_COOLDOWN = 13;
+const POST_DASH_INVUL = 3;
 const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
-const CHARGE_STACKS = 2;
+const CHARGE_STACKS = 2.2;
+const CHARGE_COOLDOWN = 90;
+// const CHARGE_COOLDOWN = 10;
+const SHOOT_COOLDOWN = 0;
 
 const PLAYER_RADIUS = 11;
 const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
-const SHOOT_COOLDOWN = 0;
-const BEAM_COOLDOWN = 90;
-// const BEAM_COOLDOWN = 10;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -145,7 +145,7 @@ class Player extends GameObject {
       beam.color = "red";
       beam.combo = -2;
       this.charge -= CHARGE_MAX;
-      this.beamCooldown = BEAM_COOLDOWN;
+      this.beamCooldown = CHARGE_COOLDOWN;
       this.game.delayedParticles.push(beam);
       let freezeTime = 18;
       this.game.freeze(freezeTime);
@@ -361,7 +361,7 @@ class Player extends GameObject {
     if (this.dashCooldown > 0) this.dashCooldown--;
     if (this.beamCooldown > 0) this.beamCooldown--;
     if (this.invul >= 0) this.invul--;
-    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = CHARGE_MAX * CHARGE_STACKS;
+    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
 
     // handle combo reset logic
     if (this.slashReset > 0) {
@@ -427,7 +427,7 @@ class Player extends GameObject {
           this.dashCooldown = DASH_COOLDOWN;
           this.shootCooldown = this.dashCooldown + 5;
           this.slashCombo++;
-          this.slashReset = DASH_COOLDOWN * 3;
+          this.slashReset = DASH_COOLDOWN * 2;
         }
       } else {
         this.dashDuration--;

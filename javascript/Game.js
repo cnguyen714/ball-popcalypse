@@ -84,12 +84,18 @@ class Game {
 
     this.state = STATE_INIT;
 
+
+    // preload audio
     this.defeatSfx = new Audio(`${PATH}/assets/DEFEATED.wav`);
     this.enemyDeathSfx = new Audio(`${PATH}/assets/boom2.wav`);
     this.playerShootSfx = new Audio(`${PATH}/assets/laser7.wav`);
     this.playerSlashSfx = new Audio(`${PATH}/assets/SE_00064.wav`);
     this.playerBeamSfx = new Audio(`${PATH}/assets/SE_00049.wav`);
     this.playerChargeSfx = new Audio(`${PATH}/assets/SE_00016.wav`);
+    this.playerChargeFollowSfx = new Audio(`${PATH}/assets/SE_00049.wav`);
+    this.enemyResistSlashSfx = new Audio(`${PATH}/assets/SE_00017.wav`);
+    this.enemyHitSfx = new Audio(`${PATH}/assets/impact.wav`);
+
     this.bgm = new Audio(`${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`);
     this.bgm.loop = true;
 
@@ -598,16 +604,14 @@ class Game {
       case STATE_RUNNING:
         // Handle drawing of all game objects
         this.drawFreeze();;
-        this.particles.forEach(entity => entity.draw());
-        this.menus.forEach(entity => entity.draw());
         this.entities.forEach(entity => entity.draw());
-
-        this.drawChargeBar();
+        this.particles.forEach(entity => entity.draw());
         this.vanity.forEach(entity => entity.draw());
-        this.player.draw();
-
+        this.menus.forEach(entity => entity.draw());
+        this.drawChargeBar();
         this.drawUI();
         this.drawHealth();
+        this.player.draw();
         break;
 
       case STATE_OVER:

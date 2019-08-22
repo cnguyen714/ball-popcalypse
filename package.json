@@ -1,5 +1,5 @@
 {
-  "name": "ceaseless-battle",
+  "name": "ball-popcalypse",
   "version": "1.0.0",
   "description": "[Link to Website]()",
   "main": "./javascript/main.js",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cnguyen714/ceaseless-battle.git"
+    "url": "git+https://github.com/cnguyen714/ball-popcalypse.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cnguyen714/ceaseless-battle/issues"
+    "url": "https://github.com/cnguyen714/ball-popcalypse/issues"
   },
-  "homepage": "https://github.com/cnguyen714/ceaseless-battle#readme",
+  "homepage": "https://github.com/cnguyen714/ball-popcalypse#readme",
   "dependencies": {
     "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6"

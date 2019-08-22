@@ -9,12 +9,11 @@ import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
 import Explosion from "./Explosion";
 
-import { timingSafeEqual } from "crypto";
 import SlashSpark from "./SlashSpark";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
-const MAX_SPEED = 6;
+const MAX_SPEED = 7;
 const MIN_SPEED = 0.1;
 const ACCEL = 3;
 const DECEL = 0.9;
@@ -23,7 +22,7 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 0;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 13;
-const POST_DASH_INVUL = 4;
+const POST_DASH_INVUL = 2;
 const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2.2;
@@ -420,7 +419,7 @@ class Player extends GameObject {
         
         this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
         if (this.slashCombo === 3) {
-          this.dashCooldown = DASH_COOLDOWN + 50;
+          this.dashCooldown = DASH_COOLDOWN + 60;
           this.slashCombo = 0;
           this.shootCooldown = this.dashCooldown - 30;
           this.invul += 30;

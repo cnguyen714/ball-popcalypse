@@ -45,6 +45,7 @@ class Beam extends Particle {
 
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
+    if (!this.active) return;
 
     if(!this.hitWidth) this.hitWidth = this.width * HITBOX_RATIO;
     if(!this.hitLength) this.hitLength = this.length * HITBOX_RATIO;
@@ -99,15 +100,16 @@ class Beam extends Particle {
           obj.alive = false;
         } else {
           if (this.combo === 3) {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.05);
-
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
+            this.active = false;
           } else {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.15);
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
           }
         }
         let color;
         switch (this.combo) {
           case 3:
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             break;
           case -2:

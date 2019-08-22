@@ -11,6 +11,7 @@ const KNOCKBACK = 7;
 const DAMAGE = 200;
 const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
+const DERVISH_KB_RATE = 0.1;
 const DIRECTION = {
   CCW: -1,
   CW: 1,
@@ -51,8 +52,10 @@ class BeamSlash extends Particle {
       case 1:
         this.direction = DIRECTION.CCW;
         this.aliveTime += 1;
+        this.damage *= 1.2;
         break;
       case 2:
+        this.damage *= 1.4;
         break;
       case 3:
         this.direction = DIRECTION.CCW;
@@ -60,7 +63,7 @@ class BeamSlash extends Particle {
         this.aliveTime *= 12;
         this.length *= 0.6;
         this.width *= 0.4;
-        this.knockback *= 0.2;
+        this.knockback *= DERVISH_KB_RATE;
         this.damage /= 6;
         break;
       default:
@@ -142,11 +145,11 @@ class BeamSlash extends Particle {
         let slash = new BeamSlash(this.game, -1, 40);
         slash.damage = this.damage * 12;
         slash.color = "orange";
-        slash.knockback = this.knockback * 2;
+        slash.knockback = this.knockback / DERVISH_KB_RATE * 1.5;
         slash.aliveTime += 2;
         slash.length += 30;
         this.game.particles.push(slash);
-        this.game.player.invul += 5;
+        this.game.player.invul = 5;
       }
     }
     this.aliveTime--;

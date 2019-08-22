@@ -64,6 +64,9 @@ class SlashSpark extends Particle {
       case -3:
         this.color = COLOR.CRIT;
         break;
+      case 3:
+        this.color = COLOR.CRIT;
+        break;
       default:
         this.color = COLOR.NORMAL;
         break;

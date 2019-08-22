@@ -23,7 +23,7 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 0;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 13;
-const POST_DASH_INVUL = 3;
+const POST_DASH_INVUL = 4;
 const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2.2;
@@ -80,6 +80,7 @@ class Player extends GameObject {
     this.dashCooldown = 0;
     this.beamCooldown = 0;
     this.invul = 0;
+    this.noclip = 0;
     this.velRestoreDash = new Vector(); 
     this.charge = CHARGE_MAX;
     this.chargeMax = CHARGE_MAX;
@@ -361,6 +362,7 @@ class Player extends GameObject {
     if (this.dashCooldown > 0) this.dashCooldown--;
     if (this.beamCooldown > 0) this.beamCooldown--;
     if (this.invul >= 0) this.invul--;
+    if (this.noclip >= 0) this.noclip--;
     if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
 
     // handle combo reset logic
@@ -421,8 +423,9 @@ class Player extends GameObject {
           this.dashCooldown = DASH_COOLDOWN + 50;
           this.slashCombo = 0;
           this.shootCooldown = this.dashCooldown - 30;
-
-          this.pauseTime = 5;
+          this.invul += 30;
+          this.noclip += 30;
+          // this.pauseTime = 5;
         } else {
           this.dashCooldown = DASH_COOLDOWN;
           this.shootCooldown = this.dashCooldown + 5;

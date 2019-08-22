@@ -5,11 +5,11 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import Beam from "./Beam";
 
-const WIDTH = 65;
+const WIDTH = 50;
 const LENGTH = 150;
 const KNOCKBACK = 7;
 const DAMAGE = 200;
-const DURATION = 3;
+const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
 const DIRECTION = {
   CCW: -1,
@@ -50,16 +50,18 @@ class BeamSlash extends Particle {
         break;
       case 1:
         this.direction = DIRECTION.CCW;
+        this.aliveTime += 1;
         break;
       case 2:
         break;
       case 3:
         this.direction = DIRECTION.CCW;
-        this.arcRate = (ARC_DEGREE_RATE + 10) * Math.PI / 180; 
-        this.aliveTime *= 3;
+        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180; 
+        this.aliveTime *= 12;
         this.length *= 0.6;
-        this.knockback /= 2;
-        this.damage /= 4
+        this.width *= 0.4;
+        this.knockback *= 0.2;
+        this.damage /= 6;
         break;
       default:
           break;
@@ -103,7 +105,7 @@ class BeamSlash extends Particle {
     } else if (this.combo === 3) {
       this.pos.x = this.owner.pos.x;
       this.pos.y = this.owner.pos.y;
-      this.length -= 2;
+      this.length *= 0.99;
     } else {
       this.length -= 2;
     }
@@ -122,7 +124,14 @@ class BeamSlash extends Particle {
 
     
     this.iterBeamArc();
-    this.iterBeamArc();
+    if (this.combo === -1 || this.combo === 3 || this.combo === 0) {
+      this.iterBeamArc();
+      this.aliveTime--;
+    }
+    if (this.combo === 3) {
+      this.iterBeamArc();
+      this.aliveTime--;
+    }
 
     if (this.aliveTime <= 0) {
       this.alive = false;
@@ -137,6 +146,7 @@ class BeamSlash extends Particle {
         slash.aliveTime += 2;
         slash.length += 30;
         this.game.particles.push(slash);
+        this.game.player.invul += 5;
       }
     }
     this.aliveTime--;

@@ -49,6 +49,7 @@ class EnemyCircle extends GameObject {
 
   // Check if enemies collide with the player
   checkAndHitPlayer(player) {
+    if (player.noclip > 0) return;
     let diff = Vector.difference(this.pos, player.pos);
     let distSqr = diff.dot(diff);
 

@@ -98,10 +98,18 @@ class Beam extends Particle {
         if (obj.health <= 0) {
           obj.alive = false;
         } else {
-          this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.15);
+          if (this.combo === 3) {
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.05);
+
+          } else {
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.15);
+          }
         }
         let color;
         switch (this.combo) {
+          case 3:
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
+            break;
           case -2:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             break;

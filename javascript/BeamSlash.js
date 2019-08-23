@@ -53,16 +53,21 @@ class BeamSlash extends Particle {
         this.direction = DIRECTION.CCW;
         this.aliveTime += 1;
         this.damage *= 1.2;
+        this.length *= 1.2;
+        this.width *= 1.2;
         break;
       case 2:
-        this.damage *= 1.4;
+        this.aliveTime += 1;
+        this.damage *= 1.2;
+        this.length *= 1.2;
+        this.width *= 1.2;
         break;
       case 3:
         this.direction = DIRECTION.CCW;
         this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180; 
-        this.aliveTime *= 12;
-        this.length *= 0.6;
-        this.width *= 0.4;
+        this.aliveTime *= 13;
+        this.length *= 0.60;
+        this.width *= 0.60;
         this.knockback *= DERVISH_KB_RATE;
         this.damage /= 6;
         break;
@@ -70,7 +75,7 @@ class BeamSlash extends Particle {
           break;
     }
 
-    this.startOffsetDegree = -addOffset + ARC_DEGREE_RATE * (this.aliveTime / 2);
+    this.startOffsetDegree = -addOffset + ARC_DEGREE_RATE * (this.aliveTime / 4);
 
 
     this.aim = this.owner.aim;
@@ -108,7 +113,7 @@ class BeamSlash extends Particle {
     } else if (this.combo === 3) {
       this.pos.x = this.owner.pos.x;
       this.pos.y = this.owner.pos.y;
-      this.length *= 0.99;
+      this.length *= 0.997;
     } else {
       this.length -= 2;
     }

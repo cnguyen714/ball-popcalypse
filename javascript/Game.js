@@ -253,11 +253,17 @@ class Game {
           this.ctx.fillStyle = 'white';
           this.ctx.font = '20px sans-serif';
           
-          this.ctx.fillText(`Score: ${this.game.score}`, this.cvs.width / 2 - 30, this.cvs.height / 2 - 40);
-          this.ctx.fillText(`Highscore: ${this.game.highscore}`, this.cvs.width / 2 - 30, this.cvs.height / 2 - 20 );
-          this.ctx.fillText(`Time: ${this.time}`, this.cvs.width / 2 - 30, this.cvs.height / 2 );
-          this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, this.cvs.width / 2 - 30, this.cvs.height / 2 + 20);
-          this.ctx.fillText(`Press [Enter] to restart`, this.cvs.width / 2 - 60, this.cvs.height / 2 + 80);
+          this.ctx.fillText(`Score: ${this.game.score}`, this.cvs.width / 2 - 70, this.cvs.height / 2 - 40);
+          this.ctx.fillText(`Highscore: ${this.game.highscore}`, this.cvs.width / 2 - 70, this.cvs.height / 2 - 20 );
+          this.ctx.fillText(`Time: ${this.time}`, this.cvs.width / 2 - 70, this.cvs.height / 2 );
+          this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, this.cvs.width / 2 - 70, this.cvs.height / 2 + 20);
+          this.ctx.textAlign = 'center';
+
+          this.ctx.fillText(`Press [Enter] to restart`, this.cvs.width / 2,  this.cvs.height / 2 + 80);
+
+          this.ctx.textAlign = 'right';
+
+          this.ctx.fillText("♪♪  7th Dragon OST || Battlefield - Swords Bursting (Retro Ver.)", this.cvs.width - 20, this.cvs.height - 20);
         }
         this.ctx.restore();
       }

@@ -48,6 +48,12 @@ class BeamSlash extends Particle {
         break;
       case -1:
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
+        this.damage = this.damage * 4;
+        this.color = "orange";
+        this.knockback = this.knockback * 1.4;
+        this.aliveTime += 2;
+        this.length += 30;
+        this.game.player.invul = 7;
         break;
       case 1:
         this.direction = DIRECTION.CCW;
@@ -64,12 +70,12 @@ class BeamSlash extends Particle {
         break;
       case 3:
         this.direction = DIRECTION.CCW;
-        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180; 
+        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75; 
         this.aliveTime *= 13;
         this.length *= 0.60;
         this.width *= 0.60;
         this.knockback *= DERVISH_KB_RATE;
-        this.damage /= 6;
+        this.damage /= 5;
         break;
       default:
           break;
@@ -147,14 +153,7 @@ class BeamSlash extends Particle {
       // combo finisher
       if (this.combo === 3) {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.22);
-        let slash = new BeamSlash(this.game, -1, 40);
-        slash.damage = this.damage * 12;
-        slash.color = "orange";
-        slash.knockback = this.knockback / DERVISH_KB_RATE * 1.5;
-        slash.aliveTime += 2;
-        slash.length += 30;
-        this.game.particles.push(slash);
-        this.game.player.invul = 5;
+        this.game.particles.push(new BeamSlash(this.game, -1, 40));
       }
     }
     this.aliveTime--;

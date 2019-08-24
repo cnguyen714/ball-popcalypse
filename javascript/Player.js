@@ -434,7 +434,6 @@ class Player extends GameObject {
       } else {
         this.dashDuration--;
         this.vel.add(this.aim.normalize().multiply(DASH_SPEED));
-
         this.addVelocityTimeDelta();
       }
     } 

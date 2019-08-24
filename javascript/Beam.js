@@ -3,6 +3,7 @@ import EnemyCircle from "./EnemyCircle";
 import Explosion from "./Explosion";
 
 import Particle from "./Particle";
+import DamageNumber from "./DamageNumber";
 import SlashSpark from "./SlashSpark";
 
 const WIDTH = 60;
@@ -89,9 +90,14 @@ class Beam extends Particle {
         // Invert Y axis again to use diff vector for knockback
         // diff.multiply(new Vector(1, -1));
         // if (this.combo === -2) {
-          let knockStraight = new Vector(x, y);
-          // let knockStraight = this.game.player.aim.dup().normalize();
+        let knockStraight = new Vector(x, y);
+        // let knockStraight = this.game.player.aim.dup().normalize();
+        if (this.combo === 3) {
+          obj.vel.add(knockStraight.multiply(-this.knockback));
+
+        } else {
           obj.vel.add(knockStraight.multiply(this.knockback));
+        }
         // } else {
         //   obj.vel.add(diff.multiply(this.knockback));
         // }
@@ -107,6 +113,7 @@ class Beam extends Particle {
           }
         }
         let color;
+        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
         switch (this.combo) {
           case 3:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));

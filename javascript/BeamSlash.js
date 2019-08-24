@@ -48,7 +48,7 @@ class BeamSlash extends Particle {
         break;
       case -1:
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
-        this.damage = this.damage * 4;
+        this.damage = this.damage * 2.5;
         this.color = "orange";
         this.knockback = this.knockback * 1.4;
         this.aliveTime += 2;
@@ -75,7 +75,7 @@ class BeamSlash extends Particle {
         this.length *= 0.60;
         this.width *= 0.60;
         this.knockback *= DERVISH_KB_RATE;
-        this.damage /= 5;
+        this.damage /= 8  ;
         break;
       default:
           break;

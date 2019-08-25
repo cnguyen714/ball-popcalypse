@@ -27,6 +27,7 @@ const CHARGE_MAX = 60;
 // const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2.2;
 const CHARGE_COOLDOWN = 90;
+const BEAM_DAMAGE = 7000;
 // const CHARGE_COOLDOWN = 10;
 const SHOOT_COOLDOWN = 0;
 
@@ -78,6 +79,7 @@ class Player extends GameObject {
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
     this.beamCooldown = 0;
+    this.charging = false;
     this.invul = 0;
     this.noclip = 0;
     this.velRestoreDash = new Vector(); 
@@ -137,48 +139,54 @@ class Player extends GameObject {
 
   fireBeam() {
     if (this.charge >= CHARGE_MAX) {
-      let beam = new Beam(this.game, this.pos.x, this.pos.y);
-      beam.width = 300;
-      beam.length = 3000;
-      beam.damage = 3500;
-      beam.knockback = 40;
-      beam.color = "red";
-      beam.combo = -2;
+      let freezeTime = 18;
       this.charge -= CHARGE_MAX;
       this.beamCooldown = CHARGE_COOLDOWN;
-      this.game.delayedParticles.push(beam);
-      let freezeTime = 18;
-      this.game.freeze(freezeTime);
-      this.invul = 5;
-      let kb = this.aim.dup().normalize().multiply(-75);
-      this.vel.add(kb);
+      this.charging = true;
 
-      let cb = function() {
-        this.length *= 0.70;
-        this.width *= 0.70;
-      }
-      let baseAngle = Math.floor(Math.random() * 360) * Math.PI / 180;
-      let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle, Math.PI / 20, false);
-      let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle + Math.PI / 2, Math.PI / 20, false);
-      spark1.cb = cb;
-      spark2.cb = cb;
-      this.game.vanity.push(spark1);
-      this.game.vanity.push(spark2);
+      setTimeout(function () {
+        let beam = new Beam(this.game, this.pos.x, this.pos.y);
+        beam.width = 300;
+        beam.length = 3000;
+        beam.damage = BEAM_DAMAGE;
+        beam.knockback = 80;
+        beam.color = "red";
+        beam.combo = -2;
+        this.charging = false;
+        
+        this.game.delayedParticles.push(beam);
+        this.game.freeze(freezeTime);
+        this.invul = 5;
+        let kb = this.aim.dup().normalize().multiply(-75);
+        this.vel.add(kb);
 
-      let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
-      explosion1.aliveTime = 7;
-      explosion1.color = "rgba(255,255,255,.1)";
-      this.game.vanity.push(explosion1);
+        let cb = function () {
+          this.length *= 0.70;
+          this.width *= 0.70;
+        }
+        let baseAngle = Math.floor(Math.random() * 360) * Math.PI / 180;
+        let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle, Math.PI / 20, false);
+        let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle + Math.PI / 2, Math.PI / 20, false);
+        spark1.cb = cb;
+        spark2.cb = cb;
+        this.game.vanity.push(spark1);
+        this.game.vanity.push(spark2);
 
-      let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
-      explosion2.aliveTime = 5;
-      this.game.vanity.push(explosion2);
+        let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
+        explosion1.aliveTime = 7;
+        explosion1.color = "rgba(255,255,255,.1)";
+        this.game.vanity.push(explosion1);
 
-      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
+        let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
+        explosion2.aliveTime = 5;
+        this.game.vanity.push(explosion2);
+
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
+      }.bind(this), 200);
 
       setTimeout(function() {
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.4);
-      }, this.game.normalTimeDelta * freezeTime);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
+      }, 300 + this.game.normalTimeDelta * freezeTime);
     }
   }
 
@@ -437,6 +445,23 @@ class Player extends GameObject {
         this.addVelocityTimeDelta();
       }
     } 
+
+    if (this.charging) {
+      let line = new Beam(this.game, this.pos.x, this.pos.y, new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1), 0, false);
+      line.width = 10;
+      line.length = 500;
+      line.knockback = 0;
+      line.silenced = true;
+      line.unpausable = true;
+      // line.aliveTime = 30; 
+      line.cb = function () {
+        this.length *= 0.7;
+        this.width *= 0.8;
+        this.pos.x = this.game.player.pos.x;
+        this.pos.y = this.game.player.pos.y;
+      }
+      this.game.vanity.push(line);
+    }
 
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

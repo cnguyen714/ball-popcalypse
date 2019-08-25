@@ -1,6 +1,7 @@
 import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
+import DamageNumber from "./DamageNumber";
 
 const RADIUS = 4;
 const KNOCKBACK = 10;
@@ -51,6 +52,7 @@ class Particle extends GameObject {
         this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
         obj.vel.add(this.vel);
         obj.health -= this.damage;
+        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
         if (obj.health <= 0) obj.alive = false;
       }
     }

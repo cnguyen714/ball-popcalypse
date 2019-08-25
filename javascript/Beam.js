@@ -21,7 +21,7 @@ const COLOR = {
 }
 
 class Beam extends Particle {
-  constructor(game, startX, startY, aim, combo = 0) {
+  constructor(game, startX, startY, aim, combo = 0, active = true, length = LENGTH, width = WIDTH) {
     super(game, startX, startY);
     this.aim = aim || this.game.player.aim.dup();
     this.combo = combo || 0;
@@ -29,14 +29,14 @@ class Beam extends Particle {
     // Formula to get the radian angle between the Y axis and a point
     this.angle = Math.atan2(this.aim.y, this.aim.x);
 
-    this.width = WIDTH;
-    this.length = LENGTH;
+    this.width = width;
+    this.length = length;
     this.origin = new Vector(this.pos.x);
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
     this.aliveTime = DURATION;
     // this.activeTime = 5;
-    this.active = true;
+    this.active = active;
     this.initialTime = this.aliveTime;
 
     // this.update = this.update.bind(this);
@@ -105,11 +105,12 @@ class Beam extends Particle {
         if (obj.health <= 0) {
           obj.alive = false;
         } else {
-          if (this.combo === 3) {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
-            this.active = false;
-          } else {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
+          if (!this.silenced) {
+            if (this.combo === 3) {
+              this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
+            } else {
+              this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
+            }
           }
         }
         let color;
@@ -157,8 +158,8 @@ class Beam extends Particle {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
-    //
-    if (this.aliveTime >= this.initialTime - 1 && this.active === true) {
+    
+    if (this.aliveTime >= this.initialTime && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
       if( this.combo === -2) {

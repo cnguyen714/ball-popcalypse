@@ -18,6 +18,8 @@ class GameObject {
     this.alive = true;
     this.pauseTime = 0;
     this.paused = true;
+    this.unpausable = false;
+    this.silenced = false;
 
     this.maxHealth = MAX_HEALTH;
     this.health = MAX_HEALTH;

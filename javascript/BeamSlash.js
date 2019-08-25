@@ -7,8 +7,8 @@ import Beam from "./Beam";
 
 const WIDTH = 50;
 const LENGTH = 150;
-const KNOCKBACK = 7;
-const DAMAGE = 200;
+const KNOCKBACK = 10;
+const DAMAGE = 300;
 const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
 const DERVISH_KB_RATE = 0.1;
@@ -45,6 +45,7 @@ class BeamSlash extends Particle {
 
     switch(this.combo) {
       case 0:
+        this.knockback *= 1.2;
         break;
       case -1:
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
@@ -92,7 +93,6 @@ class BeamSlash extends Particle {
 
     let x2 = newAim.x * Math.cos(angle) - newAim.y * Math.sin(angle);
     let y2 = newAim.y * Math.cos(angle) + newAim.x * Math.sin(angle);
-    // debugger
     this.aim = new Vector(-x2, -y2);
   }
 
@@ -103,8 +103,6 @@ class BeamSlash extends Particle {
 
     let x2 = newAim.x * Math.cos(arcRate) - newAim.y * Math.sin(arcRate);
     let y2 = newAim.y * Math.cos(arcRate) + newAim.x * Math.sin(arcRate);
-
-    // debugger
     this.aim = new Vector(x2, y2);
 
     let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim, this.combo);

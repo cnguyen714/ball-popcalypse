@@ -47,7 +47,7 @@ const DIFFICULTY_START = 1;
 const DIFFICULTY_INTERVAL = 60;
 const DIFFICULTY_MULTIPLIER = 0.035;
 const DIFFICULTY_RATE = 1;
-const MAX_DIFFICULTY = 80;
+const MAX_DIFFICULTY = 110;
 
 
 const STARTING_HEALTH = 250;
@@ -216,20 +216,20 @@ class Game {
 
     let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode1.color = 'white';
-    explode1.knockback = 200;
-    explode1.damage = 0;
+    explode1.knockback = 100;
+    explode1.damage = 10;
     explode1.r = 310;
     this.particles.push(explode1);
     let explode2 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode2.color = 'gray';
     explode2.knockback = 0;
-    explode2.damage = 50;
+    explode2.damage = 40;
     explode2.r = 300;
     this.particles.push(explode2);
     let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
     explode3.color = 'black';
     explode3.knockback = 0; 
-    explode3.damage = 1000;
+    explode3.damage = 999999;
     explode3.r = 100;
     this.particles.push(explode3);
 
@@ -294,7 +294,13 @@ class Game {
   // Typically use this for hitstop
   freeze(n) {
     this.pauseTime = n;
-    this.vanity.forEach(entity => entity.paused = true);
+    this.vanity.forEach(entity => {
+      if (entity.unpausable) {
+        entity.paused = false;
+      } else {
+        entity.paused = true;
+      }
+    });
   }
 
   update() {
@@ -334,7 +340,7 @@ class Game {
           if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
             this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * this.difficultyRate;
           }
-          if (this.difficulty > 100) this.difficulty = MAX_DIFFICULTY;
+          if (this.difficulty > MAX_DIFFICULTY) this.difficulty = MAX_DIFFICULTY;
 
           // Generate enemies -
           // Stop making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam
@@ -385,12 +391,13 @@ class Game {
       case STATE_OVER:
         if (this.pauseTime > 0) return;
 
+        
         // this.player.update();
 
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
         if (this.loopCount % 2 === 0) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
-          // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;          
+          // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;
         }
         this.entities.forEach(entity => {
           let diff = Vector.difference(entity.pos, this.player.pos);

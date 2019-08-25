@@ -1,6 +1,7 @@
 import Vector from "./Vector";
 import EnemyCircle from "./EnemyCircle";
 import Particle from "./Particle";
+import DamageNumber from "./DamageNumber";
 
 const RADIUS = 100;
 const KNOCKBACK = 150;
@@ -34,9 +35,11 @@ class Slam extends Particle {
     if (obj instanceof EnemyCircle) {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         diff.normalize();
-        obj.vel.add(diff.multiply(this.knockback));
+        obj.vel.add(diff.multiply(-this.knockback));
         obj.health -= this.damage;
         if (obj.health <= 0) obj.alive = false;
+        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
+
       }
     }
   }

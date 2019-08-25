@@ -2,10 +2,11 @@ import Vector from "./Vector";
 
 import GameObject from "./GameObject";
 
-const SIZE = 20;
-const DURATION = 60;
+const SIZE = 15;
+const DURATION = 50;
 const FREEZE_DURATION = 20;
 const DEFAULT_TYPE = "BASE";
+const VARIANCE = 70;
 
 const COLOR = {
   NORMAL: [255, 255, 255],
@@ -23,7 +24,7 @@ class DamageNumber extends GameObject {
     type = DEFAULT_TYPE,
     pauseState = true) {
     super(game);
-    this.pos = new Vector(x, y);
+    this.pos = new Vector(x - VARIANCE / 2 + Math.random() * VARIANCE, y - VARIANCE / 2 + Math.random() * VARIANCE);
     this.damage = damage;
     this.size = size;
     this.aliveTime = duration;
@@ -64,7 +65,7 @@ class DamageNumber extends GameObject {
     this.ctx.strokeStyle = color;
     this.ctx.shadowBlur = 1;
     this.ctx.shadowColor = "black";
-    this.ctx.fillText(`${this.damage}`, this.pos.x, this.pos.y);
+    this.ctx.fillText(`${Math.floor(this.damage)}`, this.pos.x, this.pos.y);
     this.ctx.restore();
   }
 

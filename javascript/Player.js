@@ -271,6 +271,14 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
+          if (
+            this.mousePos.x >= 0 &&
+            this.mousePos.x <= 100 &&
+            this.mousePos.y >= 0 &&
+            this.mousePos.y <= 100) {
+              window.location.href = "https://www.linkedin.com/in/cdnguyen714/";
+              return;
+          }
           this.game.startGame();
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
           if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
@@ -309,7 +317,6 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
-          this.game.startGame();
           break;
         case this.game.STATE_RUNNING:
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = false;

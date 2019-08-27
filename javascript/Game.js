@@ -52,6 +52,8 @@ const MAX_DIFFICULTY = 110;
 
 const STARTING_HEALTH = 250;
 
+const LINKED_IN_ICON = new Image();
+LINKED_IN_ICON.src = `${PATH}/assets/iconfinder_square-linkedin_317725.png`;
 const MUTE = new Image(50,50);
 MUTE.src = `${PATH}/assets/mute.png`;
 const VOL = new Image(50, 50);
@@ -179,6 +181,8 @@ class Game {
         this.ctx.drawImage(SPACEBAR_ICON, xOffset += 170, yOffset + 113, 200, 80);
         this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 210);
         this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 150);
+
+        this.ctx.drawImage(LINKED_IN_ICON, 10, 10, 80, 80);
       }
       this.ctx.restore();
     }

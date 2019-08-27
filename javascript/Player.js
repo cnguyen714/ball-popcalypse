@@ -447,18 +447,18 @@ class Player extends GameObject {
     } 
 
     if (this.charging) {
-      let line = new Beam(this.game, this.pos.x, this.pos.y, new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1), 0, false);
+      let line  = new Beam(this.game, this.pos.x, this.pos.y, new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1), 0, false);
       line.width = 10;
-      line.length = 500;
+      line.length = 400;
       line.knockback = 0;
       line.silenced = true;
       line.unpausable = true;
-      // line.aliveTime = 30; 
+      line.aliveTime = 90; 
       line.cb = function () {
-        this.length *= 0.7;
+        this.length *= 0.9;
         this.width *= 0.8;
-        this.pos.x = this.game.player.pos.x;
-        this.pos.y = this.game.player.pos.y;
+        // this.pos.x = this.game.player.pos.x;
+        // this.pos.y = this.game.player.pos.y;
       }
       this.game.vanity.push(line);
     }

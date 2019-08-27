@@ -395,7 +395,28 @@ class Game {
       case STATE_OVER:
         if (this.pauseTime > 0) return;
 
-        
+        let randDir = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+        let randPos = randDir.dup().multiply(400);
+        let diffFrac = Vector.difference(this.player.pos, randPos).multiply(1/20);
+        // debugger
+        let line = new Beam(this, this.player.pos.x + randPos.x, 
+          this.player.pos.y + randPos.y, randDir, 0, false);
+        line.width = 20;
+        line.length = 4000;
+        line.knockback = 0;
+        line.silenced = true;
+        line.unpausable = true;
+        line.aliveTime = 60;
+        line.cb = function () {
+          this.length *= 0.85;
+          this.width *= 0.7;
+          this.pos.subtract(randDir.multiply(1.5));
+          // this.pos.x = this.game.player.pos.x;
+          // this.pos.y = this.game.player.pos.y;
+        }
+        this.vanity.push(line);
+
+
         // this.player.update();
 
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
@@ -416,7 +437,7 @@ class Game {
           //   let sound = new Audio("../assets/boom2.wav");
           //   sound.play();
           // }
-          this.particles.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
+          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
         });
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
@@ -634,8 +655,8 @@ class Game {
       case STATE_OVER:
         this.drawFreeze(); 
 
-        this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
+        this.entities.forEach(entity => entity.draw());
         this.vanity.forEach(entity => entity.draw());
         this.player.draw();
         this.menus.forEach(entity => entity.draw());

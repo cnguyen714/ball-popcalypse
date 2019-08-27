@@ -147,7 +147,7 @@ class Player extends GameObject {
       setTimeout(function () {
         let beam = new Beam(this.game, this.pos.x, this.pos.y);
         beam.width = 300;
-        beam.length = 3000;
+        beam.length = 4000;
         beam.damage = BEAM_DAMAGE;
         beam.knockback = 80;
         beam.color = "red";

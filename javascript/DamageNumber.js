@@ -4,7 +4,7 @@ import GameObject from "./GameObject";
 
 const SIZE = 15;
 const DURATION = 50;
-const FREEZE_DURATION = 20;
+const FREEZE_DURATION = 10;
 const DEFAULT_TYPE = "BASE";
 const VARIANCE = 70;
 
@@ -28,11 +28,11 @@ class DamageNumber extends GameObject {
     this.damage = damage;
     this.size = size;
     this.aliveTime = duration;
+    this.freezeTime = FREEZE_DURATION;
     this.initialTime = this.aliveTime;
     this.type = type;
     this.paused = pauseState;
     this.cb = () => {};
-
 
     switch (this.type) {
       case "BASE":
@@ -70,12 +70,17 @@ class DamageNumber extends GameObject {
   }
 
   update() {
-    this.pos.y--;
+    if (this.freezeTime >= 0) {
+      this.freezeTime--;
+    } else {
+      this.pos.y--;
+    }
 
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
     this.aliveTime--;
+
     this.cb();
   }
 

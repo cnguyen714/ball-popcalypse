@@ -114,16 +114,18 @@ class Beam extends Particle {
           }
         }
         let color;
-        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
         switch (this.combo) {
           case 3:
+            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             break;
           case -2:
+            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 30, 90));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             break;
           case -1:
+            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 20, 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
@@ -133,6 +135,7 @@ class Beam extends Particle {
 
             break;
           default:
+            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));

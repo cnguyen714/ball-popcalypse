@@ -14,7 +14,7 @@ const COLOR = {
   CANNON: [0, 0, 0],
 }
 //
-// hitspark for beams
+// Damage Number
 //
 class DamageNumber extends GameObject {
   constructor(game, x, y,

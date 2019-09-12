@@ -3,7 +3,7 @@ import Vector from "./Vector";
 import GameObject from "./GameObject";
 import * as EnemyFactory from './enemy_factory';
 
-import { fireBulletAtCursor }from './particle_factory';
+import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
 import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
@@ -29,7 +29,8 @@ const CHARGE_STACKS = 2.2;
 const CHARGE_COOLDOWN = 90;
 const BEAM_DAMAGE = 7000;
 // const CHARGE_COOLDOWN = 10;
-const SHOOT_COOLDOWN = 0;
+const SHOOT_COOLDOWN = 12;
+const SHOOT_SHOTGUN_PELLETS = 50;
 
 const PLAYER_RADIUS = 11;
 const COLOR = '#0d7377';
@@ -72,6 +73,7 @@ class Player extends GameObject {
     this.aim = new Vector();
     this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
     this.shootCooldown = 0;
+    this.shooting = false;
     this.slashReset = 0;
     this.slashCombo = 0;
     this.moveState = STATE_WALKING;
@@ -192,15 +194,22 @@ class Player extends GameObject {
 
   // Fire
   shoot() {
-    if (this.game.loopCount % 5 === 0) {
-      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
+    if (this.shooting === false) {
+      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
+      this.shooting = true;
+      this.shootCooldown = SHOOT_COOLDOWN;
+      for (let i = 0; i < SHOOT_SHOTGUN_PELLETS; i++) {
+        fireBulletAtCursorB(this); 
+      }
+    } else {
+      if (this.game.loopCount % 5 === 0) {
+        this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
+      }
+      fireBulletAtCursor(this);
+      fireBulletAtCursor(this);
+      fireBulletAtCursor(this);
+      fireBulletAtCursor(this);
     }
-
-    this.shootCooldown = SHOOT_COOLDOWN;
-    fireBulletAtCursor(this);
-    fireBulletAtCursor(this);
-    fireBulletAtCursor(this);
-    fireBulletAtCursor(this);
   }
 
 
@@ -410,6 +419,7 @@ class Player extends GameObject {
 
     if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
+    if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
 
     // Apply movement

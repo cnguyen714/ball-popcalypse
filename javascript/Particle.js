@@ -53,7 +53,12 @@ class Particle extends GameObject {
         obj.vel.add(this.vel);
         obj.health -= this.damage;
         this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
-        if (obj.health <= 0) obj.alive = false;
+        if (obj.health <= 0) {
+          obj.alive = false;
+          this.vel.normalize();
+          this.vel.multiply(this.knockback / 2);
+          obj.vel.add(this.vel);
+        }
       }
     }
   }

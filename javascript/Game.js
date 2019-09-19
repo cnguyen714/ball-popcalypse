@@ -26,9 +26,6 @@ python -m SimpleHTTPServer
 
 To-do:
 
-- Impact frame? Flash white ==> black on beam shadow / etcs
-- Style Score box
-- Sword sound/ Beam sound
 
 */
 

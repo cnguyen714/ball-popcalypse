@@ -276,6 +276,23 @@ class Player extends GameObject {
       e.preventDefault();
       let clickType = e.button;
 
+      // If the player's mouse is over the audio icon, toggle audio
+      if (
+        this.mousePos.x >= this.cvs.width - 100 &&
+        this.mousePos.x <= this.cvs.width &&
+        this.mousePos.y >= 0 &&
+        this.mousePos.y <= 100) {
+        this.game.mute = !this.game.mute;
+        if (this.game.bgm.volume === 0) {
+          this.game.bgm.volume = 0.4;
+          this.game.bgm.play();
+        } else {
+          this.game.bgm.volume = 0;
+          this.game.bgm.pause();
+        }
+        return;
+      }
+
       switch (this.game.state) {
         case this.game.STATE_INIT:
           break;
@@ -301,21 +318,6 @@ class Player extends GameObject {
         default:
           break;
       }
-
-      if (
-        this.mousePos.x >= this.cvs.width - 100 &&
-        this.mousePos.x <= this.cvs.width  &&
-        this.mousePos.y >= 0  &&
-        this.mousePos.y <= 100 ) {
-          this.game.mute = !this.game.mute;
-          if (this.game.bgm.volume === 0) {
-            this.game.bgm.volume = 0.4;
-            this.game.bgm.play();
-          } else {
-            this.game.bgm.volume = 0;
-            this.game.bgm.pause();
-          }
-        }
     });
 
     document.addEventListener("mouseup", (e) => {

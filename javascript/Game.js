@@ -264,7 +264,7 @@ class Game {
 
           this.ctx.textAlign = 'right';
 
-          this.ctx.fillText("♪♪  7th Dragon OST || Battlefield - Swords Bursting (Retro Ver.)", this.cvs.width - 20, this.cvs.height - 20);
+          this.ctx.fillText("♪♪  Yuzo Koshiro - 7th Dragon OST || Battlefield - Swords Bursting (Retro Ver.)", this.cvs.width - 20, this.cvs.height - 20);
         }
         this.ctx.restore();
       }

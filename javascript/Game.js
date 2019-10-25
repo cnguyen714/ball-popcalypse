@@ -26,6 +26,7 @@ python -m SimpleHTTPServer
 
 To-do:
 
+Use Web Audio Context to vary pitch/playback speed on sounds like Melee
 
 */
 
@@ -85,6 +86,7 @@ class Game {
 
 
     // preload audio
+    this.audioCtx = new (window.AudioContext || window.webkitAudioContext);
     this.defeatSfx = new Audio(`${PATH}/assets/DEFEATED.wav`);
     this.enemyDeathSfx = new Audio(`${PATH}/assets/boom2.wav`);
     this.playerShootSfx = new Audio(`${PATH}/assets/laser7.wav`);

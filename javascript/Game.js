@@ -81,6 +81,7 @@ class Game {
     this.pauseTime = 0;
     this.mute = false;
     this.filePath = PATH;
+    this.assetsLoaded = false;
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
@@ -146,9 +147,10 @@ class Game {
         enemyHitSfx: bufferList[8],
         bgm: bufferList[9],
       }
-      game.bgm = setupAudio(game.AUDIO_BUFFERS.bgm);
-      game.bgm.source.loop = true;
-      game.bgm.gainNode.gain.value = 0.4;
+      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm);
+      game.bgm.loop = true;
+      // game.bgm.sourceNode.loop = true;
+      // game.bgm.gainNode.gain.value = 0.4;
       // let source0 = context.createBufferSource();
       // let source1 = context.createBufferSource();
       // let source2 = context.createBufferSource();
@@ -186,41 +188,67 @@ class Game {
       // source0.buffer = bufferList[0];
       // source0.connect(context.destination);
       // source0.start(0);
+      game.assetsLoaded = true;
     }
 
-    function setupAudio(buffer) {
-      let obj = {};
+    function createAudio(game, buffer, vol = 1.0) {
       let context = game.audioContext;
-      obj.play = function() {
+      let obj = {};
+      var sourceNode = null,
+          gainNode = null,
+          startedAt = 0,
+          pausedAt = 0,
+          playing = false,
+          volume = vol,
+          loop = false;
+
+      let play = function() {
+        if(game.mute) return;
+        
+        var offset = pausedAt;
+
+        sourceNode = context.createBufferSource();
         if (!context.createGain)
-          context.createGain = context.createGainNode;
-        this.gainNode = context.createGain();
-        let source = context.createBufferSource();
-        source.buffer = buffer;
+        context.createGain = context.createGainNode;
+        gainNode = context.createGain();
+        sourceNode.connect(gainNode);
+        gainNode.connect(context.destination);
+        gainNode.gain.value = volume;
+        sourceNode.buffer = buffer;
+        sourceNode.start(0, offset);
+        sourceNode.loop = loop;
 
-        source.connect(this.gainNode);
-        this.gainNode.connect(context.destination);
-        source.loop = true;
-        if (!source.start)
-          source.start = source.noteOn;
-        source.start(0);
-        this.source = source;
+        startedAt = context.currentTime - offset;
+        pausedAt = 0;
+        playing = true;
       }
 
-      obj.stop = function() {
-        if (!this.source.stop)
-          this.source.stop = source.noteOff;
-        this.source.stop(0);
+      let stop = function() {
+        if (sourceNode) {
+          sourceNode.disconnect();
+          sourceNode.stop(0);
+          sourceNode = null;
+        }
+        pausedAt = 0;
+        startedAt = 0;
+        playing = false;
       }
 
-      obj.toggle = function () {
-        this.playing ? this.stop() : this.play();
-        this.playing = !this.playing;
+      let pause = function () {
+        let elapsed = context.currentTime - startedAt;
+        stop();
+        pausedAt = elapsed;
       };
-      obj.play();
-      obj.stop();
 
-      return obj;
+      return {
+        sourceNode: sourceNode,
+        gainNode: gainNode,
+        play: play,
+        pause: pause,
+        stop: stop,
+        loop: loop,
+        playing: playing,
+      };
     }
   }
 
@@ -319,6 +347,7 @@ class Game {
   }
 
   startGame() {
+    if (!this.assetsLoaded) return;
     this.loopCount = 0;
     this.state = STATE_RUNNING;
     this.menus = [];

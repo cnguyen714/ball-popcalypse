@@ -9,6 +9,7 @@ import Beam from './Beam';
 import Explosion from "./Explosion";
 import GameObject from './GameObject';
 import SlashSpark from './SlashSpark';
+import BufferLoader from './lib/BufferLoader';
 
 
 // My laptop has a performance limit of around 700 particles
@@ -21,6 +22,8 @@ import SlashSpark from './SlashSpark';
 Access this on localhost:8000 by running both:
 npm start
 python -m SimpleHTTPServer
+OR
+py -m http.server
 
 ===
 
@@ -84,9 +87,7 @@ class Game {
 
     this.state = STATE_INIT;
 
-
     // preload audio
-    this.audioCtx = new (window.AudioContext || window.webkitAudioContext);
     this.defeatSfx = new Audio(`${PATH}/assets/DEFEATED.wav`);
     this.enemyDeathSfx = new Audio(`${PATH}/assets/boom2.wav`);
     this.playerShootSfx = new Audio(`${PATH}/assets/laser7.wav`);
@@ -102,6 +103,49 @@ class Game {
 
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
+  }
+
+  initAssets() {
+    var context;
+    var bufferLoader;
+
+    function init() {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      context = new AudioContext();
+
+      bufferLoader = new BufferLoader(
+        context,
+        [
+          `${PATH}/assets/DEFEATED.wav`,
+          `${PATH}/assets/boom2.wav`,
+          `${PATH}/assets/laser7.wav`,
+          `${PATH}/assets/SE_00064.wav`,
+          `${PATH}/assets/SE_00049.wav`,
+          `${PATH}/assets/SE_00016.wav`,
+          `${PATH}/assets/SE_00049.wav`,
+          `${PATH}/assets/SE_00017.wav`,
+          `${PATH}/assets/impact.wav`,
+          `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`
+        ],
+        finishedLoading
+      );
+
+      bufferLoader.load();
+    }
+
+    function finishedLoading(bufferList) {
+      // Create two sources and play them both together.
+      var bgm = context.createBufferSource();
+      // var source2 = context.createBufferSource();
+      bgm.buffer = bufferList[9];
+      // source2.buffer = bufferList[1];
+
+      bgm.connect(context.destination);
+      // source2.connect(context.destination);
+      bgm.start(0);
+      // source2.start(0);
+    }
+    init();
   }
 
   init() {

@@ -7,5 +7,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const game = new Game(cvs, ctx);
   window.game = game;
   
+  game.initAssets();
   game.loop();
 });

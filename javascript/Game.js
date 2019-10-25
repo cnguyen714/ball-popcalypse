@@ -98,54 +98,130 @@ class Game {
     this.enemyResistSlashSfx = new Audio(`${PATH}/assets/SE_00017.wav`);
     this.enemyHitSfx = new Audio(`${PATH}/assets/impact.wav`);
 
-    this.bgm = new Audio(`${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`);
-    this.bgm.loop = true;
+    // this.bgm = new Audio(`${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`);
+    // this.bgm.loop = true;
 
     this.init = this.init.bind(this);
     this.loop = this.loop.bind(this);
   }
 
-  initAssets() {
-    var context;
+  initAudio() {
     var bufferLoader;
+    let game = this;
 
-    function init() {
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      context = new AudioContext();
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.audioContext = new AudioContext();
 
-      bufferLoader = new BufferLoader(
-        context,
-        [
-          `${PATH}/assets/DEFEATED.wav`,
-          `${PATH}/assets/boom2.wav`,
-          `${PATH}/assets/laser7.wav`,
-          `${PATH}/assets/SE_00064.wav`,
-          `${PATH}/assets/SE_00049.wav`,
-          `${PATH}/assets/SE_00016.wav`,
-          `${PATH}/assets/SE_00049.wav`,
-          `${PATH}/assets/SE_00017.wav`,
-          `${PATH}/assets/impact.wav`,
-          `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`
-        ],
-        finishedLoading
-      );
+    bufferLoader = new BufferLoader(
+      this.audioContext,
+      [
+        `${PATH}/assets/DEFEATED.wav`,
+        `${PATH}/assets/boom2.wav`,
+        `${PATH}/assets/laser7.wav`,
+        `${PATH}/assets/SE_00064.wav`,
+        `${PATH}/assets/SE_00049.wav`,
+        `${PATH}/assets/SE_00016.wav`,
+        `${PATH}/assets/SE_00049.wav`,
+        `${PATH}/assets/SE_00017.wav`,
+        `${PATH}/assets/impact.wav`,
+        `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`
+      ],
+      finishedLoading
+    );
 
-      bufferLoader.load();
-    }
+    bufferLoader.load();
+    this.audioBuffer = bufferLoader;
 
     function finishedLoading(bufferList) {
-      // Create two sources and play them both together.
-      var bgm = context.createBufferSource();
-      // var source2 = context.createBufferSource();
-      bgm.buffer = bufferList[9];
-      // source2.buffer = bufferList[1];
 
-      bgm.connect(context.destination);
+      game.AUDIO_BUFFERS = {
+        defeatSfx: bufferList[0],
+        enemyDeathSfx: bufferList[1],
+        playerShootSfx: bufferList[2],
+        playerSlashSfx: bufferList[3],
+        playerBeamSfx: bufferList[4],
+        playerChargeSfx: bufferList[5],
+        playerChargeFollowSfx: bufferList[6],
+        enemyResistSlashSfx: bufferList[7],
+        enemyHitSfx: bufferList[8],
+        bgm: bufferList[9],
+      }
+      game.bgm = setupAudio(game.AUDIO_BUFFERS.bgm);
+      game.bgm.source.loop = true;
+      game.bgm.gainNode.gain.value = 0.4;
+      // let source0 = context.createBufferSource();
+      // let source1 = context.createBufferSource();
+      // let source2 = context.createBufferSource();
+      // let source3 = context.createBufferSource();
+      // let source4 = context.createBufferSource();
+      // let source5 = context.createBufferSource();
+      // let source6 = context.createBufferSource();
+      // let source7 = context.createBufferSource();
+      // let source8 = context.createBufferSource();
+      // let source9 = context.createBufferSource();
+      // source0.buffer = bufferList[0];
+      // source1.buffer = bufferList[1];
+      // source2.buffer = bufferList[2];
+      // source3.buffer = bufferList[3];
+      // source4.buffer = bufferList[4];
+      // source5.buffer = bufferList[5];
+      // source6.buffer = bufferList[6];
+      // source7.buffer = bufferList[7];
+      // source8.buffer = bufferList[8];
+      // source9.buffer = bufferList[9];
+
+      // source0.connect(context.destination);
+      // source1.connect(context.destination);
       // source2.connect(context.destination);
-      bgm.start(0);
-      // source2.start(0);
+      // source3.connect(context.destination);
+      // source4.connect(context.destination);
+      // source5.connect(context.destination);
+      // source6.connect(context.destination);
+      // source7.connect(context.destination);
+      // source8.connect(context.destination);
+      // source9.connect(context.destination);
+      // source0.start(0);
+
+      // let source0 = context.createBufferSource();
+      // source0.buffer = bufferList[0];
+      // source0.connect(context.destination);
+      // source0.start(0);
     }
-    init();
+
+    function setupAudio(buffer) {
+      let obj = {};
+      let context = game.audioContext;
+      obj.play = function() {
+        if (!context.createGain)
+          context.createGain = context.createGainNode;
+        this.gainNode = context.createGain();
+        let source = context.createBufferSource();
+        source.buffer = buffer;
+
+        source.connect(this.gainNode);
+        this.gainNode.connect(context.destination);
+        source.loop = true;
+        if (!source.start)
+          source.start = source.noteOn;
+        source.start(0);
+        this.source = source;
+      }
+
+      obj.stop = function() {
+        if (!this.source.stop)
+          this.source.stop = source.noteOff;
+        this.source.stop(0);
+      }
+
+      obj.toggle = function () {
+        this.playing ? this.stop() : this.play();
+        this.playing = !this.playing;
+      };
+      obj.play();
+      obj.stop();
+
+      return obj;
+    }
   }
 
   init() {
@@ -237,7 +313,9 @@ class Game {
     this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
     this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
 
-    this.bgm.pause();
+    if (this.bgm) {
+      this.bgm.stop();
+    }
   }
 
   startGame() {
@@ -250,8 +328,8 @@ class Game {
     this.player.maxHealth = STARTING_HEALTH;
     this.player.health = STARTING_HEALTH;
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
-    this.playSound(this.bgm, 0.4);
-    this.bgm.currentTime = 0;
+    // this.playSound(this.bgm, 0.4);
+    this.bgm.play();
   }
 
   endGame() {
@@ -326,8 +404,23 @@ class Game {
 
   playSound(sound, vol = 1) {
     if (this.mute) return;
+
     sound.volume = vol;
     sound.play();
+  }
+
+  playAudio(audio, vol = 1.0, loop = false) {
+    if (this.mute) return;
+
+    let source = this.audioContext.createBufferSource();
+    source.buffer = this.audioBuffer.bufferList[audio];
+    let gainNode = this.audioContext.createGain();
+    source.connect(gainNode);
+    
+    gainNode.connect(this.audioContext.destination);
+    gainNode.gain.value = vol;
+    source.loop = loop;
+    source.start(0);
   }
 
   playSoundMany(path, vol = 1) {

@@ -69,6 +69,14 @@ class DeathExplosion extends Particle {
           break;
       }
     }
+
+    switch (this.pattern) {
+      case "BLACKHOLE":
+        this.aliveTime = 50;
+        break;
+      default:
+        break;
+    }
   }
 
 

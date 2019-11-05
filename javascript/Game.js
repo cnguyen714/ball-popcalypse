@@ -601,9 +601,11 @@ class Game {
         this.vanity.push(line);
         
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
+        if (this.loopCount % (2) === 0 && (this.fps >= MIN_FRAME_RATE - 10)) {
+          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
+        }
         if (this.loopCount % 2 === 0) {
           this.particles.push(new DeathExplosion(game, 40, 50, 0, "BLACKHOLE"));
-          this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;
         }
         this.entities.forEach(entity => {

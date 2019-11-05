@@ -54,8 +54,8 @@ class DeathExplosion extends Particle {
       switch (this.pattern) {
         case "BLACKHOLE":
           this.rays.angle.push(Math.random() * 360 * Math.PI / 180);
-          this.rays.length.push(Math.random() * this.length * 20 + this.length );
-          this.rays.width.push(Math.random() * this.width * 15 / 16 + this.width / 16);
+          this.rays.length.push(Math.random() * this.length * 22 + this.length );
+          this.rays.width.push(Math.random() * this.width * 18 / 16 + this.width / 16);
 
           this.rays.dir.push(direction);
           this.rays.offsetRate.push((Math.random() * this.arcRate) * this.rays.dir[i]);
@@ -75,12 +75,12 @@ class DeathExplosion extends Particle {
   drawRects() {
     for (let i = 0; i < NUM_RAYS; i++) {
       this.ctx.save();
-      let color = (this.pattern === "BLACKHOLE" ? 0 : 255);
+      let color = (this.pattern === "BLACKHOLE" ? [0, 0, 0] : [255, 255, 255]);
       let gradient = this.ctx.createLinearGradient(0, 0, this.rays.length[i], this.rays.width[i]);
-      gradient.addColorStop(0, `rgba(${color},${color},${color},1)`);
-      gradient.addColorStop(0.8, `rgba(${color},${color},${color},.7)`);
-      gradient.addColorStop(0.9, `rgba(${color},${color},${color},.1)`);
-      gradient.addColorStop(1, `rgba(${color},${color},${color},0)`);
+      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.8, `rgba(${color[0]},${color[1]},${color[2]},.7)`);
+      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
 
 
@@ -106,7 +106,7 @@ class DeathExplosion extends Particle {
     switch(this.pattern) {
       case "BLACKHOLE":
         for (let i = 0; i < NUM_RAYS; i++) {
-          this.rays.length[i] *= 0.98;
+          this.rays.length[i] *= 0.96;
         }
         break;
       default:
@@ -139,7 +139,6 @@ class DeathExplosion extends Particle {
 
   draw() {
     this.drawRects();
-
     if(this.pattern === "BASE") {
       this.ctx.save();
       this.ctx.beginPath();

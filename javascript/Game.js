@@ -614,6 +614,11 @@ class Game {
             entity.alive = false;
           } else {
             entity.r *= 0.996;
+            // let dist = Vector.difference(this.player.pos, entity.pos);
+            // let length = Math.pow(dist.length, 2);
+            // dist = dist.normalize().multiply(length);
+            // // entity.vel.x += 1 / dist.x;
+            // // entity.vel.y += 1 / dist.y;
           }
         })
         this.entities.filter(entity => !entity.alive).forEach(entity => {

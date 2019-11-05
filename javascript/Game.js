@@ -612,6 +612,8 @@ class Game {
 
           if (entity.r * entity.r + this.player.r * this.player.r  + 100 > distSqr) {
             entity.alive = false;
+          } else {
+            entity.r *= 0.996;
           }
         })
         this.entities.filter(entity => !entity.alive).forEach(entity => {

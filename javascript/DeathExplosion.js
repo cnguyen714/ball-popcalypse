@@ -79,28 +79,6 @@ class DeathExplosion extends Particle {
     }
   }
 
-
-  drawRects() {
-    for (let i = 0; i < NUM_RAYS; i++) {
-      this.ctx.save();
-      let color = (this.pattern === "BLACKHOLE" ? [0, 0, 0] : [255, 255, 255]);
-      let gradient = this.ctx.createLinearGradient(0, 0, this.rays.length[i], this.rays.width[i]);
-      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
-      gradient.addColorStop(0.8, `rgba(${color[0]},${color[1]},${color[2]},.7)`);
-      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
-      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
-      this.ctx.fillStyle = gradient;
-
-
-      this.ctx.translate(this.pos.x + Math.sin(this.rays.angle[i]) * this.rays.width[i] / 2,
-        this.pos.y - Math.cos(this.rays.angle[i]) * this.rays.width[i] / 2);
-      this.ctx.rotate(this.rays.angle[i]);
-      this.ctx.fillRect(0, 0, this.rays.length[i], this.rays.width[i]);
-      this.ctx.restore();   
-    }
-  }
-
-
   checkCollision(obj) {
     // DeathExplosion does not check collision
   }
@@ -143,6 +121,26 @@ class DeathExplosion extends Particle {
 
     this.aliveTime--;
     this.cb();
+  }
+
+  drawRects() {
+    for (let i = 0; i < NUM_RAYS; i++) {
+      this.ctx.save();
+      let color = (this.pattern === "BLACKHOLE" ? [0, 0, 0] : [255, 255, 255]);
+      let gradient = this.ctx.createLinearGradient(0, 0, this.rays.length[i], this.rays.width[i]);
+      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.8, `rgba(${color[0]},${color[1]},${color[2]},.7)`);
+      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      this.ctx.fillStyle = gradient;
+
+
+      this.ctx.translate(this.pos.x + Math.sin(this.rays.angle[i]) * this.rays.width[i] / 2,
+        this.pos.y - Math.cos(this.rays.angle[i]) * this.rays.width[i] / 2);
+      this.ctx.rotate(this.rays.angle[i]);
+      this.ctx.fillRect(0, 0, this.rays.length[i], this.rays.width[i]);
+      this.ctx.restore();
+    }
   }
 
   draw() {

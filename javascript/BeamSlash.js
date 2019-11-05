@@ -30,7 +30,7 @@ class BeamSlash extends Particle {
     super(game);
     this.owner = this.game.player;
     this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
-    this.color = this.owner.color;
+    this.color = Beam.COLOR().PLAYER;
     this.width = width;
     this.length = length;
     this.damage = DAMAGE;
@@ -59,7 +59,7 @@ class BeamSlash extends Particle {
       case "FINISHER":
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
         this.damage = this.damage * 2.5;
-        this.color = "orange";
+        this.color = Beam.COLOR().CRIT;;
         this.knockback = this.knockback * 1.4;
         this.aliveTime += 2;
         this.length += 30;

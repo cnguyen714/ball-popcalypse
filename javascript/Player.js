@@ -157,7 +157,7 @@ class Player extends GameObject {
         beam.length = 4000;
         beam.damage = BEAM_DAMAGE;
         beam.knockback = 80;
-        beam.color = "red";
+        beam.color = Beam.COLOR().CANNON;
         beam.combo = "BEAM";
         this.charging = false;
         
@@ -471,7 +471,8 @@ class Player extends GameObject {
       line.knockback = 0;
       line.silenced = true;
       line.unpausable = true;
-      line.aliveTime = 90; 
+      line.aliveTime = 90;
+      line.color = Beam.COLOR().TEAL;
       line.cb = function () {
         this.length *= 0.9;
         this.width *= 0.8;

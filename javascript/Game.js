@@ -593,6 +593,7 @@ class Game {
         line.silenced = true;
         line.unpausable = true;
         line.aliveTime = 60;
+        line.color = Beam.COLOR().TEAL;
         line.cb = function () {
           this.length *= 0.85;
           this.width *= 0.7;

@@ -14,13 +14,18 @@ const DAMAGE = 80;
 const DURATION = 20;
 // const COLOR = "white";
 
-const COLOR = {
-  NORMAL: [255,255,255],
-  CRIT: [255,255,0],
-  CANNON: [0,0,0]
-}
-
 class Beam extends Particle {
+  static COLOR() {
+    return {
+      NORMAL: [255, 255, 255],
+      CRIT: [255, 165, 0],
+      CANNON: [255, 0, 0],
+      PLAYER: [13, 115, 119],
+      FADE: [230, 230, 230],
+      TEAL: [0, 205, 205],
+    }
+  }
+
   constructor(game, startX, startY, aim, combo = 0, active = true, length = LENGTH, width = WIDTH) {
     super(game, startX, startY);
     this.aim = aim || this.game.player.aim.dup();
@@ -38,6 +43,8 @@ class Beam extends Particle {
     // this.activeTime = 5;
     this.active = active;
     this.initialTime = this.aliveTime;
+
+    this.color = Beam.COLOR().NORMAL;
 
     // this.update = this.update.bind(this);
     // this.draw = this.draw.bind(this);
@@ -113,7 +120,6 @@ class Beam extends Particle {
             }
           }
         }
-        let color;
         switch (this.combo) {
           case this.game.player.maxSlashCombo:
             this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
@@ -192,13 +198,20 @@ class Beam extends Particle {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
-    if (this.aliveTime > this.initialTime - 2) {
+    if (this.aliveTime > this.initialTime - 3) {
       this.ctx.save();
-
-      this.ctx.fillStyle = this.color;
-      this.ctx.strokeStyle = this.color;
-      this.ctx.shadowColor = this.color;
-      this.ctx.strokeStyle = "black";
+      let color = this.color;
+      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
+      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.7)`);
+      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      this.ctx.fillStyle = gradient;
+      this.ctx.fillStyle = color;
+      // this.ctx.strokeStyle = gradient;
+      // this.ctx.shadowColor = gradient;
+      // this.ctx.shadowColor = color;
+      // this.ctx.strokeStyle = "black";
 
       this.drawRect();
 
@@ -207,12 +220,15 @@ class Beam extends Particle {
       this.ctx.save();
 
       this.ctx.shadowBlur = 20;
-      // this.ctx.shadowColor = "white";
-      this.ctx.shadowColor = `rgba(230,230,230,${Math.pow(this.aliveTime, 6)/ Math.pow(this.initialTime - 2, 6)})`;
-      // this.ctx.fillStyle = "gray";
 
-      this.ctx.fillStyle = `rgba(230,230,230,${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`;
-      this.ctx.strokeStyle = "white";
+      let color = Beam.COLOR().FADE;
+      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
+      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`);
+      gradient.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`);
+      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6) / 2})`);
+      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      this.ctx.fillStyle = gradient;
+      // this.ctx.shadowColor = gradient;
 
       this.drawRect();
 

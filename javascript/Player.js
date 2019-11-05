@@ -28,6 +28,7 @@ const CHARGE_MAX = 60;
 const CHARGE_STACKS = 2.2;
 const CHARGE_COOLDOWN = 90;
 const BEAM_DAMAGE = 7000;
+const MAX_COMBOS = 3;
 // const CHARGE_COOLDOWN = 10;
 const SHOOT_COOLDOWN = 12;
 const SHOOT_SHOTGUN_PELLETS = 60;
@@ -76,6 +77,7 @@ class Player extends GameObject {
     this.shooting = false;
     this.slashReset = 0;
     this.slashCombo = 0;
+    this.maxSlashCombo = MAX_COMBOS;
     this.moveState = STATE_WALKING;
     this.dashDuration = 0;
     this.dashDirection = new Vector();
@@ -153,7 +155,7 @@ class Player extends GameObject {
         beam.damage = BEAM_DAMAGE;
         beam.knockback = 80;
         beam.color = "red";
-        beam.combo = -2;
+        beam.combo = "BEAM";
         this.charging = false;
         
         this.game.delayedParticles.push(beam);
@@ -439,7 +441,7 @@ class Player extends GameObject {
         // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
         
         this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
-        if (this.slashCombo === 3) {
+        if (this.slashCombo === this.maxSlashCombo) {
           this.dashCooldown = DASH_COOLDOWN + 60;
           this.slashCombo = 0;
           this.shootCooldown = this.dashCooldown - 30;

@@ -44,10 +44,19 @@ class BeamSlash extends Particle {
 
 
     switch(this.combo) {
+      case this.game.player.maxSlashCombo:
+        this.direction = DIRECTION.CCW;
+        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75;
+        this.aliveTime *= 13;
+        this.length *= 0.60;
+        this.width *= 0.60;
+        this.knockback *= DERVISH_KB_RATE;
+        this.damage /= 8;
+        break;
       case 0:
         this.knockback *= 1.2;
         break;
-      case -1:
+      case "FINISHER":
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
         this.damage = this.damage * 2.5;
         this.color = "orange";
@@ -68,15 +77,6 @@ class BeamSlash extends Particle {
         this.damage *= 1.2;
         this.length *= 1.2;
         this.width *= 1.2;
-        break;
-      case 3:
-        this.direction = DIRECTION.CCW;
-        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75; 
-        this.aliveTime *= 13;
-        this.length *= 0.60;
-        this.width *= 0.60;
-        this.knockback *= DERVISH_KB_RATE;
-        this.damage /= 8  ;
         break;
       default:
           break;
@@ -136,11 +136,12 @@ class BeamSlash extends Particle {
 
     
     this.iterBeamArc();
-    if (this.combo === -1 || this.combo === 3 || this.combo === 0) {
+    if (this.combo === "FINISHER" || this.combo === 0) {
       this.iterBeamArc();
       this.aliveTime--;
     }
-    if (this.combo === 3) {
+    if (this.combo === this.game.player.maxSlashCombo) {
+      this.iterBeamArc();
       this.iterBeamArc();
       this.aliveTime--;
     }
@@ -149,9 +150,9 @@ class BeamSlash extends Particle {
       this.alive = false;
 
       // combo finisher
-      if (this.combo === 3) {
+      if (this.combo === this.game.player.maxSlashCombo) {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.22);
-        this.game.particles.push(new BeamSlash(this.game, -1, 40));
+        this.game.particles.push(new BeamSlash(this.game, "FINISHER", 40));
       }
     }
     this.aliveTime--;

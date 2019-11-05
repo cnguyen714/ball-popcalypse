@@ -54,10 +54,10 @@ class SlashSpark extends Particle {
     // this.aim = new Vector(-x2, -y2);
 
     switch(this.combo) {
-      case -1:
+      case "FINISHER":
         this.color = COLOR.CRIT;
         break;
-      case -2:
+      case "BEAM":
         // this.angle = (Math.atan2(this.aim.y, this.aim.x));
         this.color = COLOR.CANNON;
         break;
@@ -83,11 +83,11 @@ class SlashSpark extends Particle {
 
     let percent = this.aliveTime / this.initialTime;
     let color;
-    if (this.combo === -1) {
+    if (this.combo === "FINISHER") {
       this.aliveTime >= this.initialTime - 2 
         ? color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${1})` 
         : color = `rgba(${colorIn[0]},${colorIn[1]},${colorIn[2]},${percent})`
-    } else if (this.combo === -2) {
+    } else if (this.combo === "BEAM") {
       this.aliveTime >= this.initialTime - 2 
         ? color = `rgba(255,255,255,${1})`
         : color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`
@@ -111,10 +111,10 @@ class SlashSpark extends Particle {
     // transient effect
     this.width *= 0.85;
     switch(this.combo) {
-      case -1:
+      case "FINISHER":
         this.length *= 1.005;
         break;
-      case -2:
+      case "BEAM":
         this.length *= 0.95;
         break;
       default:
@@ -133,7 +133,7 @@ class SlashSpark extends Particle {
 
   draw() {
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
-    if (this.combo === -2) {
+    if (this.combo === "BEAM") {
       if (this.aliveTime >= this.initialTime - 10) {
         color = [255, 255, 255]
       } else {

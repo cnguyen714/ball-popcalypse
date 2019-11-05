@@ -115,20 +115,17 @@ class Beam extends Particle {
         }
         let color;
         switch (this.combo) {
-          case 3:
+          case this.game.player.maxSlashCombo:
             this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             break;
-          case -2:
+          case "BEAM":
             let num = new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 30, 90)
             this.game.vanity.push(num);
-            let numExplosion = new Explosion(this.game, obj.pos.x, obj.pos.y, obj.r + 5);
-            numExplosion.aliveTime = 10;
-            this.game.vanity.push(numExplosion);
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             break;
-          case -1:
+          case "FINISHER":
             this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 20, 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
@@ -169,7 +166,7 @@ class Beam extends Particle {
     if (this.aliveTime >= this.initialTime && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
-      if( this.combo === -2) {
+      if( this.combo === "BEAM") {
         let explosion = new Explosion(this.game, this.pos.x, this.pos.y, 100);
         explosion.color = "red";
         explosion.aliveTime = 7;

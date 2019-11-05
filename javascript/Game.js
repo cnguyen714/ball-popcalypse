@@ -10,6 +10,7 @@ import Explosion from "./Explosion";
 import GameObject from './GameObject';
 import SlashSpark from './SlashSpark';
 import BufferLoader from './lib/BufferLoader';
+import DeathExplosion from './DeathExplosion';
 
 
 // My laptop has a performance limit of around 700 particles
@@ -125,7 +126,9 @@ class Game {
         `${PATH}/assets/SE_00049.wav`,
         `${PATH}/assets/SE_00017.wav`,
         `${PATH}/assets/impact.wav`,
-        `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`
+        `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`,
+        `${PATH}/assets/Retro Vehicle Motor 02.wav`,
+        
       ],
       finishedLoading
     );
@@ -146,9 +149,11 @@ class Game {
         enemyResistSlashSfx: bufferList[7],
         enemyHitSfx: bufferList[8],
         bgm: bufferList[9],
+        preDefeatSfx: bufferList[10],
       }
       game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm);
       game.bgm.loop = true;
+      game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, 1.5);
       // game.bgm.sourceNode.loop = true;
       // game.bgm.gainNode.gain.value = 0.4;
       // let source0 = context.createBufferSource();
@@ -363,29 +368,42 @@ class Game {
 
   endGame() {
     this.state = STATE_OVER;
-    this.freeze(10);
+    this.freeze(90);
     this.player.alive = false;
-    this.player.color = 'black'; 
-    this.playSound(this.defeatSfx, 0.2);
 
-    let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
-    explode1.color = 'white';
-    explode1.knockback = 100;
-    explode1.damage = 10;
-    explode1.r = 310;
-    this.particles.push(explode1);
-    let explode2 = new Slam(game, this.player.pos.x, this.player.pos.y);
-    explode2.color = 'gray';
-    explode2.knockback = 0;
-    explode2.damage = 40;
-    explode2.r = 300;
-    this.particles.push(explode2);
-    let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
-    explode3.color = 'black';
-    explode3.knockback = 0; 
-    explode3.damage = 999999;
-    explode3.r = 100;
-    this.particles.push(explode3);
+    let deathExplosion = new DeathExplosion(game);
+    deathExplosion.unpausable = true;
+    deathExplosion.paused = false;
+    this.vanity.push(deathExplosion);
+    this.preDefeatSfx.play();
+    
+    let postDeath = function() {
+      let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
+      explode1.color = 'white';
+      explode1.knockback = 100;
+      explode1.damage = 10;
+      explode1.r = 310;
+      this.particles.push(explode1);
+      let explode2 = new Slam(game, this.player.pos.x, this.player.pos.y);
+      explode2.color = 'gray';
+      explode2.knockback = 0;
+      explode2.damage = 40;
+      explode2.r = 300;
+      this.particles.push(explode2);
+      let explode3 = new Slam(game, this.player.pos.x, this.player.pos.y);
+      explode3.color = 'black';
+      explode3.knockback = 0; 
+      explode3.damage = 999999;
+      explode3.r = 100;
+      this.particles.push(explode3);
+      this.preDefeatSfx.stop();
+      this.player.color = 'black'; 
+
+      this.playSound(this.defeatSfx, 0.2);
+    }
+
+    postDeath = postDeath.bind(this);
+    setTimeout(postDeath, 1500);
 
     let drawEnd = function() {
       let endGameMenu = new GameObject(game);
@@ -424,7 +442,7 @@ class Game {
       if (this.state === STATE_OVER) this.menus.push(endGameMenu);
     }
     drawEnd = drawEnd.bind(this);
-    setTimeout(drawEnd, 2000);
+    setTimeout(drawEnd, 3500);
   }
 
   restartGame() {
@@ -558,12 +576,15 @@ class Game {
         break;
 
       case STATE_OVER:
-        if (this.pauseTime > 0) return;
+        if (this.pauseTime > 0) {
+          this.vanity = this.vanity.filter(entity => entity.alive);
+          this.vanity.filter(entity => !entity.paused).forEach(entity => entity.update());
+          return;
+        }
 
+        // Add cosmetic "suction effect"        
         let randDir = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
         let randPos = randDir.dup().multiply(400);
-        let diffFrac = Vector.difference(this.player.pos, randPos).multiply(1/20);
-        // debugger
         let line = new Beam(this, this.player.pos.x + randPos.x, 
           this.player.pos.y + randPos.y, randDir, 0, false);
         line.width = 20;
@@ -576,13 +597,8 @@ class Game {
           this.length *= 0.85;
           this.width *= 0.7;
           this.pos.subtract(randDir.multiply(1.5));
-          // this.pos.x = this.game.player.pos.x;
-          // this.pos.y = this.game.player.pos.y;
         }
         this.vanity.push(line);
-
-
-        // this.player.update();
 
         // if (this.loopCount % (Math.floor(SPAWN_RATE * 1.5)) === 0) {
         if (this.loopCount % 2 === 0) {
@@ -598,11 +614,7 @@ class Game {
           }
         })
         this.entities.filter(entity => !entity.alive).forEach(entity => {
-          // if (this.loopCount % 5 === 0) {
-          //   let sound = new Audio("../assets/boom2.wav");
-          //   sound.play();
-          // }
-          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r))
+          this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r));
         });
         this.entities = this.entities.filter(entity => entity.alive);
         this.entities.forEach(entity => entity.update());
@@ -612,8 +624,6 @@ class Game {
 
         this.vanity = this.vanity.filter(entity => entity.alive);
         this.vanity.forEach(entity => entity.update());
-
-        // this.restartGame();
         break;
       default:
         break;
@@ -625,8 +635,6 @@ class Game {
     let cursorSize = 15;
     this.ctx.save();
     this.ctx.beginPath();
-    // this.ctx.arc(this.player.mousePos.x, this.player.mousePos.y, 4, 0, 2 * Math.PI);
-    // this.ctx.fillStyle = "rgba(0,0,0,0)";
     this.ctx.strokeStyle = "black";
     this.ctx.lineWidth = 4;
     this.ctx.shadowBlur = 2;
@@ -666,7 +674,7 @@ class Game {
     this.ctx.restore();
   }
 
-  drawFPS() {
+  drawStats() {
     this.ctx.save();
     this.ctx.fillStyle = 'white';
     this.ctx.font = '12px sans-serif';
@@ -694,7 +702,7 @@ class Game {
     this.ctx.fillText(`Time: ${this.timeSeconds}`, xOffset, yOffset += 20);
     this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, xOffset, yOffset += 20);
     this.ctx.restore();
-    this.drawFPS();
+    this.drawStats();
   }
 
   drawVolControls() {
@@ -738,7 +746,7 @@ class Game {
         if (this.player.chargeMax * 2 <= this.player.charge) {
           this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
           this.ctx.font = '14px sans-serif';
-          this.vanity.push(new SlashSpark(this, xOffset - this.player.chargeMax * 2 + (Math.random() * 2 * this.player.chargeMax) * 2, this.cvs.height - 57, -3, 1, 10));
+          // this.vanity.push(new SlashSpark(this, xOffset - this.player.chargeMax * 2 + (Math.random() * 2 * this.player.chargeMax) * 2, this.cvs.height - 57, -3, 1, 10));
           this.ctx.shadowBlur = 2;
           this.ctx.shadowColor = 'black';
           this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'darkblue' : 'yellow';
@@ -783,7 +791,7 @@ class Game {
 
   drawFreeze() {
     this.ctx.save();
-    this.ctx.fillStyle = `rgba(0,0,0,${this.pauseTime / 10})`;
+    this.ctx.fillStyle = `rgba(15,15,15,${this.pauseTime / 10})`;
     this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
     this.ctx.restore();
   }
@@ -825,7 +833,7 @@ class Game {
         this.vanity.forEach(entity => entity.draw());
         this.player.draw();
         this.menus.forEach(entity => entity.draw());
-        this.drawFPS();
+        this.drawStats();
       break;
       default:
         break;

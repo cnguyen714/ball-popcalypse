@@ -10,6 +10,7 @@ import Beam from "./Beam";
 import Explosion from "./Explosion";
 
 import SlashSpark from "./SlashSpark";
+import DeathExplosion from "./DeathExplosion";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 100; // Offset from edges
@@ -47,6 +48,7 @@ const KEY = {
   A: 65,
   S: 83,
   D: 68,
+  R: 82,
   ENTER: 13,
   UP: 38,
   // LEFT: 37,
@@ -100,6 +102,7 @@ class Player extends GameObject {
       [KEY.A]: false,
       [KEY.S]: false,
       [KEY.D]: false,
+      [KEY.R]: false,
       [KEY.SHIFT]: false,
       [KEY.SPACE]: false,
       [KEY.MOUSE_LEFT]: false,
@@ -221,7 +224,7 @@ class Player extends GameObject {
       if(key === 8) this.health = 0; // BACKSPACE
       if(key === 187) this.game.difficulty++; //EQUAL
       if(key === 189) this.health += 100; //MINUS
-
+    
       // Ignore keys that have not been bound
       if (!Object.values(KEY).includes(key)) return;
       switch (this.game.state) {
@@ -396,9 +399,9 @@ class Player extends GameObject {
     // add sparks for charge level
     if (this.game.loopCount % 2) {
       if (this.charge >= this.chargeMax * 2) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -1, 3, this.r * 2));
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
       } else if (this.charge >= this.chargeMax) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, -3, 2, this.r * 1.5));
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
       }
     }
     

@@ -31,12 +31,10 @@ class Explosion extends Particle {
     if (this.aliveTime <= 5) {
       this.r *= 1.11;
     }
-
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
-
     if (this.aliveTime > 5) {
       this.ctx.save();
 

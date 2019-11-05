@@ -61,7 +61,7 @@ class SlashSpark extends Particle {
         // this.angle = (Math.atan2(this.aim.y, this.aim.x));
         this.color = COLOR.CANNON;
         break;
-      case -3:
+      case "CRIT":
         this.color = COLOR.CRIT;
         break;
       case 3:

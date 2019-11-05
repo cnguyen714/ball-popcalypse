@@ -11,7 +11,7 @@ const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
-const DURATION = 20;
+const DURATION = 10;
 // const COLOR = "white";
 
 class Beam extends Particle {
@@ -223,11 +223,12 @@ class Beam extends Particle {
 
       let color = Beam.COLOR().FADE;
       let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
-      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`);
-      gradient.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6)})`);
-      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 2, 6) / 2})`);
+      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6) * 2})`);
+      gradient.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6)})`);
+      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6) / 2})`);
       gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
+      // this.ctx.fillStyle = "white";
       // this.ctx.shadowColor = gradient;
 
       this.drawRect();

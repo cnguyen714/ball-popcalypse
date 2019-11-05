@@ -49,13 +49,14 @@ class DeathExplosion extends Particle {
     this.pattern = pattern;
 
     for (let i = 0; i < NUM_RAYS; i++) {
+      let direction = Math.floor(Math.random() * 2);
+      if (direction === 0) direction = DIRECTION.CCW;
       switch (this.pattern) {
         case "BLACKHOLE":
           this.rays.angle.push(Math.random() * 360 * Math.PI / 180);
-          this.rays.length.push(Math.random() * this.length * 5 + this.length );
+          this.rays.length.push(Math.random() * this.length * 20 + this.length );
           this.rays.width.push(Math.random() * this.width * 15 / 16 + this.width / 16);
-          let direction = Math.floor(Math.random() * 2);
-          if (direction === 0) direction = DIRECTION.CCW;
+
           this.rays.dir.push(direction);
           this.rays.offsetRate.push((Math.random() * this.arcRate) * this.rays.dir[i]);
           break;
@@ -63,8 +64,6 @@ class DeathExplosion extends Particle {
           this.rays.angle.push(Math.random() * 360 * Math.PI / 180);
           this.rays.length.push(Math.random() * this.length * 15 / 16 + this.length / 16);
           this.rays.width.push(Math.random() * this.width * 15 / 16 + this.width / 16);
-          let direction = Math.floor(Math.random() * 2);
-          if (direction === 0) direction = DIRECTION.CCW;
           this.rays.dir.push(direction);
           this.rays.offsetRate.push((Math.random() * this.arcRate) * this.rays.dir[i]);
           break;
@@ -74,7 +73,6 @@ class DeathExplosion extends Particle {
 
 
   drawRects() {
-    
     for (let i = 0; i < NUM_RAYS; i++) {
       this.ctx.save();
       let color = (this.pattern === "BLACKHOLE" ? 0 : 255);
@@ -107,7 +105,9 @@ class DeathExplosion extends Particle {
 
     switch(this.pattern) {
       case "BLACKHOLE":
-
+        for (let i = 0; i < NUM_RAYS; i++) {
+          this.rays.length[i] *= 0.98;
+        }
         break;
       default:
         this.radius += GROWTH_RATE;

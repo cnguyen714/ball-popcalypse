@@ -448,8 +448,8 @@ class Player extends GameObject {
           this.dashCooldown = DASH_COOLDOWN + 60;
           this.slashCombo = 0;
           this.shootCooldown = this.dashCooldown - 30;
-          this.invul += 30;
-          this.noclip += 30;
+          this.invul += 40;
+          this.noclip += 50;
           // this.pauseTime = 5;
         } else {
           this.dashCooldown = DASH_COOLDOWN;

@@ -47,11 +47,11 @@ class BeamSlash extends Particle {
       case this.game.player.maxSlashCombo:
         this.direction = DIRECTION.CCW;
         this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75;
-        this.aliveTime *= 13;
+        this.aliveTime *= 11;
         this.length *= 0.60;
         this.width *= 0.60;
         this.knockback *= DERVISH_KB_RATE;
-        this.damage /= 8;
+        this.damage /= 14;
         break;
       case 0:
         this.knockback *= 1.2;

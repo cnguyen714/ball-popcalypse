@@ -376,7 +376,10 @@ class Game {
     deathExplosion.paused = false;
     this.vanity.push(deathExplosion);
     this.preDefeatSfx.play();
-    
+    let slam = new Slam(game, this.player.pos.x, this.player.pos.y);
+    slam.aliveTime -= 11;
+    this.particles.push(slam);
+
     let postDeath = function() {
       let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
       explode1.color = 'white';

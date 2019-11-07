@@ -26,6 +26,7 @@ class Particle extends GameObject {
     this.knockback = KNOCKBACK;
     this.cb = cb;
     this.aliveTime = 1;
+    this.active = true;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -66,6 +67,7 @@ class Particle extends GameObject {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
     this.cb();
+    if(!this.active) return;
     this.addVelocityTimeDelta();
     this.game.entities.forEach(entity => { this.checkCollision(entity) });
     this.validatePosition(this.cvs.width, this.cvs.height);

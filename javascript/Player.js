@@ -8,7 +8,7 @@ import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
 import Explosion from "./Explosion";
-
+import Particle from "./Particle";
 import SlashSpark from "./SlashSpark";
 import DeathExplosion from "./DeathExplosion";
 // import shotSfx from '../assets/laser7.wav';
@@ -153,12 +153,15 @@ class Player extends GameObject {
 
       setTimeout(function () {
         let beam = new Beam(this.game, this.pos.x, this.pos.y);
-        beam.width = 300;
+        beam.width = 400;
         beam.length = 4000;
         beam.damage = BEAM_DAMAGE;
         beam.knockback = 80;
         beam.color = Beam.COLOR().CANNON;
         beam.combo = "BEAM";
+        beam.aliveTime = 300;
+        beam.initialTime = 300;
+        
         this.charging = false;
         
         this.game.delayedParticles.push(beam);
@@ -166,6 +169,45 @@ class Player extends GameObject {
         this.invul = 5;
         let kb = this.aim.dup().normalize().multiply(-75);
         this.vel.add(kb);
+        let aim = kb.dup().normalize().multiply(-1);
+        let arcRate = Math.PI / 2;
+        let x2 = aim.x * Math.cos(arcRate) - aim.y * Math.sin(arcRate);
+        let y2 = aim.y * Math.cos(arcRate) + aim.x * Math.sin(arcRate);
+        let rightAngle = new Vector(x2, y2);
+        let rev = rightAngle.dup().multiply(-2);
+
+        let particleCb = function () {
+          this.r *= 0.7;
+          this.pos = this.pos.add(this.vel);
+          this.aliveTime--;
+          if(this.aliveTime <= 0) this.alive = false;
+        }
+
+        beam.cb = function () {
+          if (this.width < 4) {
+            this.width *= 4.8/4;
+          } else {
+            this.width *= 0.80;
+          }
+          
+          if (this.aliveTime > 220) {
+            let offset = Math.random();
+            let particle = new Particle(
+              this.game,
+              this.pos.x + aim.x * offset * 2000,
+              this.pos.y + aim.y * offset * 2000,
+              aim.dup().multiply(2),
+            );
+            particle.r = Math.random() * 1.5;
+            particle.aliveTime = 20;
+            particle.active = false;
+            particle.cb = particleCb;
+            particle.color = "white";
+            this.game.vanity.push(particle);
+          }
+        }
+
+
 
         let cb = function () {
           this.length *= 0.70;

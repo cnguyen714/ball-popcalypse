@@ -83,6 +83,7 @@ class Game {
     this.mute = false;
     this.filePath = PATH;
     this.assetsLoaded = false;
+    this.cheat = false;
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
@@ -363,6 +364,7 @@ class Game {
     this.player.health = STARTING_HEALTH;
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
     // this.playSound(this.bgm, 0.4);
+    this.cheat = false;
     this.bgm.play();
   }
 

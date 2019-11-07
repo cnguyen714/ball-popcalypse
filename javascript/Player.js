@@ -25,12 +25,10 @@ const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
 const POST_DASH_INVUL = 2;
 const CHARGE_MAX = 60;
-// const CHARGE_MAX = 0;
 const CHARGE_STACKS = 2.2;
 const CHARGE_COOLDOWN = 90;
 const BEAM_DAMAGE = 7000;
 const MAX_COMBOS = 3;
-// const CHARGE_COOLDOWN = 10;
 const SHOOT_COOLDOWN = 12;
 const SHOOT_SHOTGUN_PELLETS = 60;
 
@@ -148,10 +146,11 @@ class Player extends GameObject {
     if (this.charge >= CHARGE_MAX) {
       let freezeTime = 18;
       this.charge -= CHARGE_MAX;
-      this.beamCooldown = CHARGE_COOLDOWN;
+      this.beamCooldown = !this.game.cheat ? CHARGE_COOLDOWN : 2;
       this.charging = true;
 
       setTimeout(function () {
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
         let beam = new Beam(this.game, this.pos.x, this.pos.y);
         beam.width = 400;
         beam.length = 4000;
@@ -161,12 +160,10 @@ class Player extends GameObject {
         beam.combo = "BEAM";
         beam.aliveTime = 300;
         beam.initialTime = 300;
-        
+        ``
         this.charging = false;
         
-        this.game.delayedParticles.push(beam);
-        this.game.freeze(freezeTime);
-        this.invul = 5;
+
         let kb = this.aim.dup().normalize().multiply(-75);
         this.vel.add(kb);
         let aim = kb.dup().normalize().multiply(-1);
@@ -175,6 +172,18 @@ class Player extends GameObject {
         let y2 = aim.y * Math.cos(arcRate) + aim.x * Math.sin(arcRate);
         let rightAngle = new Vector(x2, y2);
         let rev = rightAngle.dup().multiply(-2);
+
+        if(this.game.cheat) {
+          beam.width = 60;
+          beam.damage = 600;
+          this.vel.subtract(kb.multiply(0.9));
+          freezeTime = 0;
+          beam.knockback = 5;
+        }
+
+        this.game.delayedParticles.push(beam);
+        this.game.freeze(freezeTime);
+        this.invul = 5;
 
         let particleCb = function () {
           this.r *= 0.7;
@@ -207,7 +216,9 @@ class Player extends GameObject {
           }
         }
 
-
+        if (this.game.cheat) {
+          return
+        };
 
         let cb = function () {
           this.length *= 0.70;
@@ -230,7 +241,7 @@ class Player extends GameObject {
         explosion2.aliveTime = 5;
         this.game.vanity.push(explosion2);
 
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
+        
       }.bind(this), 200);
 
       setTimeout(function() {
@@ -266,6 +277,9 @@ class Player extends GameObject {
       if(key === 8) this.health = 0; // BACKSPACE
       if(key === 187) this.game.difficulty++; //EQUAL
       if(key === 189) this.health += 100; //MINUS
+      if(key === 48) { //0
+        this.game.cheat = true;
+      }
     
       // Ignore keys that have not been bound
       if (!Object.values(KEY).includes(key)) return;
@@ -422,6 +436,11 @@ class Player extends GameObject {
       this.applyDecel();
       this.validatePosition(this.cvs.width, this.cvs.height);
       return;
+    }
+
+    if(this.game.cheat) {
+      this.charge = CHARGE_MAX * 2;
+      if(this.beamCooldown >= 10) this.beamCooldown = 9;
     }
 
     if (this.shootCooldown > 0) this.shootCooldown--;

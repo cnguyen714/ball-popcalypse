@@ -4,7 +4,7 @@
 
 ## Background and Overview
 
-Ball-ocolypse (or Ball-Apocolypse, if you will) is a "zombie"-horde survival game using a top-down perspective with twin-stick controls, where the player attempts to get a high-score and avoid being swarmed. 
+Ball-popcalypse (or _Ball Apocolypse_, if you will) is a "zombie"-horde survival game using a top-down perspective with twin-stick controls, where the player attempts to get a high-score and avoid being swarmed. 
 
 The goal is to have the game be a physics sandbox that has satisfying interactions. All non-decorative game entities have some collision or other physical interaction, which relies heavily on vector math to handle these emergent interactions. 
 

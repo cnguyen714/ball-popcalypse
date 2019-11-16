@@ -8,7 +8,8 @@ Ball-popcalypse (or _Ball Apocolypse_, if you will) is a "zombie"-horde survival
 
 The goal is to have the game be a physics sandbox that has satisfying interactions. All non-decorative game entities have some collision or other physical interaction, which relies heavily on vector math to handle these emergent interactions. 
 
-![](https://github.com/cnguyen714/ball-ocolypse/blob/master/docs/gameplay.png?raw=true)
+![](https://github.com/cnguyen714/ball-ocolypse/blob/master/docs/gameplay-slash.png?raw=true)
+![](https://github.com/cnguyen714/ball-ocolypse/blob/master/docs/gameplay-shoot.png?raw=true)
 
 ## Architectures and Technologies
 The project uses the following technologies:

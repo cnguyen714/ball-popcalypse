@@ -45,11 +45,6 @@ class EnemyCircle extends GameObject {
     this.draw = this.draw.bind(this);
   }
 
-  validatePosition(rectX, rectY) {
-    if(this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
-    if(this.pos.y + this.r > rectY) this.pos.y = rectY - this.r;
-  }
-
   dampSpeed() {
     let vel = this.vel.length();
     if (vel > MAX_SPEED) {
@@ -80,7 +75,7 @@ class EnemyCircle extends GameObject {
       } else {
         player.health -= this.damage;
         player.charge += this.damage;
-        if (this.r > RADIUS) player.invul = 45;
+        if (this.r >= 50) player.invul = 45;
       }
       player.game.vanity.push(explosion);
     }

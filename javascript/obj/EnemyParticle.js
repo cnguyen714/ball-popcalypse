@@ -8,7 +8,7 @@ import Explosion from "./Explosion";
 const RADIUS = 10;
 const KNOCKBACK = 20;
 const DAMAGE = 10;
-const COLOR = "red";
+const COLOR = "#ff6229";
 const VELOCITY = 6;
 
 class EnemyParticle extends Particle {
@@ -76,11 +76,11 @@ class EnemyParticle extends Particle {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
-    this.ctx.shadowBlur = 6;
-    this.ctx.shadowColor = this.color;
+    this.ctx.shadowBlur = 7;
+    this.ctx.shadowColor = "red";
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
-    this.ctx.strokeStyle = this.color;
+    this.ctx.strokeStyle = "red";
     this.ctx.stroke();
 
     this.ctx.closePath();

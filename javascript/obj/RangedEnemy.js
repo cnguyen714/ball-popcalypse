@@ -80,7 +80,7 @@ class RangedEnemy extends EnemyCircle {
     this.aiCallback();
     this.dampSpeed();
     this.addVelocityTimeDelta();
-    this.validatePosition(this.cvs.width, this.cvs.height);    
+    this.validateBound(this.cvs.width, this.cvs.height);    
 
     this.attackCooldown > 0 ? this.attackCooldown-- : this.fire();
 

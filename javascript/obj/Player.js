@@ -218,7 +218,7 @@ class Player extends GameObject {
       // for (let i = 0; i < SHOOT_SHOTGUN_PELLETS; i++) {
       //   fireBulletAtCursorB(this); 
       // }
-      let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 40, 200, 10);
+      let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);
       beam.hitRatio = 0.5;
       beam.bomb = false;
       beam.aliveTime = 50;

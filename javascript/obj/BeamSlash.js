@@ -62,7 +62,8 @@ class BeamSlash extends Particle {
         this.color = Beam.COLOR().CRIT;;
         this.knockback = this.knockback * 1.4;
         this.aliveTime += 2;
-        this.length += 30;
+        this.length += 60;
+        this.width += 5;
         this.game.player.invul = 7;
         break;
       case 1:

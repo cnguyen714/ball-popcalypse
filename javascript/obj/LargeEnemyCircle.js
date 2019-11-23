@@ -7,8 +7,8 @@ import EnemyCircle from "./EnemyCircle";
 import followPlayerAI from "./behavior/FollowPlayerAI";
 
 const COLOR = "#a64942";
-const HEALTH = 12000;
-const HEALTH_CAP = 25000;
+const HEALTH = 6000;
+const HEALTH_CAP = 18000;
 
 const BASE_TURN_RATE = 0.25;
 const ACCEL = 0.4;
@@ -37,7 +37,7 @@ class LargeEnemyCircle extends EnemyCircle {
       this.maxSpeed = MAX_SPEED / 2;
     }
 
-    this.health = HEALTH + this.r * 200;
+    this.health = HEALTH + this.r * 150;
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 

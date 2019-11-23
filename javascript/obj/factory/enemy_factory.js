@@ -12,7 +12,7 @@ const MAP = {
 
 // const SPAWN_OFFSET = 20;
 const BASE_TURN_RATE = 0.25;
-const BOSS_SPAWN_RATE = 35;
+const BOSS_SPAWN_RATE = 25;
 
 export const randomEdgePos = (canvas, radius) => {
   let side = Math.floor(Math.random() * 4);

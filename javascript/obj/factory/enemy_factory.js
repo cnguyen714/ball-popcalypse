@@ -2,6 +2,7 @@
 import Vector from "../../lib/Vector";
 import EnemyCircle from '../EnemyCircle';
 import LargeEnemyCircle from "../LargeEnemyCircle";
+import RangedEnemy from "../RangedEnemy";
 
 const MAP = {
   TOP: 0,
@@ -13,6 +14,7 @@ const MAP = {
 // const SPAWN_OFFSET = 20;
 const BASE_TURN_RATE = 0.25;
 const BOSS_SPAWN_RATE = 25;
+const RANGED_SPAWN_RATE = 50;
 
 export const randomEdgePos = (canvas, radius) => {
   let side = Math.floor(Math.random() * 4);
@@ -45,6 +47,8 @@ export const spawnCircleRandom = (player) => {
 
   if (num <= (enemyRate += BOSS_SPAWN_RATE)) {
     enemy = new LargeEnemyCircle(player.game);
+  } else if (num <= (enemyRate += RANGED_SPAWN_RATE)) {
+    enemy = new RangedEnemy(player.game);
   } else {
     enemy = new EnemyCircle(player.game);
   }

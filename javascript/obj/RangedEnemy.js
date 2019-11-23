@@ -7,29 +7,36 @@ import EnemyCircle from "./EnemyCircle";
 import EnemyParticle from "./EnemyParticle";
 
 const RADIUS = 8;
-const COLOR = "#a64942";
+const COLOR = "orange";
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
-const HEALTH = 100;
-const HEALTH_CAP = 200;
+const HEALTH = 300;
+const HEALTH_CAP = 500;
 const DAMAGE = 1;
-const SCORE = 1;
+const SCORE = 20;
 const BASE_TURN_RATE = 0.25;
 const ACCEL = 0.2;
 const MAX_SPEED = 0.5;
 const FIRE_COOLDOWN = 180;
+const FIRE_VEL = 6;
 
 class RangedEnemy extends EnemyCircle {
   constructor(game) {
     super(game);
     this.aiCallback = () => {
-      this.aim = Vector.difference(game.player.pos, this.pos).normalize();
+      this.aim = Vector.difference(game.player.pos, this.pos);
+      let distance = this.aim.length();
+      this.aim.normalize();
       let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 2);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
-      this.vel.add(this.aim.multiply(this.accel));
+      if (distance >= 500 || !game.player.alive) {
+        this.vel.add(this.aim.multiply(this.accel));
+      } else {
+        this.vel.add(this.aim.multiply(-this.accel));
+      }
     };
 
     this.health = HEALTH + game.difficulty * 2;
@@ -50,11 +57,22 @@ class RangedEnemy extends EnemyCircle {
   }
 
   fire() {
+    if (this.pos.x > this.cvs.width + this.r ||
+        this.pos.x < 0 - this.r ||
+        this.pos.y > this.cvs.height + this.r ||
+        this.pos.y < 0 - this.r ) {
+      return;
+    };
     this.attackCooldown = FIRE_COOLDOWN;
 
-    let projectile = new EnemyParticle(this.game);
-    
+    let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL);
+    let p = new EnemyParticle(this.game, this.pos.x, this.pos.y, vel);
+    this.game.enemyParticles.push(p);
+    let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
+    explosion.aliveTime = 7;
+    explosion.r = this.r + 20;
 
+    this.game.vanity.push(explosion);
   }
 
   update() {

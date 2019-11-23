@@ -41,6 +41,7 @@ class Beam extends Particle {
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
     this.aliveTime = DURATION;
+    this.hitRatio = HITBOX_RATIO;
     // this.activeTime = 5;
     this.active = active;
     this.initialTime = this.aliveTime;
@@ -56,8 +57,8 @@ class Beam extends Particle {
     if (!obj.alive) return; //Don't check collision if object is not alive
     if (!this.active) return;
 
-    if(!this.hitWidth) this.hitWidth = this.width * HITBOX_RATIO;
-    if(!this.hitLength) this.hitLength = this.length * HITBOX_RATIO;
+    if(!this.hitWidth) this.hitWidth = this.width * this.hitRatio;
+    if(!this.hitLength) this.hitLength = this.length * this.hitRatio;
 
     if (obj instanceof EnemyCircle || obj instanceof EnemyParticle) {
 
@@ -175,11 +176,6 @@ class Beam extends Particle {
       // this.game.freeze(5);
       if(this.combo === "BEAM") {
         this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
-
-        let explosion = new Explosion(this.game, this.pos.x, this.pos.y, 100);
-        explosion.color = "red";
-        explosion.aliveTime = 7;
-        this.game.vanity.push(explosion);
       }
     }
 

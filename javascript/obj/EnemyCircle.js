@@ -16,7 +16,7 @@ const DAMAGE = 1;
 const SCORE = 1;
 const BASE_TURN_RATE = 0.25;
 const ACCEL = 0.4;
-const MAX_SPEED = 1.3;
+const MAX_SPEED = 3;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
@@ -32,7 +32,7 @@ class EnemyCircle extends GameObject {
     this.health = HEALTH + game.difficulty * 2;
 
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2);
-    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2);
+    this.maxSpeed = MAX_SPEED;
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 

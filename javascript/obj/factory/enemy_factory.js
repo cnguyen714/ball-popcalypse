@@ -1,6 +1,7 @@
 
 import Vector from "../../lib/Vector";
 import EnemyCircle from '../EnemyCircle';
+import LargeEnemyCircle from "../LargeEnemyCircle";
 
 const MAP = {
   TOP: 0,
@@ -11,6 +12,7 @@ const MAP = {
 
 // const SPAWN_OFFSET = 20;
 const BASE_TURN_RATE = 0.25;
+const BOSS_SPAWN_RATE = 35;
 
 export const randomEdgePos = (canvas, radius) => {
   let side = Math.floor(Math.random() * 4);
@@ -36,42 +38,20 @@ export const randomEdgePos = (canvas, radius) => {
   return pos;
 }
 
-const makeBoss = function(enemy) {
-  if (Math.floor(Math.random() * 1000) % 50 === 0) {
-    enemy.r = Math.floor(50 + Math.random() * 50);
-    if (enemy.game.state === "STATE_OVER") enemy.r *= 1 + Math.random() * 4;
-    if (Math.floor(Math.random() * 5) % 3 === 0) {
-      enemy.accel = 0.5 + Math.random() * Math.pow(enemy.game.difficulty, 1 / 2);
-      enemy.maxSpeed = 1.5 + Math.random() * Math.pow(enemy.game.difficulty, 1 / 2);
-    } else {
-      enemy.accel = 0.2;
-      enemy.maxSpeed = 0.5;
-    }
-    enemy.health = 13000;
-    enemy.damage = 50;
-    enemy.score = enemy.r * 2;
-  }
-}
-
 export const spawnCircleRandom = (player) => {
-  let enemy = new EnemyCircle(player.game);  
+  let num = Math.floor(Math.random() * 1000);
+  let enemyRate = 0
+  let enemy;
 
-  enemy.accel = 0.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
-  enemy.maxSpeed = 1.5 + Math.random() * Math.pow(player.game.difficulty, 1 / 2);
+  if (num <= (enemyRate += BOSS_SPAWN_RATE)) {
+    enemy = new LargeEnemyCircle(player.game);
+  } else {
+    enemy = new EnemyCircle(player.game);
+  }
 
-  makeBoss(enemy);
-  
   let spawnPos = randomEdgePos(player.cvs, enemy.r);
   enemy.pos.x = spawnPos.x;
   enemy.pos.y = spawnPos.y;
-  
-  enemy.aiCallback = function() {
-    this.aim = Vector.difference(player.pos, this.pos).normalize();
-    let turnRate = BASE_TURN_RATE + Math.pow(player.game.difficulty, 1/2);
-    this.aim.multiply(turnRate).add(this.vel).normalize();
-
-    this.vel.add(this.aim.multiply(this.accel));
-  };
 
   return enemy;
 }

@@ -4,10 +4,8 @@ import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 
-const MAX_SPEED = 3;
 const RADIUS = 7;
 const COLOR = "#a64942";
-const ACCEL = 1;
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
@@ -16,15 +14,28 @@ const HEALTH = 100;
 const HEALTH_CAP = 200;
 const DAMAGE = 1;
 const SCORE = 1;
+const BASE_TURN_RATE = 0.25;
+const ACCEL = 0.4;
+const MAX_SPEED = 1.3;
+
+
 
 class EnemyCircle extends GameObject {
   constructor(game) {
     super(game);
-    this.maxSpeed = MAX_SPEED;
-    this.accel = ACCEL;
-    this.aiCallback = () => {};
+    this.aiCallback = () => {
+      this.aim = Vector.difference(game.player.pos, this.pos).normalize();
+      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 2);
+      this.aim.multiply(turnRate).add(this.vel).normalize();
+
+      this.vel.add(this.aim.multiply(this.accel));
+    };
 
     this.health = HEALTH + game.difficulty * 2;
+
+    this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2);
+    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2);
+
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 
     this.r = RADIUS;
@@ -53,17 +64,18 @@ class EnemyCircle extends GameObject {
     let diff = Vector.difference(this.pos, player.pos);
     let distSqr = diff.dot(diff);
 
-    if (player.moveState === "STATE_DASHING") return;
+    // if (player.moveState === "STATE_DASHING") return;
     if (this.r * this.r + player.r * player.r > distSqr) {
       this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
       explosion.color = 'red';
       explosion.aliveTime = 5;
-      
+
       diff.normalize();
       diff.multiply(KNOCKBACK);
       player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
       this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
+
       if (player.invul > 0) {
         explosion.color = 'lightblue';
       } else {
@@ -72,16 +84,17 @@ class EnemyCircle extends GameObject {
         if (this.r > RADIUS) player.invul = 45;
       }
       player.game.vanity.push(explosion);
-    } 
+    }
   }
 
   // Check if enemies are colliding and push them away
   checkAndSpreadEnemy(obj) {
+    // Don't collide objects that are standing directly on each other
+    if (obj.pos.equals(this.pos)) return;
+
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
 
-    // Don't collide objects that are standing directly on each other
-    if (obj.pos.equals(this.pos)) return;
     if (this.r * this.r + obj.r * obj.r > distSqr) {
       diff.normalize();
       diff.multiply(SPREAD_FACTOR);

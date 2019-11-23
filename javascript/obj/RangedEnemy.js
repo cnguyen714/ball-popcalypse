@@ -12,8 +12,8 @@ const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
-const HEALTH = 300;
-const HEALTH_CAP = 500;
+const HEALTH = 700;
+const HEALTH_CAP = 1200;
 const DAMAGE = 1;
 const SCORE = 20;
 const BASE_TURN_RATE = 0.25;
@@ -39,7 +39,7 @@ class RangedEnemy extends EnemyCircle {
       }
     };
 
-    this.health = HEALTH + game.difficulty * 2;
+    this.health = HEALTH + game.difficulty * 3;
 
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2) / 2;
     this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2) / 2;

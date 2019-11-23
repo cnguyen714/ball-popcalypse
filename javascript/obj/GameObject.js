@@ -30,6 +30,7 @@ class GameObject {
     this.draw = this.draw.bind(this);
   }
 
+  // Ensure objects do not leave the boundaries defined here.
   validateBound(rectX, rectY) {
     if (this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
     if (this.pos.y + this.r > rectY) this.pos.y = rectY - this.r;

@@ -29,6 +29,7 @@ class BeamCannon extends Beam {
     this.combo = "BEAM";
     this.aliveTime = DURATION;
     this.initialTime = this.aliveTime;
+    this.bomb = true;
 
     this.cb = function () {
       if (this.width < 4) {

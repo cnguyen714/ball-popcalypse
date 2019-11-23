@@ -218,8 +218,11 @@ class Player extends GameObject {
       // for (let i = 0; i < SHOOT_SHOTGUN_PELLETS; i++) {
       //   fireBulletAtCursorB(this); 
       // }
-      let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 40, 700, 10);
+      let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 40, 300, 10);
       beam.hitRatio = 0.5;
+      beam.bomb = false;
+      beam.aliveTime = 50;
+      beam.initialTime = beam.aliveTime;
       this.game.particles.push(beam);
     } else {
       if (this.game.loopCount % 5 === 0) {
@@ -358,14 +361,6 @@ class Player extends GameObject {
     });
   }
 
-  // Ensure players do not leave the boundaries defined here.
-  validatePosition(rectX, rectY) {
-    if(this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
-    if(this.pos.x - this.r < 0) this.pos.x = this.r;
-    if(this.pos.y + this.r > rectY) this.pos.y = rectY - this.r;
-    if(this.pos.y - this.r < 0) this.pos.y = this.r;
-  }
-
   dampSpeed() {
     let vel = this.vel.length();
     let maxSpeed = (this.keyDown[KEY.SHIFT] 
@@ -396,7 +391,7 @@ class Player extends GameObject {
       this.dampSpeed();
       this.addVelocityTimeDelta();
       this.applyDecel();
-      this.validatePosition(this.cvs.width, this.cvs.height);
+      this.validateBound(this.cvs.width, this.cvs.height);
       return;
     }
 
@@ -505,7 +500,7 @@ class Player extends GameObject {
       this.game.vanity.push(line);
     }
 
-    this.validatePosition(this.cvs.width, this.cvs.height);
+    this.validateBound(this.cvs.width, this.cvs.height);
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])

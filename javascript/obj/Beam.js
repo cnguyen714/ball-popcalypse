@@ -42,9 +42,9 @@ class Beam extends Particle {
     this.knockback = KNOCKBACK;
     this.aliveTime = DURATION;
     this.hitRatio = HITBOX_RATIO;
-    // this.activeTime = 5;
     this.active = active;
     this.initialTime = this.aliveTime;
+    this.bomb = false
 
     this.color = Beam.COLOR().NORMAL;
 
@@ -60,7 +60,7 @@ class Beam extends Particle {
     if(!this.hitWidth) this.hitWidth = this.width * this.hitRatio;
     if(!this.hitLength) this.hitLength = this.length * this.hitRatio;
 
-    if (obj instanceof EnemyCircle || obj instanceof EnemyParticle) {
+    if (obj instanceof EnemyCircle || (this.bomb ? obj instanceof EnemyParticle : false)) {
 
       let x = this.pos.x;
       let y = this.pos.y;

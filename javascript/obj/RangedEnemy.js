@@ -4,6 +4,7 @@ import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 import EnemyCircle from "./EnemyCircle";
+import EnemyParticle from "./EnemyParticle";
 
 const RADIUS = 8;
 const COLOR = "#a64942";
@@ -49,7 +50,10 @@ class RangedEnemy extends EnemyCircle {
   }
 
   fire() {
+    this.attackCooldown = FIRE_COOLDOWN;
 
+    let projectile = new EnemyParticle(this.game);
+    
 
   }
 

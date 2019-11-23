@@ -2,6 +2,7 @@ import Vector from "../lib/Vector";
 import EnemyCircle from "./EnemyCircle";
 import Particle from "./Particle";
 import DamageNumber from "./DamageNumber";
+import GameObject from "./GameObject";
 
 const RADIUS = 100;
 const KNOCKBACK = 150;
@@ -9,7 +10,7 @@ const DAMAGE = 70;
 const GROWTH_RATE = 10;
 // const COLOR = "white";
 
-class Slam extends Particle {
+class Slam extends GameObject {
   constructor(game, startX, startY) {
     super(game);
     this.pos = new Vector(startX, startY);
@@ -21,6 +22,7 @@ class Slam extends Particle {
     this.aliveTime = 10;
     this.initialTime= this.aliveTime;
     this.growthRate = GROWTH_RATE;
+    this.cb = () => {};
 
     // this.update = this.update.bind(this);
     // this.draw = this.draw.bind(this);

@@ -3,11 +3,11 @@ import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";
 
-const RADIUS = 4;
+const RADIUS = 10;
 const KNOCKBACK = 20;
 const DAMAGE = 10;
 const COLOR = "#cf7129";
-const VELOCITY = 10;
+const VELOCITY = 7;
 
 class EnemyParticle extends Particle {
   constructor(
@@ -32,26 +32,32 @@ class EnemyParticle extends Particle {
     this.draw = this.draw.bind(this);
   }
 
-  checkCollision(obj) {
-    if (!obj.alive) return; //Don't check collision if object is not alive
-
-    let diff = Vector.difference(this.pos, obj.pos);
+  checkAndHitPlayer(player) {
+    if (player.noclip > 0) return;
+    let diff = Vector.difference(this.pos, player.pos);
     let distSqr = diff.dot(diff);
-    if (obj instanceof EnemyCircle) {
-      if (this.r * this.r + obj.r * obj.r > distSqr) {
-        this.alive = false;
-        this.vel.normalize();
-        this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
-        obj.vel.add(this.vel);
-        obj.health -= this.damage;
-        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
-        if (obj.health <= 0) {
-          obj.alive = false;
-          this.vel.normalize();
-          this.vel.multiply(this.knockback / 2);
-          obj.vel.add(this.vel);
-        }
+
+    // if (player.moveState === "STATE_DASHING") return;
+    if (this.r * this.r + player.r * player.r > distSqr) {
+      this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
+      let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
+      explosion.color = 'red';
+      explosion.aliveTime = 5;
+
+      diff.normalize();
+      diff.multiply(KNOCKBACK);
+      player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
+      this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
+
+      if (player.invul > 0) {
+        explosion.color = 'lightblue';
+      } else {
+        player.health -= this.damage;
+        player.charge += this.damage;
+        if (this.r > RADIUS) player.invul = 45;
       }
+      this.alive = false;
+      player.game.vanity.push(explosion);
     }
   }
 
@@ -60,7 +66,7 @@ class EnemyParticle extends Particle {
     this.cb();
     if (!this.active) return;
     this.addVelocityTimeDelta();
-    this.game.entities.forEach(entity => { this.checkCollision(entity) });
+    this.checkAndHitPlayer(player);
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 
@@ -79,4 +85,4 @@ class EnemyParticle extends Particle {
   }
 }
 
-export default EnemyParticleParticle
+export default EnemyParticle;

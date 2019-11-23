@@ -282,6 +282,7 @@ class Game {
     
     this.entities = [];
     this.particles = [];
+    this.enemyParticles = [];
     this.delayedParticles = [];
     this.vanity = [];
     this.menus = [];
@@ -563,18 +564,12 @@ class Game {
           this.vanity.forEach(entity => entity.update());
           this.entities = this.entities.filter(entity => entity.alive);
           this.entities.forEach(entity => entity.update());
-          this.particles.filter(entity => !entity.alive).forEach(entity => {
-            if (entity instanceof Particle && !(entity instanceof Beam)) {
-              let hitspark = new Slam(this, entity.pos.x, entity.pos.y);
-              hitspark.aliveTime = 4;
-              hitspark.growthRate = 1;
-              hitspark.r = 1;
-              hitspark.damage = 0;
-              this.vanity.push(hitspark);
-            }
-          });
           this.particles = this.particles.filter(entity => entity.alive);
           this.particles.forEach(entity => entity.update());
+          this.enemyParticles = this.enemyParticles.filter(entity => entity.alive);
+          this.enemyParticles.forEach(entity => entity.update());
+
+
 
           if (this.player.health <= 0) this.endGame();
         }
@@ -637,6 +632,9 @@ class Game {
 
         this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
+
+        this.enemyParticles = this.enemyParticles.filter(entity => entity.alive);
+        this.enemyParticles.forEach(entity => entity.update());
 
         this.vanity = this.vanity.filter(entity => entity.alive);
         this.vanity.forEach(entity => entity.update());
@@ -838,6 +836,7 @@ class Game {
         this.drawChargeBar();
         this.drawUI();
         this.drawHealth();
+        this.enemyParticles.forEach(entity => entity.draw());
         this.player.draw();
         break;
 
@@ -847,6 +846,7 @@ class Game {
         this.particles.forEach(entity => entity.draw());
         this.entities.forEach(entity => entity.draw());
         this.vanity.forEach(entity => entity.draw());
+        this.enemyParticles.forEach(entity => entity.draw());
         this.player.draw();
         this.menus.forEach(entity => entity.draw());
         this.drawStats();

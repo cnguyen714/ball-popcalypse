@@ -2,6 +2,7 @@ import Vector from "../lib/Vector";
 import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";
+import Slam from "./Slam";
 
 const RADIUS = 4;
 const KNOCKBACK = 10;
@@ -53,13 +54,21 @@ class Particle extends GameObject {
         this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
         obj.vel.add(this.vel);
         obj.health -= this.damage;
-        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
+        
         if (obj.health <= 0) {
           obj.alive = false;
           this.vel.normalize();
           this.vel.multiply(this.knockback / 2);
           obj.vel.add(this.vel);
         }
+
+        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
+        let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
+        hitspark.aliveTime = 4;
+        hitspark.growthRate = 1;
+        hitspark.r = 1;
+        hitspark.damage = 0;
+        this.game.vanity.push(hitspark);
       }
     }
   }
@@ -75,6 +84,7 @@ class Particle extends GameObject {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
+    if (!this.alive) return;
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);

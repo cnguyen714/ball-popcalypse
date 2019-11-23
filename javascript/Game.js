@@ -359,6 +359,7 @@ class Game {
     this.state = STATE_RUNNING;
     this.menus = [];
     this.entities = [];
+    this.enemyParticles = [];
     this.vanity = [];
     this.player.alive = true;
     this.player.maxHealth = STARTING_HEALTH;

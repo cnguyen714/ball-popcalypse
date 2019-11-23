@@ -131,7 +131,7 @@ class Beam extends Particle {
           case "BEAM":
             let num = new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 30, 90)
             this.game.vanity.push(num);
-            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, this.width / 200 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             break;
           case "FINISHER":
             this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 20, 70));

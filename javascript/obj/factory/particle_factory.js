@@ -1,7 +1,7 @@
 
-import Particle from "./Particle";
-import Beam from "./Beam";
-import Vector from "./Vector";
+import Particle from "../Particle";
+import Beam from "../Beam";
+import Vector from "../../lib/Vector";
 
 const BULLET_SPEED = 20;
 const BULLET_SPREAD = 0.12;

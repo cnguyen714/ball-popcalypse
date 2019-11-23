@@ -1,5 +1,5 @@
 
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 
 const COLOR = 'black';
 const RADIUS = 3;

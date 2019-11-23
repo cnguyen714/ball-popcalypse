@@ -1,9 +1,9 @@
 
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 import GameObject from "./GameObject";
-import * as EnemyFactory from './enemy_factory';
+import * as EnemyFactory from './factory/enemy_factory';
 
-import { fireBulletAtCursor, fireBulletAtCursorB }from './particle_factory';
+import { fireBulletAtCursor, fireBulletAtCursorB }from './factory/particle_factory';
 import Slam from "./Slam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
@@ -158,8 +158,8 @@ class Player extends GameObject {
         beam.knockback = 80;
         beam.color = Beam.COLOR().CANNON;
         beam.combo = "BEAM";
-        beam.aliveTime = 300;
-        beam.initialTime = 300;
+        beam.aliveTime = 320;
+        beam.initialTime = beam.aliveTime;
         ``
         this.charging = false;
         
@@ -199,7 +199,7 @@ class Player extends GameObject {
             this.width *= 0.80;
           }
           
-          if (this.aliveTime > 220) {
+          if (this.aliveTime > this.initialTime - 100) {
             let offset = Math.random();
             let particle = new Particle(
               this.game,

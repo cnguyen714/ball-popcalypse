@@ -1,16 +1,16 @@
 
-import Player from './Player';
-import Particle from './Particle';
-import Vector from './Vector';
-import * as ParticleFactory from './particle_factory';
-import * as EnemyFactory from './enemy_factory';
-import Slam from './Slam'; 
-import Beam from './Beam'; 
-import Explosion from "./Explosion";
-import GameObject from './GameObject';
-import SlashSpark from './SlashSpark';
+import Vector from './lib/Vector';
+import Player from './obj/Player';
+import Particle from './obj/Particle';
+import * as ParticleFactory from './obj/factory/particle_factory';
+import * as EnemyFactory from './obj/factory/enemy_factory';
+import Slam from './obj/Slam'; 
+import Beam from './obj/Beam'; 
+import Explosion from "./obj/Explosion";
+import GameObject from './obj/GameObject';
+import SlashSpark from './obj/SlashSpark';
 import BufferLoader from './lib/BufferLoader';
-import DeathExplosion from './DeathExplosion';
+import DeathExplosion from './obj/DeathExplosion';
 
 
 // My laptop has a performance limit of around 700 particles

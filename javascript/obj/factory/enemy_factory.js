@@ -1,6 +1,6 @@
 
-import Vector from "./Vector";
-import EnemyCircle from './EnemyCircle';
+import Vector from "../../lib/Vector";
+import EnemyCircle from '../EnemyCircle';
 
 const MAP = {
   TOP: 0,

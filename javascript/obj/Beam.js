@@ -1,4 +1,4 @@
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 import EnemyCircle from "./EnemyCircle";
 import Explosion from "./Explosion";
 
@@ -73,8 +73,8 @@ class Beam extends Particle {
       // calculations are using Y axis up
       // --------------
       // calculate obj's relative position to beam origin
-      // x′=xcosθ−ysinθ      
-      // y′=ycosθ + xsinθ
+      // x′ = xcosθ − ysinθ      
+      // y′ = ycosθ + xsinθ
       
       // Get the obj relative position to beam origin pos
       let diff = Vector.difference(new Vector(obj.pos.x, -obj.pos.y), new Vector(x, -y));

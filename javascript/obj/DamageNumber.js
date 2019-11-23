@@ -1,4 +1,4 @@
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 
 import GameObject from "./GameObject";
 

@@ -1,5 +1,5 @@
 
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";

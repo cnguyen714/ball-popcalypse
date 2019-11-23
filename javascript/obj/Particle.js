@@ -1,4 +1,4 @@
-import Vector from "./Vector";
+import Vector from "../lib/Vector";
 import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";

@@ -10,6 +10,7 @@ const KNOCKBACK = 20;
 const DAMAGE = 10;
 const COLOR = "#ff6229";
 const VELOCITY = 6;
+const SCORE = 1;
 
 class EnemyParticle extends Particle {
   constructor(
@@ -30,6 +31,8 @@ class EnemyParticle extends Particle {
     this.aliveTime = 1;
     this.active = true;
     this.target = this.game.player;
+    this.score = SCORE;
+    this.health = 1;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);

@@ -217,7 +217,7 @@ class Player extends GameObject {
         }
 
         if (this.game.cheat) {
-          return
+          return;
         };
 
         let cb = function () {

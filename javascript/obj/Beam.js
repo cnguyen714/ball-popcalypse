@@ -5,6 +5,7 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import DamageNumber from "./DamageNumber";
 import SlashSpark from "./SlashSpark";
+import EnemyParticle from "./EnemyParticle";
 
 const WIDTH = 60;
 const LENGTH = 150;
@@ -58,7 +59,7 @@ class Beam extends Particle {
     if(!this.hitWidth) this.hitWidth = this.width * HITBOX_RATIO;
     if(!this.hitLength) this.hitLength = this.length * HITBOX_RATIO;
 
-    if (obj instanceof EnemyCircle) {
+    if (obj instanceof EnemyCircle || obj instanceof EnemyParticle) {
 
       let x = this.pos.x;
       let y = this.pos.y;
@@ -172,7 +173,9 @@ class Beam extends Particle {
     if (this.aliveTime >= this.initialTime && this.active === true) {
       this.game.entities.forEach(entity => { this.checkCollision(entity) });
       // this.game.freeze(5);
-      if( this.combo === "BEAM") {
+      if(this.combo === "BEAM") {
+        this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
+
         let explosion = new Explosion(this.game, this.pos.x, this.pos.y, 100);
         explosion.color = "red";
         explosion.aliveTime = 7;

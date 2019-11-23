@@ -96,7 +96,11 @@ class DeathExplosion extends Particle {
         }
         break;
       default:
-        this.radius += GROWTH_RATE;
+        if (this.aliveTime <= 8) {
+          this.radius *= 0.8;
+        } else {
+          this.radius += GROWTH_RATE;
+        }
 
         if (this.aliveTime % 3 === 0) {
           let explosion = new Explosion(
@@ -115,6 +119,10 @@ class DeathExplosion extends Particle {
         for (let i = 0; i < NUM_RAYS; i++) {
           this.rays.angle[i] += this.rays.offsetRate[i];
           this.rays.length[i] += this.rays.length[i] / 16;
+          if (this.aliveTime <= 7) {
+            this.rays.width[i] *= 1.3;
+
+          }
         }
         break;
     }

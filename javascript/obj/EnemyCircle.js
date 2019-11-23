@@ -18,8 +18,6 @@ const BASE_TURN_RATE = 0.25;
 const ACCEL = 0.4;
 const MAX_SPEED = 1.3;
 
-
-
 class EnemyCircle extends GameObject {
   constructor(game) {
     super(game);
@@ -48,7 +46,8 @@ class EnemyCircle extends GameObject {
   }
 
   validatePosition(rectX, rectY) {
-
+    if(this.pos.x + this.r > rectX) this.pos.x = rectX - this.r;
+    if(this.pos.y + this.r > rectY) this.pos.y = rectY - this.r;
   }
 
   dampSpeed() {

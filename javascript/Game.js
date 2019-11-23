@@ -830,7 +830,7 @@ class Game {
 
       case STATE_RUNNING:
         // Handle drawing of all game objects
-        this.drawFreeze();;
+        this.drawFreeze();
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
         this.vanity.forEach(entity => entity.draw());

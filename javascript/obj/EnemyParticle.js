@@ -1,0 +1,82 @@
+import Vector from "../lib/Vector";
+import EnemyCircle from "./EnemyCircle";
+import GameObject from "./GameObject";
+import DamageNumber from "./DamageNumber";
+
+const RADIUS = 4;
+const KNOCKBACK = 20;
+const DAMAGE = 10;
+const COLOR = "#cf7129";
+const VELOCITY = 10;
+
+class EnemyParticle extends Particle {
+  constructor(
+    game,
+    startX = 0,
+    startY = 0,
+    vel = new Vector(0, 0),
+    cb = () => { }
+  ) {
+    super(game);
+    this.pos = new Vector(startX, startY);
+    this.vel = vel || VELOCITY;
+    this.r = RADIUS;
+    this.color = COLOR;
+    this.damage = DAMAGE;
+    this.knockback = KNOCKBACK;
+    this.cb = cb;
+    this.aliveTime = 1;
+    this.active = true;
+
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
+  }
+
+  checkCollision(obj) {
+    if (!obj.alive) return; //Don't check collision if object is not alive
+
+    let diff = Vector.difference(this.pos, obj.pos);
+    let distSqr = diff.dot(diff);
+    if (obj instanceof EnemyCircle) {
+      if (this.r * this.r + obj.r * obj.r > distSqr) {
+        this.alive = false;
+        this.vel.normalize();
+        this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
+        obj.vel.add(this.vel);
+        obj.health -= this.damage;
+        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
+        if (obj.health <= 0) {
+          obj.alive = false;
+          this.vel.normalize();
+          this.vel.multiply(this.knockback / 2);
+          obj.vel.add(this.vel);
+        }
+      }
+    }
+  }
+
+  update() {
+    if (!this.alive) return; //Don't check collision if object is not alive
+    this.cb();
+    if (!this.active) return;
+    this.addVelocityTimeDelta();
+    this.game.entities.forEach(entity => { this.checkCollision(entity) });
+    this.validatePosition(this.cvs.width, this.cvs.height);
+  }
+
+  // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
+  draw() {
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
+    this.ctx.fillStyle = this.color;
+    this.ctx.fill();
+    this.ctx.strokeStyle = "red";
+    this.ctx.stroke();
+
+    this.ctx.closePath();
+    this.ctx.restore();
+  }
+}
+
+export default EnemyParticleParticle

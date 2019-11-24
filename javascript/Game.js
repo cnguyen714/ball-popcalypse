@@ -152,7 +152,7 @@ class Game {
         bgm: bufferList[9],
         preDefeatSfx: bufferList[10],
       }
-      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm);
+      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, 0.7);
       game.bgm.loop = true;
       game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, 1.5);
       // game.bgm.sourceNode.loop = true;

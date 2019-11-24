@@ -132,15 +132,21 @@ class Beam extends Particle {
             let num = new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 30, 90)
             this.game.vanity.push(num);
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, this.width / 200 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 2, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 3, 60));
+
+            let explosionB = new Explosion(this.game, obj.pos.x, obj.pos.y, 30);
+            explosionB.aliveTime = 1;
+            this.game.vanity.push(explosionB);
             break;
           case "FINISHER":
             this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 20, 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
-            let explosion1 = new Explosion(this.game, obj.pos.x, obj.pos.y, 50);
-            explosion1.aliveTime = 3;
-            this.game.vanity.push(explosion1);
+            let explosionF = new Explosion(this.game, obj.pos.x, obj.pos.y, 50);
+            explosionF.aliveTime = 3;
+            this.game.vanity.push(explosionF);
 
             break;
           default:

@@ -223,6 +223,7 @@ class Player extends GameObject {
       beam.bomb = false;
       beam.aliveTime = 50;
       beam.initialTime = beam.aliveTime;
+      beam.color = Beam.COLOR().TEAL;
       this.game.particles.push(beam);
     } else {
       if (this.game.loopCount % 5 === 0) {

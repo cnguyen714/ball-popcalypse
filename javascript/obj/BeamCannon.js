@@ -2,6 +2,7 @@ import Vector from "../lib/Vector";
 
 import Beam from "./Beam";
 import Particle from "./Particle";
+import Explosion from "./Explosion";
 
 
 const WIDTH = 400;
@@ -54,6 +55,11 @@ class BeamCannon extends Beam {
         this.game.vanity.push(particle);
       }
     }
+    let explosion = new Explosion(game, this.pos.x, this.pos.y);
+    explosion.aliveTime -= 16;
+    explosion.color = "white"; 
+    explosion.r = this.width / 2;
+    game.particles.push(explosion);
   }
 }
 

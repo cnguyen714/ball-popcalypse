@@ -159,16 +159,19 @@ class Player extends GameObject {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
         let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
 
-        this.game.delayedParticles.push(beam);
         this.invul = 5;
-
-
+        this.game.delayedParticles.push(beam);
+        
+        
         if (this.game.cheat) {
           beam.width = 60;
           beam.damage = 600;
           this.vel.subtract(kb.multiply(0.9));
           freezeTime = 0;
           beam.knockback = 5;
+          beam.pos.x += Math.random() * 120 - 60;
+          beam.pos.y += Math.random() * 120 - 60;
+          // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
           return;
         };
 

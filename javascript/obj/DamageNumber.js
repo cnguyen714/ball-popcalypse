@@ -4,7 +4,7 @@ import GameObject from "./GameObject";
 
 const SIZE = 15;
 const DURATION = 50;
-const FREEZE_DURATION = 0;
+const FREEZE_DURATION = 3;
 const DEFAULT_TYPE = "BASE";
 const VARIANCE = 70;
 const GRAVITY = 0.3;
@@ -82,11 +82,10 @@ class DamageNumber extends GameObject {
     if (this.freezeTime >= 0) {
       this.freezeTime--;
     } else {
-      this.pos.y--;
+      this.addVelocityTimeDelta();
+      this.vel.y += GRAVITY;
     }
-    this.addVelocityTimeDelta();
 
-    this.vel.y += GRAVITY;
 
     if (this.aliveTime <= 0) {
       this.alive = false;

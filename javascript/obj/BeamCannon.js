@@ -9,7 +9,7 @@ const WIDTH = 400;
 const LENGTH = 4000;
 const KNOCKBACK = 80;
 const DAMAGE = 7000;
-const DURATION = 320;
+const DURATION = 120;
 // const COLOR = "white";
 
 let particleCb = function () {

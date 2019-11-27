@@ -12,7 +12,7 @@ const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
 const KNOCKBACK = 10;
 const DAMAGE = 80;
-const DURATION = 10;
+const DURATION = 13;
 // const COLOR = "white";
 
 class Beam extends Particle {
@@ -184,15 +184,6 @@ class Beam extends Particle {
       }
     }
 
-    if (this.aliveTime === this.initialTime - 2) {
-      this.width *= 1.5;
-    }
-    if (this.aliveTime > this.initialTime - 2) {
-    } else {
-      this.width *= 0.8;
-      this.length *= 0.99;
-    }
-
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
@@ -202,14 +193,14 @@ class Beam extends Particle {
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
-    if (this.aliveTime > this.initialTime - 3) {
+    if (this.aliveTime > this.initialTime - 6) {
       this.ctx.save();
       let color = this.color;
       let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
-      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
-      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
-      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.7)`);
-      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      gradient.addColorStop(0.95, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
       this.ctx.fillStyle = color;
       // this.ctx.strokeStyle = gradient;
@@ -226,11 +217,12 @@ class Beam extends Particle {
       this.ctx.shadowBlur = 20;
 
       let color = Beam.COLOR().FADE;
+      // let color = this.color;
       let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
-      gradient.addColorStop(0, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6) * 2})`);
-      gradient.addColorStop(0.4, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6)})`);
-      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${Math.pow(this.aliveTime, 6) / Math.pow(this.initialTime - 3, 6) / 2})`);
-      gradient.addColorStop(1, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
+      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
+      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.2})`);
+      gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
       // this.ctx.fillStyle = "white";
       // this.ctx.shadowColor = gradient;

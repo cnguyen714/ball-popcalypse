@@ -113,7 +113,7 @@ class BeamSlash extends Particle {
     } else if (this.combo === 3) {
       this.pos.x = this.owner.pos.x;
       this.pos.y = this.owner.pos.y;
-      this.length *= 0.997;
+      // this.length *= 0.997;
     } else {
       this.length -= 2;
     }

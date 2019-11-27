@@ -62,7 +62,7 @@ class Particle extends GameObject {
           obj.vel.add(this.vel);
         }
 
-        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
+        this.game.vanity.push(new DamageNumber(obj, this.damage, 11, 30));
         let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
         hitspark.aliveTime = 4;
         hitspark.growthRate = 1;

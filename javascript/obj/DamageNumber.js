@@ -4,9 +4,11 @@ import GameObject from "./GameObject";
 
 const SIZE = 15;
 const DURATION = 50;
-const FREEZE_DURATION = 10;
+const FREEZE_DURATION = 0;
 const DEFAULT_TYPE = "BASE";
 const VARIANCE = 70;
+const GRAVITY = 0.3;
+const MAX_SIDE_VEL = 8;
 
 const COLOR = {
   NORMAL: [255, 255, 255],
@@ -17,21 +19,28 @@ const COLOR = {
 // Damage Number
 //
 class DamageNumber extends GameObject {
-  constructor(game, x, y,
+  constructor(damagedObj,
     damage,
     size = SIZE,
     duration = DURATION,
-    type = DEFAULT_TYPE,
-    pauseState = true) {
-    super(game);
+    orientation = 0) {
+    super(damagedObj.game);
+    let x = damagedObj.pos.x;
+    let y = damagedObj.pos.y;
+
     this.pos = new Vector(x - VARIANCE / 2 + Math.random() * VARIANCE, y - VARIANCE / 2 + Math.random() * VARIANCE);
     this.damage = damage;
     this.size = size;
     this.aliveTime = duration;
     this.freezeTime = FREEZE_DURATION;
     this.initialTime = this.aliveTime;
-    this.type = type;
-    this.paused = pauseState;
+    this.type = "BASE";
+    this.paused = false;
+    if (orientation > MAX_SIDE_VEL) orientation = MAX_SIDE_VEL;
+    if (orientation < -MAX_SIDE_VEL) orientation = -MAX_SIDE_VEL;
+
+
+    this.vel = new Vector(-2 + Math.random() * 4 + orientation, -7);
     this.cb = () => {};
 
     switch (this.type) {
@@ -75,6 +84,9 @@ class DamageNumber extends GameObject {
     } else {
       this.pos.y--;
     }
+    this.addVelocityTimeDelta();
+
+    this.vel.y += GRAVITY;
 
     if (this.aliveTime <= 0) {
       this.alive = false;

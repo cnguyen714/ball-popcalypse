@@ -40,7 +40,7 @@ class Slam extends GameObject {
         obj.vel.add(diff.multiply(-this.knockback));
         obj.health -= this.damage;
         if (obj.health <= 0) obj.alive = false;
-        this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
+        this.game.vanity.push(new DamageNumber(obj, this.damage));
 
       }
     }

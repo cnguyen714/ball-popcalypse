@@ -6,11 +6,12 @@ import Particle from "./Particle";
 import Explosion from "./Explosion";
 
 const RADIUS = 10;
-const KNOCKBACK = 20;
+const KNOCKBACK = 30;
 const DAMAGE = 10;
 const COLOR = "#ff6229";
 const VELOCITY = 6;
 const SCORE = 1;
+const HITBOX_RATIO = 0.9;
 
 class EnemyParticle extends Particle {
   constructor(
@@ -43,15 +44,15 @@ class EnemyParticle extends Particle {
     let distSqr = diff.dot(diff);
 
     // if (player.moveState === "STATE_DASHING") return;
-    if (this.r * this.r + player.r * player.r > distSqr) {
+    if (this.r * this.r + player.r * player.r > distSqr * HITBOX_RATIO) {
       if(player.alive) this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
       explosion.color = 'red';
       explosion.aliveTime = 5;
 
-      diff.normalize();
-      diff.multiply(KNOCKBACK);
-      player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
+      let kb = this.vel.dup().normalize();
+      kb.multiply(this.knockback);
+      player.vel.add(kb);
 
       if (player.invul > 0) {
         explosion.color = 'lightblue';

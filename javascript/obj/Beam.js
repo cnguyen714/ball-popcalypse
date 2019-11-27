@@ -103,7 +103,6 @@ class Beam extends Particle {
         // let knockStraight = this.game.player.aim.dup().normalize();
         if (this.combo === 3) {
           obj.vel.add(knockStraight.multiply(-this.knockback));
-
         } else {
           obj.vel.add(knockStraight.multiply(this.knockback));
         }
@@ -124,12 +123,12 @@ class Beam extends Particle {
         }
         switch (this.combo) {
           case this.game.player.maxSlashCombo:
-            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 11, 30));
+            this.game.vanity.push(new DamageNumber(obj, this.damage, 11, 30, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             break;
           case "BEAM":
-            let num = new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 30, 90)
+            let num = new DamageNumber(obj, this.damage, 30, 90, knockStraight.x)
             this.game.vanity.push(num);
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, this.width / 200 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 2, 40));
@@ -140,7 +139,7 @@ class Beam extends Particle {
             this.game.vanity.push(explosionB);
             break;
           case "FINISHER":
-            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage, 20, 70));
+            this.game.vanity.push(new DamageNumber(obj, this.damage, 20, 70, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
@@ -150,7 +149,7 @@ class Beam extends Particle {
 
             break;
           default:
-            this.game.vanity.push(new DamageNumber(this.game, obj.pos.x, obj.pos.y, this.damage));
+            this.game.vanity.push(new DamageNumber(obj, this.damage, 15, 50, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));

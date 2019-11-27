@@ -47,10 +47,9 @@ const MIN_FRAME_RATE = 50; // Limits enemy production to save frames
 const BASE_SPAWN_RATE = 4; // 5
 const DIFFICULTY_START = 1;
 const DIFFICULTY_INTERVAL = 60;
-const DIFFICULTY_MULTIPLIER = 0.030;
+const DIFFICULTY_MULTIPLIER = 0.020;
 const DIFFICULTY_RATE = 1;
 const MAX_DIFFICULTY = 100;
-
 
 const STARTING_HEALTH = 250;
 

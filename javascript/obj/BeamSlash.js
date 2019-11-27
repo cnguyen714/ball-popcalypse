@@ -12,6 +12,7 @@ const DAMAGE = 300;
 const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
 const DERVISH_KB_RATE = 0.1;
+const OFFSET = 15;
 const DIRECTION = {
   CCW: -1,
   CW: 1,
@@ -104,14 +105,8 @@ class BeamSlash extends Particle {
 
     let x2 = newAim.x * Math.cos(arcRate) - newAim.y * Math.sin(arcRate);
     let y2 = newAim.y * Math.cos(arcRate) + newAim.x * Math.sin(arcRate);
-    this.aim = new Vector(x2, y2);
+    this.aim = new Vector(x2, y2).normalize();
 
-    let p = new Beam(this.game, this.pos.x, this.pos.y, this.aim, this.combo);
-    p.color = this.color;
-    p.length = this.length;
-    p.width = this.width;
-    p.damage = this.damage;
-    p.knockback = this.knockback;
     if (this.combo === -1) {
       this.length += 5;
       this.width += 5;
@@ -122,6 +117,12 @@ class BeamSlash extends Particle {
     } else {
       this.length -= 2;
     }
+    let p = new Beam(this.game, this.pos.x + this.aim.x * OFFSET, this.pos.y + this.aim.y * OFFSET, this.aim, this.combo);
+    p.color = this.color;
+    p.length = this.length;
+    p.width = this.width;
+    p.damage = this.damage;
+    p.knockback = this.knockback;
     this.game.particles.push(p);
   }
 

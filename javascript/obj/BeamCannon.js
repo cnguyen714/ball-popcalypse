@@ -34,12 +34,12 @@ class BeamCannon extends Beam {
 
     this.cb = function () {
       if (this.width < 4) {
-        this.width *= 4.8 / 4;
+        this.width *= 0.97;
       } else {
-        this.width *= 0.80;
+        this.width *= 0.75;
       }
 
-      if (this.aliveTime > this.initialTime - 100) {
+      if (this.aliveTime < this.initialTime - 40) {
         let offset = Math.random();
         let particle = new Particle(
           this.game,

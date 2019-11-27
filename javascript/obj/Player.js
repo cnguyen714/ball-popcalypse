@@ -224,7 +224,7 @@ class Player extends GameObject {
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);
       beam.hitRatio = 0.5;
       beam.bomb = false;
-      beam.aliveTime = 50;
+      beam.aliveTime = 40;
       beam.initialTime = beam.aliveTime;
       beam.color = Beam.COLOR().TEAL;
       this.game.particles.push(beam);

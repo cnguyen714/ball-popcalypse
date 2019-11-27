@@ -50,19 +50,20 @@ class Particle extends GameObject {
     if (obj instanceof EnemyCircle) {
       if (this.r * this.r + obj.r * obj.r > distSqr) {
         this.alive = false;
-        this.vel.normalize();
-        this.vel.multiply(this.knockback / Math.pow(obj.r / 6, 2));
-        obj.vel.add(this.vel);
+        let kb = this.vel.dup();
+        kb.normalize();
+        kb.multiply(this.knockback / Math.pow(obj.r / 6, 2));
+        obj.vel.add(kb);
         obj.health -= this.damage;
         
         if (obj.health <= 0) {
           obj.alive = false;
-          this.vel.normalize();
-          this.vel.multiply(this.knockback / 2);
-          obj.vel.add(this.vel);
+          kb.normalize();
+          kb.multiply(this.knockback / 2);
+          obj.vel.add(kb);
         }
 
-        this.game.vanity.push(new DamageNumber(obj, this.damage, 11, 30));
+        this.game.vanity.push(new DamageNumber(this, this.damage, 11, 30, this.vel.x));
         let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
         hitspark.aliveTime = 4;
         hitspark.growthRate = 1;

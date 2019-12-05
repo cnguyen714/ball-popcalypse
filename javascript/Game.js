@@ -48,6 +48,7 @@ const BASE_SPAWN_RATE = 4; // 5
 const DIFFICULTY_START = 1;
 const DIFFICULTY_INTERVAL = 60;
 const DIFFICULTY_MULTIPLIER = 0.020;
+const DIFFICULTY_GROWTH = 0.1;
 const DIFFICULTY_RATE = 1;
 const MAX_DIFFICULTY = 100;
 
@@ -531,6 +532,7 @@ class Game {
           this.vanity.filter(entity => !entity.paused).forEach(entity => entity.update());
         } else {
           if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
+            this.difficulty += DIFFICULTY_GROWTH;
             this.difficulty *= 1 + DIFFICULTY_MULTIPLIER * this.difficultyRate;
           }
           if (this.difficulty > MAX_DIFFICULTY) this.difficulty = MAX_DIFFICULTY;

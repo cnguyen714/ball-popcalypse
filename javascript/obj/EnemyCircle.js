@@ -8,7 +8,7 @@ const RADIUS = 7;
 const COLOR = "#a64942";
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
-const DAMPENING_COEFFICIENT = 0.7;
+const DAMPENING_COEFFICIENT = 0.5;
 const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
 const HEALTH_CAP = 200;
@@ -16,7 +16,7 @@ const DAMAGE = 1;
 const SCORE = 1;
 const BASE_TURN_RATE = 0.25;
 const ACCEL = 0.4;
-const MAX_SPEED = 3;
+const MAX_SPEED = 6;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
@@ -49,6 +49,9 @@ class EnemyCircle extends GameObject {
     let vel = this.vel.length();
     if (vel > MAX_SPEED) {
       this.vel.multiply(DAMPENING_COEFFICIENT);
+      if (this.vel.length() < MAX_SPEED) {
+        this.vel = this.vel.normalize().multiply(MAX_SPEED);
+      }
     }
   }
 

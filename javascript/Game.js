@@ -42,9 +42,10 @@ const STATE_OVER = "STATE_OVER";
 
 const FPS = 60;
 const NORMAL_TIME_DELTA = 1000 / FPS;
-const MIN_FRAME_RATE = 50; // Limits enemy production to save frames
+const MIN_FRAME_RATE = 40; // Limits enemy production to save frames
 
 const BASE_SPAWN_RATE = 4; // 5
+const SPAWN_LOCKOUT_TIME = 60; // 5
 const DIFFICULTY_START = 1;
 const DIFFICULTY_INTERVAL = 60;
 const DIFFICULTY_MULTIPLIER = 0.020;
@@ -541,7 +542,7 @@ class Game {
           // Stop making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam
           let spawnRate = 20 - Math.floor(this.difficulty);
           spawnRate = spawnRate <= 1 ? 1 : spawnRate;
-          if (this.loopCount % (BASE_SPAWN_RATE + spawnRate) === 0 && (this.fps >= MIN_FRAME_RATE || this.player.beamCooldown > 0) && this.loopCount > 60) {
+          if (this.loopCount % Math.floor((BASE_SPAWN_RATE + spawnRate) * (this.fps >= MIN_FRAME_RATE ? 1 : 2)) === 0 && this.pauseTime === 0 && this.loopCount > SPAWN_LOCKOUT_TIME) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           }
 

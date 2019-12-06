@@ -24,6 +24,7 @@ const MAX_SPRINT_SPEED = 10;
 const DASH_TIME = 0;
 const DASH_SPEED = 7;
 const DASH_COOLDOWN = 12;
+const SLASH_COOLDOWN = 11;
 const POST_DASH_INVUL = 2;
 const CHARGE_MAX = 60;
 const CHARGE_STACKS = 2.2;
@@ -82,6 +83,7 @@ class Player extends GameObject {
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
+    this.slashCooldown = 0;
     this.beamCooldown = 0;
     this.charging = false;
     this.invul = 0;
@@ -138,7 +140,24 @@ class Player extends GameObject {
       // this.velRestoreDash = this.vel.dup();
       this.dashDirection = this.aim.dup();
       this.dashDuration = DASH_TIME;
-      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
+    }
+  }
+
+  slash() {
+    this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
+    this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
+    if (this.slashCombo === this.maxSlashCombo) {
+      this.slashCooldown = SLASH_COOLDOWN + 60;
+      this.slashCombo = 0;
+      this.shootCooldown = this.slashCooldown - 30;
+      this.invul += 40;
+      this.noclip += 50;
+      // this.pauseTime = 5;
+    } else {
+      this.slashCooldown = SLASH_COOLDOWN;
+      this.shootCooldown = this.slashCooldown + 5;
+      this.slashCombo++;
+      this.slashReset = SLASH_COOLDOWN * 1.6;
     }
   }
 
@@ -406,6 +425,7 @@ class Player extends GameObject {
 
     if (this.shootCooldown > 0) this.shootCooldown--;
     if (this.dashCooldown > 0) this.dashCooldown--;
+    if (this.slashCooldown > 0) this.slashCooldown--;
     if (this.beamCooldown > 0) this.beamCooldown--;
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
@@ -440,7 +460,7 @@ class Player extends GameObject {
     // Calculate facing direction and apply shooting controls
     this.setAim();
 
-    if (this.keyDown[KEY.MOUSE_LEFT] && this.dashCooldown <= 0) this.dash();
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
@@ -464,21 +484,6 @@ class Player extends GameObject {
         this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
         // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
-        
-        this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
-        if (this.slashCombo === this.maxSlashCombo) {
-          this.dashCooldown = DASH_COOLDOWN + 60;
-          this.slashCombo = 0;
-          this.shootCooldown = this.dashCooldown - 30;
-          this.invul += 40;
-          this.noclip += 50;
-          // this.pauseTime = 5;
-        } else {
-          this.dashCooldown = DASH_COOLDOWN;
-          this.shootCooldown = this.dashCooldown + 5;
-          this.slashCombo++;
-          this.slashReset = DASH_COOLDOWN * 1.6;
-        }
       } else {
         this.dashDuration--;
         this.vel.add(this.aim.normalize().multiply(DASH_SPEED));

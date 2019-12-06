@@ -28,7 +28,7 @@ const MAX_SPRINT_SPEED = 10;
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
-const DASH_DURATION = 9;
+const DASH_DURATION = 8;
 const DASH_SPEED = 30;
 const DASH_COOLDOWN = 90;
 const POST_DASH_INVUL = 2;
@@ -211,7 +211,7 @@ class Player extends GameObject {
           beam.damage = 600;
           this.vel.subtract(kb.multiply(0.9));
           freezeTime = 0;
-          beam.knockback = 5;
+          beam.knockback = 2;
           beam.pos.x += Math.random() * 120 - 60;
           beam.pos.y += Math.random() * 120 - 60;
           // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
@@ -505,7 +505,10 @@ class Player extends GameObject {
           this.moveState = STATE_WALKING;
         } else {
           this.dashDuration--;
-          this.vel = this.dashDirection.dup();
+          while (this.vel.length() < DASH_SPEED) {
+            this.vel.add(this.dashDirection.dup().multiply(1/5));
+          }
+          // this.vel = this.dashDirection.dup();
         }
 
         this.vel.add(this.movement.dup().multiply(ACCEL));

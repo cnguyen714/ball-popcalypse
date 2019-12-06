@@ -14,30 +14,33 @@ import DeathExplosion from "./DeathExplosion";
 import BeamCannon from "./BeamCannon";
 // import shotSfx from '../assets/laser7.wav';
 
-const CLAMP_SPAWN = 100; // Offset from edges
+const CLAMP_SPAWN = 200; // Offset from edges
+const PLAYER_RADIUS = 11;
+const COLOR = '#0d7377';
+const MAX_HEALTH = 250;
+
 const MAX_SPEED = 7;
 const MIN_SPEED = 0.1;
 const ACCEL = 3;
 const DECEL = 0.9;
 const SPRINT_SPEED = 8;
 const MAX_SPRINT_SPEED = 10;
-const DASH_TIME = 0;
-const DASH_SPEED = 7;
-const DASH_COOLDOWN = 12;
-const SLASH_COOLDOWN = 11;
-const POST_DASH_INVUL = 2;
-const CHARGE_MAX = 60;
-const CHARGE_STACKS = 2.2;
-const CHARGE_COOLDOWN = 90;
-const MAX_COMBOS = 3;
-const SHOOT_COOLDOWN = 12;
-const SHOOT_SHOTGUN_PELLETS = 60;
-
-const PLAYER_RADIUS = 11;
-const COLOR = '#0d7377';
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
+const DASH_DURATION = 0;
+const DASH_SPEED = 7;
+const DASH_COOLDOWN = 12;
+const POST_DASH_INVUL = 2;
+
+const SLASH_COOLDOWN = 11;
+const MAX_COMBOS = 3;
+
+const CHARGE_MAX = 60;
+const CHARGE_STACKS = 2.2;
+const CHARGE_COOLDOWN = 90;
+const SHOOT_COOLDOWN = 12;
+const SHOOT_SHOTGUN_PELLETS = 60;
 
 const STATE_WALKING = "STATE_WALKING";
 const STATE_DASHING = "STATE_DASHING";
@@ -71,32 +74,36 @@ class Player extends GameObject {
     
     this.pos = new Vector(CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2),
                           CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2));
-    this.vel = new Vector(); 
+    this.vel = new Vector();
+    this.movement = new Vector();
     this.aim = new Vector();
     this.mousePos = new Vector(this.cvs.width / 2, this.cvs.height / 2);
+    this.moveState = STATE_WALKING;
+    this.r = PLAYER_RADIUS;
+    this.color = COLOR;
+    this.invul = 0;
+    this.noclip = 0;
+    
+    this.maxHealth = MAX_HEALTH;
+    this.health = this.maxHealth;
+    
     this.shootCooldown = 0;
     this.shooting = false;
+    this.beamCooldown = 0;
+    this.charging = false;
+    this.charge = CHARGE_MAX;
+    this.chargeMax = CHARGE_MAX;
+        
     this.slashReset = 0;
     this.slashCombo = 0;
+    this.slashCooldown = 0;
     this.maxSlashCombo = MAX_COMBOS;
-    this.moveState = STATE_WALKING;
+    
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
-    this.slashCooldown = 0;
-    this.beamCooldown = 0;
-    this.charging = false;
-    this.invul = 0;
-    this.noclip = 0;
     this.velRestoreDash = new Vector(); 
-    this.charge = CHARGE_MAX;
-    this.chargeMax = CHARGE_MAX;
-
-    this.maxHealth = 100;
-    this.health = this.maxHealth;
-
-    this.r = PLAYER_RADIUS;
-    this.color = COLOR;
+    
     this.keyDown = {
       [KEY.W]: false,
       [KEY.A]: false,
@@ -122,6 +129,10 @@ class Player extends GameObject {
     this.setAim();
   }
 
+  heal() {
+    this.health = this.maxHealth;
+  }
+
   // Set player's unnormalized aim relative to stored mouse position
   setAim() {
     this.aim = new Vector(this.mousePos.x - this.pos.x, this.mousePos.y - this.pos.y);
@@ -133,13 +144,14 @@ class Player extends GameObject {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
       // this.pauseTime = 3;
-      this.invul = 5;
+      this.invul = DASH_DURATION;
+      this.noclip = DASH_DURATION;
+      this.dashDirection = this.aim.dup();
+      this.dashDuration = DASH_DURATION;
 
       this.setAim();
       // this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
       // this.velRestoreDash = this.vel.dup();
-      this.dashDirection = this.aim.dup();
-      this.dashDuration = DASH_TIME;
     }
   }
 
@@ -418,11 +430,6 @@ class Player extends GameObject {
       return;
     }
 
-    if(this.game.cheat) {
-      this.charge = CHARGE_MAX * 2;
-      if(this.beamCooldown >= 10) this.beamCooldown = 9;
-    }
-
     if (this.shootCooldown > 0) this.shootCooldown--;
     if (this.dashCooldown > 0) this.dashCooldown--;
     if (this.slashCooldown > 0) this.slashCooldown--;
@@ -432,20 +439,7 @@ class Player extends GameObject {
     if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
 
     // handle combo reset logic
-    if (this.slashReset > 0) {
-      this.slashReset--;
-    } else {
-      this.slashCombo = 0;
-    }
-
-    // add sparks for charge level
-    if (this.game.loopCount % 2) {
-      if (this.charge >= this.chargeMax * 2) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
-      } else if (this.charge >= this.chargeMax) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
-      }
-    }
+    this.slashReset > 0 ? this.slashReset-- : this.slashCombo = 0;
     
     // if player is paused, do not apply movement or actions
     if (this.pauseTime > 0) {
@@ -461,9 +455,11 @@ class Player extends GameObject {
     this.setAim();
 
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
+    if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
+    
 
     // Apply movement
     if (this.moveState === STATE_WALKING) {
@@ -479,11 +475,9 @@ class Player extends GameObject {
       this.addVelocityTimeDelta();
       this.applyDecel();
     } else if (this.moveState === STATE_DASHING) {
-      // dash has ended
       if (this.dashDuration <= 0) {
         this.invul = POST_DASH_INVUL;
         this.moveState = STATE_WALKING;
-        // this.game.particles.push(new Slam(this.game, this.pos.x, this.pos.y));
       } else {
         this.dashDuration--;
         this.vel.add(this.aim.normalize().multiply(DASH_SPEED));
@@ -491,6 +485,7 @@ class Player extends GameObject {
       }
     } 
 
+    // charging effects before firing a beam
     if (this.charging) {
       let line  = new Beam(this.game, this.pos.x, this.pos.y, new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1), 0, false);
       line.width = 10;
@@ -503,10 +498,17 @@ class Player extends GameObject {
       line.cb = function () {
         this.length *= 0.9;
         this.width *= 0.8;
-        // this.pos.x = this.game.player.pos.x;
-        // this.pos.y = this.game.player.pos.y;
       }
       this.game.vanity.push(line);
+    }
+
+    // add sparks for charge level
+    if (this.game.loopCount % 2) {
+      if (this.charge >= this.chargeMax * 2) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
+      } else if (this.charge >= this.chargeMax) {
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
+      }
     }
 
     this.validateBound(this.cvs.width, this.cvs.height);

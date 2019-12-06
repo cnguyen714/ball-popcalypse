@@ -53,8 +53,6 @@ const DIFFICULTY_GROWTH = 0.1;
 const DIFFICULTY_RATE = 1;
 const MAX_DIFFICULTY = 100;
 
-const STARTING_HEALTH = 250;
-
 const LINKED_IN_ICON = new Image();
 LINKED_IN_ICON.src = `${PATH}/assets/iconfinder_square-linkedin_317725.png`;
 const MUTE = new Image(50,50);
@@ -363,8 +361,7 @@ class Game {
     this.enemyParticles = [];
     this.vanity = [];
     this.player.alive = true;
-    this.player.maxHealth = STARTING_HEALTH;
-    this.player.health = STARTING_HEALTH;
+    this.player.heal();
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
     // this.playSound(this.bgm, 0.4);
     this.cheat = false;

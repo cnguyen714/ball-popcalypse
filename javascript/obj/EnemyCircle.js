@@ -14,7 +14,7 @@ const HEALTH = 100;
 const HEALTH_CAP = 200;
 const DAMAGE = 1;
 const SCORE = 1;
-const BASE_TURN_RATE = 0.25;
+const BASE_TURN_RATE = 0.8;
 const ACCEL = 0.4;
 const MAX_SPEED = 6;
 
@@ -23,7 +23,7 @@ class EnemyCircle extends GameObject {
     super(game);
     this.aiCallback = () => {
       this.aim = Vector.difference(game.player.pos, this.pos).normalize();
-      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 2);
+      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 3);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
       this.vel.add(this.aim.multiply(this.accel));
@@ -116,7 +116,6 @@ class EnemyCircle extends GameObject {
 
     this.dampSpeed();
     this.addVelocityTimeDelta();
-// this.validatePosition(this.cvs.width, this.cvs.height);
 
     // Check collision with player
     this.checkCollision(this.game.players[0]);

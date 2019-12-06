@@ -145,11 +145,25 @@ class Player extends GameObject {
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
       this.invul = Math.max(DASH_DURATION, this.invul);
-      this.noclip = Math.max(DASH_DURATION, this.noclip);
+      this.noclip = Math.max(DASH_DURATION - 1, this.noclip);
       this.dashDuration = DASH_DURATION;
       this.dashCooldown = DASH_COOLDOWN;
       this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
+
       this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, this.movement.dup().multiply(-7), 10, "cyan"));
+      let spark = new SlashSpark(this.game, this.pos.x, this.pos.y, "BEAM", 150, 60, 17, Math.PI + Math.atan2(this.movement.y, this.movement.x), 0, true, function() {this.width *= 0.80; this.length *= 1.15});
+      spark.color = [0,255,255];
+      this.game.vanity.push(spark);
+      let cb = function () {
+        this.length *= 1.12;
+        this.width *= 0.85;
+      }
+      let angle = Math.random() * Math.PI;
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle, 0, true, cb));
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
+      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
+      this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, new Vector(), 3));
     }
   }
 
@@ -431,6 +445,21 @@ class Player extends GameObject {
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
     if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
+    if (this.dashCooldown > DASH_COOLDOWN - DASH_DURATION - 10) {
+      let p = new Particle(game, this.pos.x, this.pos.y);
+      p.color = "cyan";
+      p.aliveTime = DASH_DURATION - 1;
+      p.r = this.r;
+      p.active = false;
+      p.cb = function () {
+        this.aliveTime--;
+        if (this.aliveTime <= 2) this.color = "grey";
+
+        if (this.aliveTime <= 0) this.alive = false;
+
+      }
+      this.game.vanity.push(p);
+    }
 
     // handle combo reset logic
     this.slashReset > 0 ? this.slashReset-- : this.slashCombo = 0;
@@ -473,25 +502,11 @@ class Player extends GameObject {
       case STATE_DASHING:
         if (this.dashDuration <= 0) {
           this.invul = Math.max(POST_DASH_INVUL, this.invul);
-
           this.moveState = STATE_WALKING;
         } else {
           this.dashDuration--;
           this.vel = this.dashDirection.dup();
         }
-        let p = new Particle(game, this.pos.x, this.pos.y);
-        p.color = "cyan";
-        p.aliveTime = DASH_DURATION - 5;
-        p.r = this.r;
-        p.active = false;
-        p.cb = function () {
-          this.aliveTime--;
-          if (this.aliveTime <= 1) this.color = "black";
-          
-          if (this.aliveTime <= 0) this.alive = false;
-
-        }
-        this.game.vanity.push(p);
 
         this.vel.add(this.movement.dup().multiply(ACCEL));
         if (this.vel.length() > DASH_SPEED) this.vel.normalize().multiply(DASH_SPEED);
@@ -547,6 +562,7 @@ class Player extends GameObject {
 
     this.ctx.restore();
 
+    // draw cooldowns
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.strokeStyle = "white";

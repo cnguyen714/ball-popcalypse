@@ -11,6 +11,7 @@ const COLOR = {
   NORMAL: [255, 255, 255],
   CRIT: [255, 255, 0],
   CANNON: [0, 0, 0],
+  CYAN: [0, 255, 255],
 }
 //
 // hitspark for beams
@@ -23,7 +24,8 @@ class SlashSpark extends Particle {
       duration = DURATION, 
       angle = Math.floor(Math.random() * 360) * Math.PI / 180, 
       rotation = 0, 
-      pauseState = true) {
+      pauseState = true,
+      cb = function() {}) {
     super(game);
     this.pos = new Vector(x, y);
     this.combo = combo;
@@ -33,7 +35,7 @@ class SlashSpark extends Particle {
     this.initialTime = this.aliveTime;
     this.rotation = rotation;
     this.paused = pauseState;
-    this.cb = () => {};
+    this.cb = cb;
 
     this.offsets = [];
     this.offsets.push(-Math.PI / 32 + Math.random() * Math.PI / 16);
@@ -134,11 +136,6 @@ class SlashSpark extends Particle {
   draw() {
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     if (this.combo === "BEAM") {
-      if (this.aliveTime >= this.initialTime - 10) {
-        color = [255, 255, 255]
-      } else {
-        color = [0, 0, 0]
-      }
       this.drawRect(0, color, 1    , 1.5);
       this.drawRect(0, color, 3 / 4, 1.55);
       this.drawRect(0, color, 1 / 3, 1.58);

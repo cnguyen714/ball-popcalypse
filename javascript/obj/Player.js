@@ -28,9 +28,9 @@ const MAX_SPRINT_SPEED = 10;
 const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
-const DASH_DURATION = 0;
-const DASH_SPEED = 7;
-const DASH_COOLDOWN = 12;
+const DASH_DURATION = 9;
+const DASH_SPEED = 30;
+const DASH_COOLDOWN = 60;
 const POST_DASH_INVUL = 2;
 
 const SLASH_COOLDOWN = 11;
@@ -141,15 +141,15 @@ class Player extends GameObject {
   // Dash in a direction for a few frames
   // End dash logic is handled in update
   dash() {
+    if (this.movement.length() === 0) return;
     if (this.moveState !== STATE_DASHING) {
       this.moveState = STATE_DASHING;
-      // this.pauseTime = 3;
-      this.invul = DASH_DURATION;
-      this.noclip = DASH_DURATION;
-      this.dashDirection = this.aim.dup();
+      this.invul = Math.max(DASH_DURATION, this.invul);
+      this.noclip = Math.max(DASH_DURATION, this.noclip);
       this.dashDuration = DASH_DURATION;
+      this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
 
-      this.setAim();
+      // this.setAim();
       // this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
       // this.velRestoreDash = this.vel.dup();
     }
@@ -243,7 +243,6 @@ class Player extends GameObject {
     }
   }
 
-  // Fire
   shoot() {
     if (this.shooting === false) {
       this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
@@ -398,13 +397,10 @@ class Player extends GameObject {
 
   dampSpeed() {
     let vel = this.vel.length();
-    let maxSpeed = (this.keyDown[KEY.SHIFT] 
-      ? MAX_SPRINT_SPEED 
-      : MAX_SPEED)
     if(vel > CLAMP_SPEED) {
       this.vel.normalize().multiply(CLAMP_SPEED);
     }
-    if(vel > maxSpeed) {
+    if (vel > MAX_SPEED) {
       this.vel.multiply(DAMPENING_COEFFICIENT);
     }
   }
@@ -451,39 +447,61 @@ class Player extends GameObject {
       }
     }
 
-    // Calculate facing direction and apply shooting controls
+    // Calculate facing direction and apply controls
     this.setAim();
+
+    this.movement = new Vector();
+    if (this.keyDown[KEY.W]) this.movement.y -= 1;
+    if (this.keyDown[KEY.A]) this.movement.x -= 1;
+    if (this.keyDown[KEY.S]) this.movement.y += 1;
+    if (this.keyDown[KEY.D]) this.movement.x += 1;
+    this.movement.normalize();
 
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
-    
 
     // Apply movement
-    if (this.moveState === STATE_WALKING) {
-      let offset = ACCEL * (this.keyDown[KEY.SHIFT] ? SPRINT_SPEED : 1);
-      if (this.vel.length() < MAX_SPRINT_SPEED) {
-        if (this.keyDown[KEY.W]) this.vel.y -= offset;
-        if (this.keyDown[KEY.A]) this.vel.x -= offset;
-        if (this.keyDown[KEY.S]) this.vel.y += offset;
-        if (this.keyDown[KEY.D]) this.vel.x += offset;
-      }
+    switch (this.moveState) {
+      case STATE_WALKING:
+        this.vel.add(this.movement.dup().multiply(ACCEL));
 
-      this.dampSpeed();
-      this.addVelocityTimeDelta();
-      this.applyDecel();
-    } else if (this.moveState === STATE_DASHING) {
-      if (this.dashDuration <= 0) {
-        this.invul = POST_DASH_INVUL;
-        this.moveState = STATE_WALKING;
-      } else {
-        this.dashDuration--;
-        this.vel.add(this.aim.normalize().multiply(DASH_SPEED));
+        this.dampSpeed();
         this.addVelocityTimeDelta();
-      }
-    } 
+        this.applyDecel();
+        break;
+      case STATE_DASHING:
+        if (this.dashDuration <= 0) {
+          this.invul = POST_DASH_INVUL;
+          this.dashCooldown = DASH_COOLDOWN;
+          this.moveState = STATE_WALKING;
+        } else {
+          this.dashDuration--;
+          this.vel = this.dashDirection.dup();
+        }
+        let p = new Particle(game, this.pos.x, this.pos.y);
+        p.color = "yellow";
+        p.aliveTime = DASH_DURATION - 5;
+        p.r = this.r;
+        p.active = false;
+        p.cb = function () {
+          this.aliveTime--;
+          if (this.aliveTime <= 1) this.color = "white";
+          
+          if (this.aliveTime <= 0) this.alive = false;
+
+        }
+        this.game.vanity.push(p);
+
+        this.vel.add(this.movement.dup().multiply(ACCEL));
+        if (this.vel.length() > DASH_SPEED) this.vel.normalize().multiply(DASH_SPEED);
+        this.addVelocityTimeDelta();
+        break;
+      default:
+        break;
+    }
 
     // charging effects before firing a beam
     if (this.charging) {

@@ -44,6 +44,7 @@ class GameObject {
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
   draw() {
   }
+  
   // Multiply velocity by the fractional difference in timeDelta
   // Does not skip frames, but gives the illusion of same speed
   addVelocityTimeDelta() {

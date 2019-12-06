@@ -26,7 +26,7 @@ class Particle extends GameObject {
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
     this.cb = cb;
-    this.aliveTime = 1;
+    this.aliveTime = 600;
     this.active = true;
 
     this.update = this.update.bind(this);

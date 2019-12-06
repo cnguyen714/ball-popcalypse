@@ -653,10 +653,10 @@ class Game {
     this.ctx.lineWidth = 4;
     this.ctx.shadowBlur = 2;
     this.ctx.shadowColor = 'white';
-    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.dashCooldown / 2, this.player.mousePos.y);
-    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.dashCooldown / 2, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.dashCooldown / 2);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.dashCooldown / 2);
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.slashCooldown / 2, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.slashCooldown / 2, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.slashCooldown / 2);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.slashCooldown / 2);
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.beginPath();
@@ -670,34 +670,30 @@ class Game {
     } else {
       this.ctx.strokeStyle = "yellow";
     }
-    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.dashCooldown / 2, this.player.mousePos.y);
-    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.dashCooldown / 2, this.player.mousePos.y);
-    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.dashCooldown / 2);
-    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.dashCooldown / 2);
+    this.ctx.moveTo(this.player.mousePos.x - cursorSize - this.player.slashCooldown / 2, this.player.mousePos.y);
+    this.ctx.lineTo(this.player.mousePos.x + cursorSize + this.player.slashCooldown / 2, this.player.mousePos.y);
+    this.ctx.moveTo(this.player.mousePos.x, this.player.mousePos.y - cursorSize - this.player.slashCooldown / 2);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y + cursorSize + this.player.slashCooldown / 2);
     this.ctx.stroke();
+    this.ctx.closePath();
     
     this.ctx.font = '20px sans-serif';
     this.ctx.fillStyle = 'white';
-
+    
     // === DEBUG SHOW ANGLE
     // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
+    // this.ctx.beginPath();
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
+    // this.ctx.strokeStyle = "white";
+    // this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
+    // this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
+    // this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
+    // this.ctx.lineTo(this.player.pos.x + 50, this.player.pos.y);
+    // this.ctx.arc(this.player.pos.x, this.player.pos.y, 40, 0, angle);
 
+    // this.ctx.stroke();
+    // this.ctx.closePath();
     // this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
-
-    this.ctx.restore();
-  }
-
-  drawStats() {
-    this.ctx.save();
-    this.ctx.fillStyle = 'white';
-    this.ctx.font = '12px sans-serif';
-    this.ctx.shadowBlur = 2;
-    this.ctx.shadowColor = 'black';
-    let xOffset = this.cvs.width - 55;
-    let yOffset = 70;
-    this.ctx.fillText(`FPS: ${this.fps}`, xOffset, yOffset += 20);
-    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length + this.vanity.length}`, xOffset, yOffset += 20);
 
     this.ctx.restore();
   }
@@ -716,7 +712,22 @@ class Game {
     this.ctx.fillText(`Time: ${this.timeSeconds}`, xOffset, yOffset += 20);
     this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, xOffset, yOffset += 20);
     this.ctx.restore();
-    this.drawStats();
+    this.drawHealth();
+    this.drawChargeBar();
+  }
+
+  drawStats() {
+    this.ctx.save();
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '12px sans-serif';
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowColor = 'black';
+    let xOffset = this.cvs.width - 55;
+    let yOffset = 70;
+    this.ctx.fillText(`FPS: ${this.fps}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`obj: ${this.particles.length + this.entities.length + this.vanity.length}`, xOffset, yOffset += 20);
+
+    this.ctx.restore();
   }
 
   drawVolControls() {
@@ -849,11 +860,11 @@ class Game {
         this.enemyParticles.forEach(entity => entity.draw());
         this.player.draw();
         this.menus.forEach(entity => entity.draw());
-        this.drawStats();
       break;
       default:
         break;
     }
+    this.drawStats();
     this.drawCursor();
     this.drawVolControls();
   }

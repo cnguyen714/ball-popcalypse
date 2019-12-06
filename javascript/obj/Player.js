@@ -30,7 +30,7 @@ const CLAMP_SPEED = 200;
 
 const DASH_DURATION = 9;
 const DASH_SPEED = 30;
-const DASH_COOLDOWN = 60;
+const DASH_COOLDOWN = 90;
 const POST_DASH_INVUL = 2;
 
 const SLASH_COOLDOWN = 11;
@@ -102,6 +102,7 @@ class Player extends GameObject {
     this.dashDuration = 0;
     this.dashDirection = new Vector();
     this.dashCooldown = 0;
+    this.maxDashCooldown = DASH_COOLDOWN;
     this.velRestoreDash = new Vector(); 
     
     this.keyDown = {
@@ -139,7 +140,6 @@ class Player extends GameObject {
   }
 
   // Dash in a direction for a few frames
-  // End dash logic is handled in update
   dash() {
     if (this.movement.length() === 0) return;
     if (this.moveState !== STATE_DASHING) {
@@ -147,11 +147,9 @@ class Player extends GameObject {
       this.invul = Math.max(DASH_DURATION, this.invul);
       this.noclip = Math.max(DASH_DURATION, this.noclip);
       this.dashDuration = DASH_DURATION;
+      this.dashCooldown = DASH_COOLDOWN;
       this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
-
-      // this.setAim();
-      // this.vel = this.aim.dup().normalize().multiply(DASH_SPEED * 2);
-      // this.velRestoreDash = this.vel.dup();
+      this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, this.movement.dup().multiply(-7), 10, "cyan"));
     }
   }
 
@@ -474,21 +472,21 @@ class Player extends GameObject {
         break;
       case STATE_DASHING:
         if (this.dashDuration <= 0) {
-          this.invul = POST_DASH_INVUL;
-          this.dashCooldown = DASH_COOLDOWN;
+          this.invul = Math.max(POST_DASH_INVUL, this.invul);
+
           this.moveState = STATE_WALKING;
         } else {
           this.dashDuration--;
           this.vel = this.dashDirection.dup();
         }
         let p = new Particle(game, this.pos.x, this.pos.y);
-        p.color = "yellow";
+        p.color = "cyan";
         p.aliveTime = DASH_DURATION - 5;
         p.r = this.r;
         p.active = false;
         p.cb = function () {
           this.aliveTime--;
-          if (this.aliveTime <= 1) this.color = "white";
+          if (this.aliveTime <= 1) this.color = "black";
           
           if (this.aliveTime <= 0) this.alive = false;
 
@@ -548,6 +546,19 @@ class Player extends GameObject {
     this.ctx.closePath();
 
     this.ctx.restore();
+
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "white";
+    this.ctx.shadowBlur = 6;
+    this.ctx.shadowColor = "white";
+    this.ctx.lineWidth = 6;
+    this.ctx.arc(this.pos.x, this.pos.y, 20, 0, 2 * Math.PI * (this.dashCooldown / DASH_COOLDOWN));
+    this.ctx.stroke();
+    this.ctx.closePath();
+
+    this.ctx.restore();
+
   }
 }
 

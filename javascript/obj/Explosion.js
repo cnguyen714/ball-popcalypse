@@ -6,13 +6,13 @@ const RADIUS = 5;
 const COLOR = "white";
 
 class Explosion extends Particle {
-  constructor(game, startX, startY, startR, vel) {
+  constructor(game, startX, startY, startR, vel, aliveTime, color) {
     super(game);
     this.pos = new Vector(startX, startY);
     this.vel = vel || new Vector();
     this.r = startR || RADIUS;
-    this.color = COLOR;
-    this.aliveTime = 20;
+    this.color = color || COLOR;
+    this.aliveTime = aliveTime || 20;
     this.initialAliveTime = this.aliveTime;
 
     this.update = this.update.bind(this);

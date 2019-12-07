@@ -11,8 +11,8 @@ const HEALTH = 6000;
 const HEALTH_CAP = 18000;
 
 const BASE_TURN_RATE = 0.25;
-const ACCEL = 0.4;
-const MAX_SPEED = 1.3;
+const ACCEL = 2;
+const MAX_SPEED = 4;
 const DAMAGE = 40;
 
 class LargeEnemyCircle extends EnemyCircle {
@@ -34,7 +34,7 @@ class LargeEnemyCircle extends EnemyCircle {
       this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(this.game.difficulty, 1 / 2);
     } else {
       this.accel = ACCEL / 2;
-      this.maxSpeed = MAX_SPEED / 2;
+      this.maxSpeed = MAX_SPEED;
     }
 
     this.health = HEALTH + this.r * 150;

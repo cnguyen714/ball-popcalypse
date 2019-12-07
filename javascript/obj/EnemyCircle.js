@@ -14,9 +14,9 @@ const HEALTH = 100;
 const HEALTH_CAP = 200;
 const DAMAGE = 1;
 const SCORE = 1;
-const BASE_TURN_RATE = 0.8;
+const BASE_TURN_RATE = 2;
 const ACCEL = 0.4;
-const MAX_SPEED = 6;
+const MAX_SPEED = 4;
 
 class EnemyCircle extends GameObject {
   constructor(game) {
@@ -32,7 +32,7 @@ class EnemyCircle extends GameObject {
     this.health = HEALTH + game.difficulty * 2;
 
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2);
-    this.maxSpeed = MAX_SPEED;
+    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2);
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 
@@ -47,10 +47,10 @@ class EnemyCircle extends GameObject {
 
   dampSpeed() {
     let vel = this.vel.length();
-    if (vel > MAX_SPEED) {
+    if (vel > this.maxSpeed) {
       this.vel.multiply(DAMPENING_COEFFICIENT);
-      if (this.vel.length() < MAX_SPEED) {
-        this.vel = this.vel.normalize().multiply(MAX_SPEED);
+      if (this.vel.length() < this.maxSpeed) {
+        this.vel = this.vel.normalize().multiply(this.maxSpeed);
       }
     }
   }

@@ -12,15 +12,16 @@ const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
 const DAMPENING_COEFFICIENT = 0.7;
 const SPREAD_FACTOR = 2.0;
-const HEALTH = 700;
+const HEALTH = 600;
 const HEALTH_CAP = 1200;
 const DAMAGE = 1;
 const SCORE = 20;
-const BASE_TURN_RATE = 0.25;
-const ACCEL = 0.2;
-const MAX_SPEED = 0.5;
+const BASE_TURN_RATE = 5;
+const ACCEL = 1;
+const MAX_SPEED = 5;
 const FIRE_COOLDOWN = 180;
 const FIRE_VEL = 6;
+const KEEPAWAY_RANGE = 500;
 
 class RangedEnemy extends EnemyCircle {
   constructor(game) {
@@ -29,10 +30,10 @@ class RangedEnemy extends EnemyCircle {
       this.aim = Vector.difference(game.player.pos, this.pos);
       let distance = this.aim.length();
       this.aim.normalize();
-      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 2);
+      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 3);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
-      if (distance >= 500 || !game.player.alive) {
+      if (distance >= KEEPAWAY_RANGE || !game.player.alive) {
         this.vel.add(this.aim.multiply(this.accel));
       } else {
         this.vel.add(this.aim.multiply(-this.accel));
@@ -41,8 +42,8 @@ class RangedEnemy extends EnemyCircle {
 
     this.health = HEALTH + game.difficulty * 3;
 
-    this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2) / 2;
-    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2) / 2;
+    this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 3) / 4;
+    this.maxSpeed = MAX_SPEED;
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 

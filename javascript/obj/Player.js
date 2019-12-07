@@ -211,7 +211,7 @@ class Player extends GameObject {
           beam.damage = 600;
           this.vel.subtract(kb.multiply(0.9));
           freezeTime = 0;
-          beam.knockback = 2;
+          beam.knockback = 5;
           beam.pos.x += Math.random() * 120 - 60;
           beam.pos.y += Math.random() * 120 - 60;
           // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
@@ -269,6 +269,7 @@ class Player extends GameObject {
       beam.aliveTime = 40;
       beam.initialTime = beam.aliveTime;
       beam.color = Beam.COLOR().TEAL;
+      beam.knockback = 2;
       this.game.particles.push(beam);
     } else {
       if (this.game.loopCount % 5 === 0) {

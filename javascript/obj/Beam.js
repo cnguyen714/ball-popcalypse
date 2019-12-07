@@ -101,7 +101,7 @@ class Beam extends Particle {
         // if (this.combo === -2) {
         let knockStraight = new Vector(x, y);
         // let knockStraight = this.game.player.aim.dup().normalize();
-        if (this.combo === 3) {
+        if (this.combo === this.game.player.maxSlashCombo) {
           obj.vel.add(knockStraight.multiply(-this.knockback));
         } else {
           obj.vel.add(knockStraight.multiply(this.knockback));
@@ -114,7 +114,7 @@ class Beam extends Particle {
           obj.alive = false;
         } else {
           if (!this.silenced) {
-            if (this.combo === 3) {
+            if (this.combo === this.game.player.maxSlashCombo) {
               this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
             } else {
               this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
@@ -169,7 +169,7 @@ class Beam extends Particle {
     this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,
                        this.pos.y - Math.cos(this.angle) * this.width / 2);
     this.ctx.rotate(this.angle);
-    this.ctx.fillRect(0, 0, this.length, this.width);
+    this.ctx.fillRect(0, 0, this.length, this.width * 1.1);
   }
 
   update() {
@@ -196,7 +196,7 @@ class Beam extends Particle {
     if (this.aliveTime > this.initialTime - 6) {
       this.ctx.save();
       let color = this.color;
-      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
+      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
       gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
       gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
       gradient.addColorStop(0.95, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
@@ -218,7 +218,7 @@ class Beam extends Particle {
 
       let color = Beam.COLOR().FADE;
       // let color = this.color;
-      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width);
+      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
       gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
       gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
       gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.2})`);

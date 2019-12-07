@@ -64,7 +64,7 @@ class BeamSlash extends Particle {
         this.knockback = this.knockback * 1.4;
         this.aliveTime += 2;
         this.length += 60;
-        this.width += 5;
+        this.width += 30;
         this.game.player.invul = 7;
         break;
       case 1:
@@ -72,13 +72,13 @@ class BeamSlash extends Particle {
         this.aliveTime += 1;
         this.damage *= 1.2;
         this.length *= 1.2;
-        this.width *= 1.2;
+        this.width *= 1.25;
         break;
       case 2:
         this.aliveTime += 1;
         this.damage *= 1.2;
         this.length *= 1.2;
-        this.width *= 1.2;
+        this.width *= 1.25;
         break;
       default:
           break;

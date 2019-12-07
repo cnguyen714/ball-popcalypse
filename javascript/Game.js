@@ -374,6 +374,7 @@ class Game {
     this.state = STATE_OVER;
     this.freeze(90);
     this.player.alive = false;
+    this.player.dashCooldown = 0;
 
     let deathExplosion = new DeathExplosion(game);
     deathExplosion.unpausable = true;

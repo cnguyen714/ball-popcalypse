@@ -29,7 +29,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const DASH_DURATION = 8;
-const DASH_SPEED = 30;
+const DASH_SPEED = 32;
 const DASH_COOLDOWN = 90;
 const POST_DASH_INVUL = 2;
 
@@ -445,10 +445,10 @@ class Player extends GameObject {
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
     if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
-    if (this.dashCooldown > DASH_COOLDOWN - DASH_DURATION - 10) {
+    if (this.dashCooldown > DASH_COOLDOWN - DASH_DURATION - 13) {
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "cyan";
-      p.aliveTime = DASH_DURATION - 1;
+      p.aliveTime = DASH_DURATION + 5;
       p.r = this.r;
       p.active = false;
       p.cb = function () {
@@ -508,7 +508,6 @@ class Player extends GameObject {
           while (this.vel.length() < DASH_SPEED) {
             this.vel.add(this.dashDirection.dup().multiply(1/5));
           }
-          // this.vel = this.dashDirection.dup();
         }
 
         this.vel.add(this.movement.dup().multiply(ACCEL));

@@ -29,6 +29,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const DASH_DURATION = 8;
+const DASH_PATH_DURATION = 13;
 const DASH_SPEED = 32;
 const DASH_COOLDOWN = 90;
 const POST_DASH_INVUL = 2;
@@ -92,7 +93,7 @@ class Player extends GameObject {
     this.beamCooldown = 0;
     this.charging = false;
     this.charge = CHARGE_MAX;
-    this.chargeMax = CHARGE_MAX;
+    this.chargeCost = CHARGE_MAX;
         
     this.slashReset = 0;
     this.slashCombo = 0;
@@ -101,6 +102,7 @@ class Player extends GameObject {
     
     this.dashDuration = 0;
     this.dashDirection = new Vector();
+    this.dashCooldown = 0;
     this.dashCooldown = 0;
     this.maxDashCooldown = DASH_COOLDOWN;
     this.velRestoreDash = new Vector(); 
@@ -147,7 +149,7 @@ class Player extends GameObject {
       this.invul = Math.max(DASH_DURATION, this.invul);
       this.noclip = Math.max(DASH_DURATION - 1, this.noclip);
       this.dashDuration = DASH_DURATION;
-      this.dashCooldown = DASH_COOLDOWN;
+      this.dashCooldown = this.maxDashCooldown;
       this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
 
       this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, this.movement.dup().multiply(-7), 10, "cyan"));
@@ -186,9 +188,9 @@ class Player extends GameObject {
   }
 
   fireBeam() {
-    if (this.charge >= CHARGE_MAX) {
+    if (this.charge >= this.chargeCost) {
       let freezeTime = 18;
-      this.charge -= CHARGE_MAX;
+      this.charge -= this.chargeCost;
       this.beamCooldown = !this.game.cheat ? CHARGE_COOLDOWN : 2;
       this.charging = true;
 
@@ -307,7 +309,7 @@ class Player extends GameObject {
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           if (key == KEY.DOWN) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
-          if (key == KEY.UP) this.charge += CHARGE_MAX;
+          if (key == KEY.UP) this.charge += this.chargeCost;
           break;
         case this.game.STATE_OVER:
           if (key === KEY.ENTER) this.game.restartGame();
@@ -439,14 +441,20 @@ class Player extends GameObject {
       return;
     }
 
+    if (this.game.cheat) {
+      if (this.dashCooldown > DASH_DURATION) this.dashCooldown = DASH_DURATION;
+      this.maxDashCooldown = DASH_DURATION;
+      this.chargeCost = 0;
+    }
+
     if (this.shootCooldown > 0) this.shootCooldown--;
     if (this.dashCooldown > 0) this.dashCooldown--;
     if (this.slashCooldown > 0) this.slashCooldown--;
     if (this.beamCooldown > 0) this.beamCooldown--;
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
-    if (this.charge > CHARGE_MAX * CHARGE_STACKS) this.charge = Math.floor(CHARGE_MAX * CHARGE_STACKS);
-    if (this.dashCooldown > DASH_COOLDOWN - DASH_DURATION - 13) {
+    if (this.charge > this.chargeCost * CHARGE_STACKS) this.charge = Math.floor(this.chargeCost * CHARGE_STACKS);
+    if (this.dashCooldown > this.maxDashCooldown - DASH_DURATION - DASH_PATH_DURATION) {
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "cyan";
       p.aliveTime = DASH_DURATION + 5;

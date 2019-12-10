@@ -204,7 +204,11 @@ class Beam extends Particle {
       this.ctx.fillStyle = gradient;
       this.ctx.fillStyle = color;
       // this.ctx.strokeStyle = gradient;
-      // this.ctx.shadowColor = gradient;
+      this.ctx.shadowColor = gradient;
+      this.ctx.shadowBlur = 6;
+      this.ctx.stroke();
+
+
       // this.ctx.shadowColor = color;
       // this.ctx.strokeStyle = "black";
 
@@ -226,6 +230,9 @@ class Beam extends Particle {
       this.ctx.fillStyle = gradient;
       // this.ctx.fillStyle = "white";
       // this.ctx.shadowColor = gradient;
+      this.ctx.shadowBlur = 6;
+      this.ctx.stroke();
+
 
       this.drawRect();
 

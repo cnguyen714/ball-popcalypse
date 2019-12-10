@@ -48,6 +48,19 @@ class LargeEnemyCircle extends EnemyCircle {
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
   }
+
+  checkCollision(obj) {
+    if (!obj.alive) return;
+
+    if (obj instanceof Player) {
+      if (this.checkAndHitPlayer(obj)) {
+        this.game.freeze(5);
+        
+      }
+    } else if (obj instanceof EnemyCircle) {
+      this.checkAndSpreadEnemy(obj);
+    }
+  }
 }
 
 export default LargeEnemyCircle;

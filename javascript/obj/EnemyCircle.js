@@ -73,15 +73,18 @@ class EnemyCircle extends GameObject {
       player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
       this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
 
+      player.game.vanity.push(explosion);
       if (player.invul > 0) {
         explosion.color = 'lightblue';
+        return false;
       } else {
         player.health -= this.damage;
         player.charge += this.damage;
         if (this.r >= 50) player.invul = 45;
+        return true;
       }
-      player.game.vanity.push(explosion);
     }
+    return false;
   }
 
   // Check if enemies are colliding and push them away

@@ -30,6 +30,7 @@ py -m http.server
 
 To-do:
 
+Use obj destructuring to clean up obj constructor
 Use Web Audio Context to vary pitch/playback speed on sounds like Melee
 
 */
@@ -666,9 +667,9 @@ class Game {
     cursorSize = 14;
     this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 2;
-    if (this.player.charge >= this.player.chargeMax * 2) {
+    if (this.player.charge >= this.player.chargeCost * 2) {
       this.ctx.strokeStyle = "lightblue";
-    } else if (this.player.charge >= this.player.chargeMax) {
+    } else if (this.player.charge >= this.player.chargeCost) {
       this.ctx.strokeStyle = "red";
     } else {
       this.ctx.strokeStyle = "yellow";
@@ -747,16 +748,16 @@ class Game {
     this.ctx.save();
     this.ctx.font = '20px sans-serif';
     let xOffset = this.cvs.width / 2
-    let yOffset = this.cvs.height - 82;
+    let yOffset = this.cvs.height - 86;
     // this.ctx.fillStyle = `rgba(${21 + ((this.player.maxHealth - this.player.health) / this.player.maxHealth) * 70},21,21)`;
     // this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
     this.ctx.fillStyle = `rgba(${50 - (this.player.health / this.player.maxHealth * 200)},${100 + this.player.health / this.player.maxHealth * 100},0)`;
-    this.ctx.fillRect(xOffset - this.player.health / 2, yOffset, this.player.health, 20);
+    this.ctx.fillRect(xOffset - this.player.health, yOffset, this.player.health * 2, 24);
     this.ctx.fillStyle = 'white';
     this.ctx.shadowBlur = 3;
     this.ctx.shadowColor = 'black';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(`${this.player.health}`, xOffset, yOffset + 17);
+    this.ctx.fillText(`${this.player.health}`, xOffset, yOffset + 20);
     this.ctx.restore();
   }
 
@@ -765,16 +766,16 @@ class Game {
 
     this.ctx.save();
     this.ctx.textAlign = 'center';
-    if (this.player.charge >= this.player.chargeMax) {
+    if (this.player.charge >= this.player.chargeCost) {
 
       this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "red";
-      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 57, this.player.chargeMax * 4, 4);
+      this.ctx.fillRect(xOffset - this.player.chargeCost * 2, this.cvs.height - 57, this.player.chargeCost * 4, 4);
       if (this.player.beamCooldown === 0) {
         this.ctx.font = '12px sans-serif';
-        if (this.player.chargeMax * 2 <= this.player.charge) {
+        if (this.player.chargeCost * 2 <= this.player.charge) {
           this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
           this.ctx.font = '14px sans-serif';
-          // this.vanity.push(new SlashSpark(this, xOffset - this.player.chargeMax * 2 + (Math.random() * 2 * this.player.chargeMax) * 2, this.cvs.height - 57, -3, 1, 10));
+          // this.vanity.push(new SlashSpark(this, xOffset - this.player.chargeCost * 2 + (Math.random() * 2 * this.player.chargeCost) * 2, this.cvs.height - 57, -3, 1, 10));
           this.ctx.shadowBlur = 2;
           this.ctx.shadowColor = 'black';
           this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'darkblue' : 'yellow';
@@ -786,13 +787,13 @@ class Game {
         }
       }
       this.ctx.fillStyle = this.loopCount % 7 === 0 ? 'white' : "darkblue";
-      let charge = this.player.charge < this.player.chargeMax * 2 ? this.player.charge % this.player.chargeMax : this.player.chargeMax;
+      let charge = this.player.charge < this.player.chargeCost * 2 ? this.player.charge % this.player.chargeCost : this.player.chargeCost;
       this.ctx.fillRect(xOffset - charge * 2, this.cvs.height - 59, charge * 4, 6);
     } else {
       this.ctx.fillStyle = "olive";
-      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 57, this.player.charge * 4, 4);
-      this.ctx.fillRect(xOffset - this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
-      this.ctx.fillRect(xOffset + this.player.chargeMax * 2, this.cvs.height - 58, 2, 6);
+      this.ctx.fillRect(xOffset - this.player.chargeCost * 2, this.cvs.height - 57, this.player.charge * 4, 4);
+      this.ctx.fillRect(xOffset - this.player.chargeCost * 2, this.cvs.height - 58, 2, 6);
+      this.ctx.fillRect(xOffset + this.player.chargeCost * 2, this.cvs.height - 58, 2, 6);
       if (this.player.beamCooldown === 0) {
         this.ctx.shadowBlur = 4;
         this.ctx.shadowColor = 'black';
@@ -803,12 +804,12 @@ class Game {
         this.ctx.fillText(`${this.player.charge}`, xOffset, this.cvs.height - 47);
         this.ctx.fillStyle = "olive";
         this.ctx.font = '12px sans-serif';
-        this.ctx.fillText(`/${this.player.chargeMax}`, xOffset + 20, this.cvs.height - 41);
+        this.ctx.fillText(`/${this.player.chargeCost}`, xOffset + 20, this.cvs.height - 41);
       }
     }
     if (this.player.beamCooldown > 0) {
       this.ctx.fillStyle = this.loopCount % 5 === 0 ? 'white' : "lightblue";
-      this.ctx.fillRect(xOffset - this.player.beamCooldown * 2, this.cvs.height - 60, this.player.beamCooldown * 4, 8);
+      this.ctx.fillRect(xOffset - this.player.beamCooldown / this.player.beamCooldownMax * this.player.chargeCost * 2, this.cvs.height - 60, this.player.beamCooldown / this.player.beamCooldownMax * this.player.chargeCost * 4, 8);
       this.ctx.font = '13px sans-serif';
       this.ctx.shadowBlur = 2;
       this.ctx.shadowColor = 'black';

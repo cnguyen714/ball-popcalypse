@@ -37,10 +37,10 @@ const POST_DASH_INVUL = 2;
 const SLASH_COOLDOWN = 11;
 const MAX_COMBOS = 3;
 
-const CHARGE_MAX = 60;
-const CHARGE_STACKS = 2.2;
+const CHARGE_COST = 100;
+const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 90;
-const SHOOT_COOLDOWN = 12;
+const SHOOT_COOLDOWN = 10;
 const SHOOT_SHOTGUN_PELLETS = 60;
 
 const STATE_WALKING = "STATE_WALKING";
@@ -91,9 +91,10 @@ class Player extends GameObject {
     this.shootCooldown = 0;
     this.shooting = false;
     this.beamCooldown = 0;
+    this.beamCooldownMax = CHARGE_COOLDOWN;
     this.charging = false;
-    this.charge = CHARGE_MAX;
-    this.chargeCost = CHARGE_MAX;
+    this.charge = CHARGE_COST;
+    this.chargeCost = CHARGE_COST;
         
     this.slashReset = 0;
     this.slashCombo = 0;
@@ -271,7 +272,7 @@ class Player extends GameObject {
       beam.aliveTime = 40;
       beam.initialTime = beam.aliveTime;
       beam.color = Beam.COLOR().TEAL;
-      beam.knockback = 2;
+      beam.knockback = 5;
       this.game.particles.push(beam);
     } else {
       if (this.game.loopCount % 5 === 0) {
@@ -308,7 +309,7 @@ class Player extends GameObject {
           break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
-          if (key == KEY.DOWN) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
+          if (key == KEY.DOWN) for (var i = 1; i < 5; i++) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
           if (key == KEY.UP) this.charge += this.chargeCost;
           break;
         case this.game.STATE_OVER:
@@ -546,9 +547,9 @@ class Player extends GameObject {
 
     // add sparks for charge level
     if (this.game.loopCount % 2) {
-      if (this.charge >= this.chargeMax * 2) {
+      if (this.charge >= this.chargeCost * 2) {
         this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
-      } else if (this.charge >= this.chargeMax) {
+      } else if (this.charge >= this.chargeCost) {
         this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
       }
     }

@@ -37,7 +37,7 @@ const POST_DASH_INVUL = 2;
 const SLASH_COOLDOWN = 11;
 const MAX_COMBOS = 3;
 
-const CHARGE_COST = 100;
+const CHARGE_COST = 150;
 const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 90;
 const SHOOT_COOLDOWN = 10;

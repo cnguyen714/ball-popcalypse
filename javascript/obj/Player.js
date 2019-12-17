@@ -263,13 +263,11 @@ class Player extends GameObject {
       this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
       this.shooting = true;
       this.shootCooldown = SHOOT_COOLDOWN;
-      // for (let i = 0; i < SHOOT_SHOTGUN_PELLETS; i++) {
-      //   fireBulletAtCursorB(this); 
-      // }
+      
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);
       beam.hitRatio = 0.5;
       beam.bomb = false;
-      beam.aliveTime = 40;
+      beam.aliveTime = 30;
       beam.initialTime = beam.aliveTime;
       beam.color = Beam.COLOR().TEAL;
       beam.knockback = 5;
@@ -284,7 +282,6 @@ class Player extends GameObject {
       fireBulletAtCursor(this);
     }
   }
-
 
   mountController() {
     document.addEventListener('keydown', (e) => {

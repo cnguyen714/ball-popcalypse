@@ -113,9 +113,11 @@ class BeamSlash extends Particle {
     } else if (this.combo === 3) {
       this.pos.x = this.owner.pos.x;
       this.pos.y = this.owner.pos.y;
-      // this.length *= 0.997;
+      this.length *= 0.997;
     } else {
-      this.length -= 2;
+      // this.length -= 2;
+      this.length *= 0.997;
+
     }
     let p = new Beam(this.game, this.pos.x + this.aim.x * OFFSET, this.pos.y + this.aim.y * OFFSET, this.aim, this.combo);
     p.color = this.color;

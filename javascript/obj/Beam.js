@@ -205,7 +205,7 @@ class Beam extends Particle {
       this.ctx.fillStyle = color;
       // this.ctx.strokeStyle = gradient;
       this.ctx.shadowColor = gradient;
-      this.ctx.shadowBlur = 6;
+      this.ctx.shadowBlur = 50;
       this.ctx.stroke();
 
 
@@ -218,10 +218,11 @@ class Beam extends Particle {
     } else {
       this.ctx.save();
 
-      this.ctx.shadowBlur = 20;
 
       let color = Beam.COLOR().FADE;
       // let color = this.color;
+      this.ctx.beginPath();
+
       let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
       gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
       gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
@@ -229,10 +230,10 @@ class Beam extends Particle {
       gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
       // this.ctx.fillStyle = "white";
-      // this.ctx.shadowColor = gradient;
-      this.ctx.shadowBlur = 6;
+      this.ctx.shadowColor = "white";
+      this.ctx.shadowBlur = 7;
+      this.ctx.closePath();
       this.ctx.stroke();
-
 
       this.drawRect();
 

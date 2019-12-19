@@ -38,7 +38,7 @@ const SLASH_COOLDOWN = 11;
 const MAX_COMBOS = 3;
 
 const CHARGE_COST = 150;
-const CHARGING_TIME = 300; // in seconds 
+const CHARGING_TIME = 400; // in seconds 
 const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 90;
 const SHOOT_COOLDOWN = 10;
@@ -543,9 +543,10 @@ class Player extends GameObject {
       this.game.vanity.push(line);
 
       let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
-      beam.aliveTime = 3;
-      beam.initialTime = 8;
-      beam.width = 0.8;
+      beam.color = Beam.COLOR().CANNON;
+      beam.aliveTime = 4;
+      beam.initialTime = 5;
+      beam.width = 0.4;
       beam.length = 5000;
       beam.damage = 0;
       beam.knockback = 1;

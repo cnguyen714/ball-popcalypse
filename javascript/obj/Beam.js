@@ -195,6 +195,7 @@ class Beam extends Particle {
   draw() {
     if (this.aliveTime > this.initialTime - 6) {
       this.ctx.save();
+      this.ctx.beginPath();
       let color = this.color;
       let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
       gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
@@ -206,6 +207,7 @@ class Beam extends Particle {
       // this.ctx.strokeStyle = gradient;
       this.ctx.shadowColor = gradient;
       this.ctx.shadowBlur = 50;
+      this.ctx.closePath();
       this.ctx.stroke();
 
 

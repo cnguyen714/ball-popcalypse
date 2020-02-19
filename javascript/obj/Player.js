@@ -542,14 +542,14 @@ class Player extends GameObject {
       }
       this.game.vanity.push(line);
 
-      let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
-      beam.aliveTime = 3;
-      beam.initialTime = 8;
-      beam.width = 0.8;
-      beam.length = 5000;
-      beam.damage = 0;
-      beam.knockback = 1;
-      this.game.particles.push(beam);
+      // let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
+      // beam.aliveTime = 3;
+      // beam.initialTime = 8;
+      // beam.width = 0.8;
+      // beam.length = 5000;
+      // beam.damage = 0;
+      // beam.knockback = 1;
+      // this.game.particles.push(beam);
     }
 
     // add sparks for charge level

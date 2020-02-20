@@ -36,7 +36,7 @@ class SlashSpark extends Particle {
     this.rotation = rotation;
     this.paused = pauseState;
     this.dist = 0;
-    this.distLimit = 100 + Math.random() * 20;
+    this.distLimit = 100 + Math.random() * 100;
     this.cb = cb;
 
     this.offsets = [];
@@ -116,15 +116,17 @@ class SlashSpark extends Particle {
     
     if(this.dist === 0) {
       this.dist = 1;
+    } else if (this.dist === 1) {
+        this.dist = 2;
     } else if (this.dist > 0 && this.dist < this.distLimit) {
-      this.dist += 11;
-      this.length -= 10;
+      this.dist += this.distLimit / 5;
+      this.length -= this.distLimit / 6;
       this.width *= 0.95;
     } else {
-      this.dist += 2;
+      this.dist += 4;
       // this.dist *= 1.01;
-      this.length *= 0.85;
-      this.width *= 0.9;
+      this.length *= 0.8;
+      this.width *= 0.8;
     }
 
     switch(this.combo) {

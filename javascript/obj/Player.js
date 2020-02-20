@@ -553,13 +553,13 @@ class Player extends GameObject {
     }
 
     // add sparks for charge level
-    if (this.game.loopCount % 2) {
-      if (this.charge >= this.chargeCost * 2) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
-      } else if (this.charge >= this.chargeCost) {
-        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
-      }
-    }
+    // if (this.game.loopCount % 2) {
+    //   if (this.charge >= this.chargeCost * 2) {
+    //     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "FINISHER", 3, this.r * 2));
+    //   } else if (this.charge >= this.chargeCost) {
+    //     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, "CRIT", 2, this.r * 1.5));
+    //   }
+    // }
 
     this.validateBound(this.cvs.width, this.cvs.height);
   }

@@ -6,6 +6,7 @@ const WIDTH = 1;
 const LENGTH = 60;
 
 const DURATION = 30;
+const FREEZE_DURATION = 3;
 
 const COLOR = {
   NORMAL: [255, 255, 255],
@@ -35,8 +36,8 @@ class SlashSpark extends Particle {
     this.initialTime = this.aliveTime;
     this.rotation = rotation;
     this.paused = pauseState;
-    this.dist = 0;
-    this.distLimit = 100 + Math.random() * 100;
+    this.dist = -FREEZE_DURATION;
+    this.distLimit = 50 + Math.random() * 150;
     this.cb = cb;
 
     this.offsets = [];
@@ -114,13 +115,11 @@ class SlashSpark extends Particle {
     this.angle += this.rotation;
     // transient effect
     
-    if(this.dist === 0) {
-      this.dist = 1;
-    } else if (this.dist === 1) {
-        this.dist = 2;
+    if(this.dist <= 0) {
+      this.dist += 1;
     } else if (this.dist > 0 && this.dist < this.distLimit) {
       this.dist += this.distLimit / 5;
-      this.length -= this.distLimit / 6;
+      this.length -= this.distLimit / 8;
       this.width *= 0.95;
     } else {
       this.dist += 4;

@@ -542,6 +542,7 @@ class Player extends GameObject {
       }
       this.game.vanity.push(line);
 
+<<<<<<< HEAD
       let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
       beam.color = Beam.COLOR().CANNON;
       beam.aliveTime = 4;
@@ -551,6 +552,16 @@ class Player extends GameObject {
       beam.damage = 0;
       beam.knockback = 1;
       this.game.particles.push(beam);
+=======
+      // let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
+      // beam.aliveTime = 3;
+      // beam.initialTime = 8;
+      // beam.width = 0.8;
+      // beam.length = 5000;
+      // beam.damage = 0;
+      // beam.knockback = 1;
+      // this.game.particles.push(beam);
+>>>>>>> 4d59b89da699bafc86f2ee1e029147e1f46cf572
     }
 
     // add sparks for charge level

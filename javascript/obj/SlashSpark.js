@@ -5,7 +5,7 @@ import Particle from "./Particle";
 const WIDTH = 1;
 const LENGTH = 60;
 
-const DURATION = 20;
+const DURATION = 30;
 
 const COLOR = {
   NORMAL: [255, 255, 255],
@@ -35,6 +35,8 @@ class SlashSpark extends Particle {
     this.initialTime = this.aliveTime;
     this.rotation = rotation;
     this.paused = pauseState;
+    this.dist = 0;
+    this.distLimit = 100 + Math.random() * 20;
     this.cb = cb;
 
     this.offsets = [];
@@ -104,14 +106,27 @@ class SlashSpark extends Particle {
     this.ctx.translate(this.pos.x + Math.sin(this.angle + offset) * widthMod * this.width / 2,
                        this.pos.y - Math.cos(this.angle + offset) * widthMod * this.width / 2);
     this.ctx.rotate(this.angle + offset);
-    this.ctx.fillRect(0, 0, this.length * lengthMod, widthMod * this.width);
+    this.ctx.fillRect(this.dist, 0, this.length * lengthMod, widthMod * this.width);
     this.ctx.restore();
   }
 
   update() {
     this.angle += this.rotation;
     // transient effect
-    this.width *= 0.85;
+    
+    if(this.dist === 0) {
+      this.dist = 1;
+    } else if (this.dist > 0 && this.dist < this.distLimit) {
+      this.dist += 11;
+      this.length -= 10;
+      this.width *= 0.95;
+    } else {
+      this.dist += 2;
+      // this.dist *= 1.01;
+      this.length *= 0.85;
+      this.width *= 0.9;
+    }
+
     switch(this.combo) {
       case "FINISHER":
         this.length *= 1.005;

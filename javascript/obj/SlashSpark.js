@@ -118,28 +118,41 @@ class SlashSpark extends Particle {
     if(this.dist <= 0) {
       this.dist += 1;
     } else if (this.dist > 0 && this.dist < this.distLimit) {
-      this.dist += this.distLimit / 5;
-      this.length -= this.distLimit / 8;
-      this.width *= 0.95;
+      switch (this.combo) {
+        case "FINISHER":
+          this.dist += this.distLimit / 5;
+          this.length -= this.distLimit / 8;
+          this.width *= 1.04;
+          break;
+        case "BEAM":
+          this.length *= 0.93;
+          this.width *= 0.84;
+          break;
+        default:
+          this.dist += this.distLimit / 5;
+          this.length -= this.distLimit / 8;
+          this.width *= 0.95;
+          break;
+      }
+
     } else {
-      this.dist += 4;
-      // this.dist *= 1.01;
-      this.length *= 0.8;
-      this.width *= 0.8;
+      switch (this.combo) {
+        case "FINISHER":
+          this.width *= 0.8;
+          this.length *= 0.84;
+          this.dist += 6;
+          break;
+        case "BEAM":
+          break;
+        default:
+          this.dist += 2;
+          this.length *= 0.8;
+          this.width *= 0.8;
+          break;
+      }
     }
 
-    switch(this.combo) {
-      case "FINISHER":
-        this.length *= 1.005;
-        break;
-      case "BEAM":
-        this.length *= 0.95;
-        break;
-      default:
-      // this will alias the edges
-        this.length *= 1.001;
-        break;
-    }
+
 
     if (this.aliveTime <= 0) {
       this.alive = false;

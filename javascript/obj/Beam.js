@@ -154,8 +154,8 @@ class Beam extends Particle {
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 7, 90, 40));
-            let explosion = new Explosion(this.game, obj.pos.x, obj.pos.y, 30);
-            explosion.aliveTime = 3;
+            let explosion = new Explosion(this.game, obj.pos.x, obj.pos.y, 40);
+            explosion.aliveTime = 4;
             this.game.vanity.push(explosion);
 
             break;

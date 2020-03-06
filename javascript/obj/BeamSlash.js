@@ -5,7 +5,7 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import Beam from "./Beam";
 
-const WIDTH = 50;
+const WIDTH = 52;
 const LENGTH = 150;
 const KNOCKBACK = 10;
 const DAMAGE = 300;
@@ -31,7 +31,7 @@ class BeamSlash extends Particle {
     super(game);
     this.owner = this.game.player;
     this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
-    this.color = Beam.COLOR().PLAYER;
+    this.color = Beam.COLOR().AQUA;
     this.width = width;
     this.length = length;
     this.damage = DAMAGE;

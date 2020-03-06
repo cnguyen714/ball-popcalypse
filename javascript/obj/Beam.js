@@ -24,6 +24,7 @@ class Beam extends Particle {
       PLAYER: [13, 115, 119],
       FADE: [230, 230, 230],
       TEAL: [0, 205, 205],
+      AQUA: [0, 160, 170],
     }
   }
 
@@ -199,7 +200,7 @@ class Beam extends Particle {
       this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
       this.ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
       this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
-      this.ctx.shadowBlur = 20;
+      this.ctx.shadowBlur = 30;
       this.ctx.closePath();
       this.ctx.stroke();
 

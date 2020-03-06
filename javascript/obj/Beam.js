@@ -189,16 +189,17 @@ class Beam extends Particle {
       this.ctx.save();
       this.ctx.beginPath();
       let color = this.color;
-      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
-      gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
-      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
-      gradient.addColorStop(0.95, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
-      gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
-      this.ctx.fillStyle = gradient;
-      // this.ctx.fillStyle = color;
-      // this.ctx.strokeStyle = gradient;
-      this.ctx.shadowColor = gradient;
-      this.ctx.shadowBlur = 50;
+      // let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
+      // gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      // gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},.9)`);
+      // gradient.addColorStop(0.95, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
+      // gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      // this.ctx.fillStyle = gradient;
+      // this.ctx.shadowColor = gradient;
+      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
+      this.ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
+      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
+      this.ctx.shadowBlur = 20;
       this.ctx.closePath();
       this.ctx.stroke();
 
@@ -217,15 +218,15 @@ class Beam extends Particle {
       // let color = this.color;
       this.ctx.beginPath();
 
-      let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
-      gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
-      gradient.addColorStop(0.7, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.5})`);
-      gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / this.initialTime * 1.2})`);
-      gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
-      this.ctx.fillStyle = gradient;
-      // this.ctx.fillStyle = "white";
-      this.ctx.shadowColor = "white";
-      this.ctx.shadowBlur = 7;
+      // let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);
+      // gradient.addColorStop(0.0, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / (this.initialTime - 6)})`);
+      // gradient.addColorStop(0.9, `rgba(${color[0]},${color[1]},${color[2]},${(this.aliveTime + 3) / (this.initialTime - 6)})`);
+      // gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
+      // this.ctx.fillStyle = gradient;
+      // this.ctx.shadowColor = gradient;
+      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
+      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
+      this.ctx.shadowBlur = 50;
       this.ctx.closePath();
       this.ctx.stroke();
 

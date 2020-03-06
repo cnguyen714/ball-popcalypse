@@ -95,20 +95,8 @@ class Beam extends Particle {
         diff = new Vector(1,0);
         let x = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);
         let y = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
-
-        // Invert Y axis again to use diff vector for knockback
-        // diff.multiply(new Vector(1, -1));
-        // if (this.combo === -2) {
         let knockStraight = new Vector(x, y);
-        // let knockStraight = this.game.player.aim.dup().normalize();
-        if (this.combo === this.game.player.maxSlashCombo) {
-          obj.vel.add(knockStraight.multiply(-this.knockback));
-        } else {
-          obj.vel.add(knockStraight.multiply(this.knockback));
-        }
-        // } else {
-        //   obj.vel.add(diff.multiply(this.knockback));
-        // }
+        
         obj.health -= this.damage;
         if (obj.health <= 0) {
           obj.alive = false;
@@ -121,11 +109,13 @@ class Beam extends Particle {
             }
           }
         }
+
         switch (this.combo) {
           case this.game.player.maxSlashCombo:
             this.game.vanity.push(new DamageNumber(obj, this.damage, 11, 30, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
+            obj.vel.add(knockStraight.multiply(-this.knockback));
             break;
           case "BEAM":
             let num = new DamageNumber(obj, this.damage, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
@@ -137,6 +127,7 @@ class Beam extends Particle {
             let explosionB = new Explosion(this.game, obj.pos.x, obj.pos.y, 30);
             explosionB.aliveTime = 1;
             this.game.vanity.push(explosionB);
+            obj.vel.add(knockStraight.multiply(this.knockback));
             break;
           case "FINISHER":
             this.game.vanity.push(new DamageNumber(obj, this.damage, 20, 60, knockStraight.x));
@@ -146,7 +137,8 @@ class Beam extends Particle {
             let explosionF = new Explosion(this.game, obj.pos.x, obj.pos.y, 50);
             explosionF.aliveTime = 3;
             this.game.vanity.push(explosionF);
-
+            obj.vel.add(knockStraight.multiply(this.knockback));
+            obj.pos.add(knockStraight);
             break;
           default:
             this.game.vanity.push(new DamageNumber(obj, this.damage, 15, 50, knockStraight.x));
@@ -157,7 +149,7 @@ class Beam extends Particle {
             let explosion = new Explosion(this.game, obj.pos.x, obj.pos.y, 40);
             explosion.aliveTime = 4;
             this.game.vanity.push(explosion);
-
+            obj.vel.add(knockStraight.multiply(this.knockback));
             break;
         }
       }
@@ -203,7 +195,7 @@ class Beam extends Particle {
       gradient.addColorStop(0.95, `rgba(${color[0]},${color[1]},${color[2]},.1)`);
       gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       this.ctx.fillStyle = gradient;
-      this.ctx.fillStyle = color;
+      // this.ctx.fillStyle = color;
       // this.ctx.strokeStyle = gradient;
       this.ctx.shadowColor = gradient;
       this.ctx.shadowBlur = 50;

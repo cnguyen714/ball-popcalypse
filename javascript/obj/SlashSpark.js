@@ -134,7 +134,6 @@ class SlashSpark extends Particle {
           this.width *= 0.95;
           break;
       }
-
     } else {
       switch (this.combo) {
         case "FINISHER":

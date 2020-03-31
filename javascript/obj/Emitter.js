@@ -1,25 +1,39 @@
 import Vector from "../lib/Vector";
 import GameObject from "./GameObject";
 import Sparkle from "./Sparkle";
+import Trig from "../lib/Trig";
 
-const RADIUS = 50;
+const RADIUS = 1;
 
 class Emitter extends GameObject {
   constructor(
     game,
-    startX = 0,
-    startY = 0,
-    cb = () => { },
-    vel = new Vector(0, 0),
+    {
+      coords = {x: 0, y: 0},
+      cb = () => { },
+      vel = new Vector(0, 0),
+      aim = new Vector(0, 0),
+      emittee = Sparkle,
+      emitCount = 5,
+      emitSpeed = 5,
+      aliveTime = 120,
+      fanDegree = 30,
+      ejectMultiplier = 2,
+      impulseVariance = 0.2;
+    }
   ) {
     super(game);
-    this.pos = new Vector(startX, startY);
+    this.pos = new Vector(coords.x, coords.y);
     this.vel = vel;
     this.r = RADIUS;
     this.cb = cb;
-    this.aliveTime = 600;
+    this.aliveTime = aliveTime,
+    this.emittee = emitee;
+    this.emitCount = emitCount;
+    this.emitSpeed = emitSpeed;
+    this.ejectMultiplier = ejectMultiplier;
+    this.impulseVariance = impulseVariance;
     this.active = true;
-    this.emittee = Sparkle;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -40,9 +54,24 @@ class Emitter extends GameObject {
 
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
-
-    this.cb();
     if (!this.active) return;
+
+    for (let i = 0; i < this.emitSpeed; i++) {
+      let dir = this.aim.dup().multiply(ejectMultiplier);
+      dir = Trig.rotateByDegree(dir, -1 * this.fanDegree  + this.fanDegree * 2);
+      dir = dir.multiply(1 - this.impulseVariance + Math.random() * this.impulseVariance * 2);
+      let p = new Sparkle(game, {
+        coords: {x: this.pos.x, y: this.pos.y}, 
+        vel: dir,
+        r: this.r * Math.random() * 1.5,
+      })
+
+      this.emitCount -= this.emitSpeed;
+      this.game.vanity.push(p);
+    }
+
+    if(this.emitCount <= 0) this.alive = false;
+
     this.addVelocityTimeDelta();
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

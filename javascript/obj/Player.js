@@ -12,6 +12,8 @@ import Particle from "./Particle";
 import SlashSpark from "./SlashSpark";
 import DeathExplosion from "./DeathExplosion";
 import BeamCannon from "./BeamCannon";
+import Emitter from "./Emitter";
+import Sparkle from "./Sparkle";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 200; // Offset from edges
@@ -273,6 +275,27 @@ class Player extends GameObject {
       beam.color = Beam.COLOR().TEAL;
       beam.knockback = 5;
       this.game.particles.push(beam);
+
+      let shootFlash = new Emitter(game, {
+        coords: {x: this.pos.x, y: this.pos.y},
+        r: 4,
+        aim: this.aim.dup(),
+        emittee: Sparkle,
+        aliveTime: 10,
+        emitCount: 7,
+        emitSpeed: 7,
+        ejectMultiplier: 5,
+        impulseVariance: 0.7,
+      });
+
+      this.game.vanity.push(shootFlash);
+
+      // let sp = new Sparkle(game, {
+      //   coords: { x: this.pos.x, y: this.pos.y },
+      //   r: 2,
+      // });
+      // this.vanity.push(sp);
+
     } else {
       if (this.game.loopCount % 5 === 0) {
         this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
@@ -461,7 +484,7 @@ class Player extends GameObject {
       p.active = false;
       p.cb = function () {
         this.aliveTime--;
-        if (this.aliveTime <= 2) this.color = "grey";
+        if (this.aliveTime <= 5) this.color = `rgba(128,128,128,${this.aliveTime / 5})`;
 
         if (this.aliveTime <= 0) this.alive = false;
 

@@ -17,8 +17,6 @@ import DeathExplosion from './obj/DeathExplosion';
 // Delta time is implemented by accelerating movement to perceive less
 // lag, however the game still runs slower
 
-
-
 /*
 Access this on localhost:8000 by running both:
 npm start

@@ -4,9 +4,10 @@ import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";
 import Slam from "./Slam";
 
-const RADIUS = 2;
+const RADIUS = 4;
 const COLOR = "white";
-const DECAY = 0.7;
+const DECAY = 0.9;
+const DURATION = 20;
 
 class Sparkle extends GameObject {
   constructor(
@@ -18,6 +19,7 @@ class Sparkle extends GameObject {
       color = COLOR,
       r = RADIUS,
       decayRate = DECAY,
+      aliveTime = DURATION,
     }
   ) {
     super(game);
@@ -26,10 +28,10 @@ class Sparkle extends GameObject {
     this.r = r;
     this.color = color;
     this.cb = cb;
-    this.aliveTime = 20;
+    this.initialTime = aliveTime;
+    this.aliveTime = aliveTime;
     this.decayRate = decayRate;
-
-    this.game.vanity.push(particle);
+    this.active = true;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -54,9 +56,14 @@ class Sparkle extends GameObject {
     this.r *= this.decayRate;
     this.pos = this.pos.add(this.vel);
     this.aliveTime--;
+    this.cb();
     if (this.aliveTime <= 0) this.alive = false;
-
+    
     this.addVelocityTimeDelta();
+
+    if (this.aliveTime < this.initialTime - 6) {
+      this.vel = this.vel.multiply(0.6 );
+    }
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 

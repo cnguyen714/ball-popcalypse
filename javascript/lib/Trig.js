@@ -10,12 +10,12 @@ class Trig {
   }
 
   static rotateByDegree(vector, degrees) {
-    let angle = Math.atan2(vector.y, vector.x);
+    let angle = Math.atan2(vector.x, vector.y);
     let length = vector.length();
 
     angle += degrees / 180 * Math.PI;
 
-    return (new Vector(Math.sin(angle), Math.cos(angle)).multiply(length));
+    return new Vector(Math.sin(angle), Math.cos(angle)).multiply(length);
   }
 }
 

@@ -25,6 +25,7 @@ class Sparkle extends GameObject {
     super(game);
     this.pos = new Vector(coords.x, coords.y);
     this.vel = vel;
+    this.initialR = r;
     this.r = r;
     this.color = color;
     this.cb = cb;
@@ -53,7 +54,7 @@ class Sparkle extends GameObject {
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
     if (!this.active) return;
-    this.r *= this.decayRate;
+    this.r = this.initialR * this.aliveTime / this.initialTime;
     this.pos = this.pos.add(this.vel);
     this.aliveTime--;
     this.cb();
@@ -62,7 +63,7 @@ class Sparkle extends GameObject {
     this.addVelocityTimeDelta();
 
     if (this.aliveTime < this.initialTime - 6) {
-      this.vel = this.vel.multiply(0.6 );
+      this.vel = this.vel.multiply(0.8);
     }
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

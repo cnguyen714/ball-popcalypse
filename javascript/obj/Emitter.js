@@ -17,10 +17,11 @@ class Emitter extends GameObject {
       emittee = Sparkle,
       emitCount = 5,
       emitSpeed = 5,
-      aliveTime = 120,
+      aliveTime = 20,
       fanDegree = 35,
       ejectMultiplier = 6,
       impulseVariance = 0.2,
+      color = "white",
     }
   ) {
     super(game);
@@ -37,6 +38,7 @@ class Emitter extends GameObject {
     this.ejectMultiplier = ejectMultiplier;
     this.impulseVariance = impulseVariance;
     this.active = true;
+    this.color = color;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -68,6 +70,8 @@ class Emitter extends GameObject {
         coords: {x: this.pos.x, y: this.pos.y}, 
         vel: dir,
         r: this.r * Math.random() * 1.3,
+        aliveTime: this.aliveTime,
+        color: this.color,
       })
 
       this.emitCount -= this.emitSpeed;

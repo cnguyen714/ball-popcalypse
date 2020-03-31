@@ -281,10 +281,10 @@ class Player extends GameObject {
         r: 4,
         aim: this.aim.dup(),
         emittee: Sparkle,
-        aliveTime: 10,
+        aliveTime: 25,
         emitCount: 7,
         emitSpeed: 7,
-        ejectMultiplier: 5,
+        ejectMultiplier: 4,
         impulseVariance: 0.7,
       });
 

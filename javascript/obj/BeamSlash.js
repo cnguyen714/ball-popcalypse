@@ -125,6 +125,7 @@ class BeamSlash extends Particle {
     p.width = this.width;
     p.damage = this.damage;
     p.knockback = this.knockback;
+    p.direction = this.direction;
     this.game.particles.push(p);
   }
 

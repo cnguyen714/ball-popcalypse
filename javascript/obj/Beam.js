@@ -6,6 +6,8 @@ import Particle from "./Particle";
 import DamageNumber from "./DamageNumber";
 import SlashSpark from "./SlashSpark";
 import EnemyParticle from "./EnemyParticle";
+import Trig from "../lib/Trig";
+import Emitter from "./Emitter";
 
 const WIDTH = 60;
 const LENGTH = 150;
@@ -45,7 +47,8 @@ class Beam extends Particle {
     this.hitRatio = HITBOX_RATIO;
     this.active = active;
     this.initialTime = this.aliveTime;
-    this.bomb = false
+    this.bomb = false;
+    this.direction = 0;
 
     this.color = Beam.COLOR().NORMAL;
 
@@ -117,6 +120,7 @@ class Beam extends Particle {
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             obj.vel.add(knockStraight.multiply(-this.knockback));
+
             break;
           case "BEAM":
             let num = new DamageNumber(obj, this.damage, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
@@ -140,6 +144,20 @@ class Beam extends Particle {
             this.game.vanity.push(explosionF);
             obj.vel.add(knockStraight.multiply(this.knockback));
             obj.pos.add(knockStraight);
+
+            let hitImpactFin = new Emitter(game, {
+              coords: { x: obj.pos.x, y: obj.pos.y },
+              r: 8,
+              aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
+              emitCount: 6,
+              emitSpeed: 6,
+              ejectMultiplier: 8,
+              impulseVariance: 0.4,
+              fanDegree: 10,
+              aliveTime: 30,
+            });
+
+            this.game.vanity.push(hitImpactFin);
             break;
           default:
             this.game.vanity.push(new DamageNumber(obj, this.damage, 15, 50, knockStraight.x));
@@ -151,6 +169,20 @@ class Beam extends Particle {
             explosion.aliveTime = 4;
             this.game.vanity.push(explosion);
             obj.vel.add(knockStraight.multiply(this.knockback));
+
+            let hitImpact = new Emitter(game, {
+              coords: { x: obj.pos.x, y: obj.pos.y },
+              r: 6,
+              aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
+              emitCount: 4,
+              emitSpeed: 4,
+              ejectMultiplier: 6,
+              impulseVariance: 0.3,
+              fanDegree: 10,
+              aliveTime: 20,
+            });
+
+            this.game.vanity.push(hitImpact);
             break;
         }
       }

@@ -3,6 +3,7 @@ import EnemyCircle from "./EnemyCircle";
 import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";
 import Slam from "./Slam";
+import Emitter from "./Emitter";
 
 const RADIUS = 4;
 const KNOCKBACK = 10;
@@ -64,12 +65,25 @@ class Particle extends GameObject {
         }
 
         this.game.vanity.push(new DamageNumber(this, this.damage, 11, 30, this.vel.x));
-        let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
-        hitspark.aliveTime = 4;
-        hitspark.growthRate = 1;
-        hitspark.r = 1;
-        hitspark.damage = 0;
-        this.game.vanity.push(hitspark);
+        // let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
+        // hitspark.aliveTime = 4;
+        // hitspark.growthRate = 1;
+        // hitspark.r = 1;
+        // hitspark.damage = 0;
+        // this.game.vanity.push(hitspark);
+
+        let hitEmit = new Emitter(game, {
+          coords: { x: this.pos.x, y: this.pos.y },
+          r: 4,
+          aim: this.vel.dup(),
+          aliveTime: 20,
+          emitCount: 2,
+          ejectSpeed: 4,
+          impulseVariance: 0.15,
+          fanDegree: 10,
+        });
+
+        this.game.vanity.push(hitEmit);
       }
     }
   }

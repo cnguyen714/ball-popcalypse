@@ -96,6 +96,7 @@ class DamageNumber extends GameObject {
   }
 
   draw() {
+    return;
     this.drawNum();
   }
 }

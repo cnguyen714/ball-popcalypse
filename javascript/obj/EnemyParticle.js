@@ -4,6 +4,7 @@ import GameObject from "./GameObject";
 import DamageNumber from "./DamageNumber";
 import Particle from "./Particle";
 import Explosion from "./Explosion";
+import Emitter from "./Emitter";
 
 const RADIUS = 10;
 const KNOCKBACK = 30;
@@ -60,6 +61,20 @@ class EnemyParticle extends Particle {
         player.health -= this.damage;
         player.charge += this.damage;
         if (this.r > RADIUS) player.invul = 45;
+
+        let hitEmit = new Emitter(game, {
+          coords: { x: player.pos.x, y: player.pos.y },
+          r: 7,
+          aim: this.vel.dup(),
+          aliveTime: 20,
+          emitCount: 6,
+          ejectSpeed: 7,
+          impulseVariance: 0.15,
+          fanDegree: 10,
+          color: "red",
+        });
+
+        this.game.vanity.push(hitEmit);
       }
       this.alive = false;
       player.game.vanity.push(explosion);

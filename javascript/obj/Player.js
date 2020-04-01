@@ -290,13 +290,30 @@ class Player extends GameObject {
         aliveTime: 20,
         emitCount: 8,
         emitSpeed: 8,
-        ejectSpeed: 6,
+        ejectSpeed: 4,
         impulseVariance: 0.9,
-        fanDegree: 70,
+        fanDegree: 80,
         color: "rgba(0, 205, 205,1)",
       });
 
       this.game.vanity.push(shootFlash);
+
+      let shootFlashThin = new Emitter(this.game, {
+        coords: { x: this.pos.x, y: this.pos.y },
+        r: 6,
+        aim: this.aim.dup(),
+        emittee: Sparkle,
+        aliveTime: 30,
+        emitCount: 15,
+        emitSpeed: 15,
+        ejectSpeed: 15,
+        impulseVariance: 1,
+        fanDegree: 2,
+        color: "rgba(0, 205, 205,1)",
+        decayRate: 0.9,
+      });
+
+      this.game.vanity.push(shootFlashThin);
     } else {
       if (this.game.loopCount % 5 === 0) {
         this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
@@ -534,6 +551,24 @@ class Player extends GameObject {
     if (this.keyDown[KEY.S]) this.movement.y += 1;
     if (this.keyDown[KEY.D]) this.movement.x += 1;
     this.movement.normalize();
+
+    if(this.movement.length() > 0) {
+      let thruster = new Emitter(this.game, {
+        coords: { x: this.pos.x, y: this.pos.y },
+        r: 8,
+        aim: this.movement.dup().multiply(-1),
+        aliveTime: 10,
+        emitCount: 2,
+        emitSpeed: 1,
+        ejectSpeed: 0.5,
+        impulseVariance: .5,
+        fanDegree: 30,
+        color: "rgba(0, 188, 188, 0.7)",
+        decayRate: 0.8,
+      });
+
+      this.game.vanity.push(thruster);
+    }
 
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();

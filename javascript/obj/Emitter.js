@@ -13,14 +13,14 @@ class Emitter extends GameObject {
       r = RADIUS,
       cb = () => { },
       vel = new Vector(0, 0),
-      aim = new Vector(0, 0),
+      aim = new Vector(1, 0),
       emittee = Sparkle,
       emitCount = 5,
       emitSpeed = emitCount,
       aliveTime = 20,
-      fanDegree = 35,
-      ejectMultiplier = 6,
-      impulseVariance = 0.2,
+      fanDegree = 180,
+      ejectMultiplier = 4,
+      impulseVariance = 0.9,
       color = "white",
     }
   ) {

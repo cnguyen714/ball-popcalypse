@@ -330,6 +330,9 @@ class Player extends GameObject {
             this.game.transitionToStartGame();
           }
           break;
+        case this.game.STATE_STARTING:
+          this.keyDown[key] = true;
+          break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           if (key == KEY.DOWN) for (var i = 1; i < 5; i++) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
@@ -350,6 +353,10 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
+          this.keyDown[key] = false;
+          break;
+        case this.game.STATE_STARTING:
+          this.keyDown[key] = false;
           break;
         case this.game.STATE_RUNNING:
           this.keyDown[key] = false;
@@ -402,6 +409,10 @@ class Player extends GameObject {
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
           if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
           break;
+        case this.game.STATE_STARTING:
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
+          break;
         case this.game.STATE_RUNNING:
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = true;
           if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = true;
@@ -421,6 +432,12 @@ class Player extends GameObject {
         case this.game.STATE_INIT:
           break;
         case this.game.STATE_BEGIN:
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = false;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = false;
+          break;
+        case this.game.STATE_STARTING:
+          if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = false;
+          if (clickType === MOUSE.RIGHT) this.keyDown[KEY.MOUSE_RIGHT] = false;
           break;
         case this.game.STATE_RUNNING:
           if (clickType === MOUSE.LEFT) this.keyDown[KEY.MOUSE_LEFT] = false;

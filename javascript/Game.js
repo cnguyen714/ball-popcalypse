@@ -72,6 +72,7 @@ class Game {
   constructor(cvs, ctx) {
     this.STATE_INIT = STATE_INIT;
     this.STATE_BEGIN = STATE_BEGIN;
+    this.STATE_STARTING = STATE_STARTING;
     this.STATE_RUNNING = STATE_RUNNING;
     this.STATE_OVER = STATE_OVER;
     this.cvs = cvs;
@@ -374,7 +375,6 @@ class Game {
       this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
       this.ctx.restore();
 
-      console.log(`x: ${this.pos.x}`);
       if(this.aliveTime <= 1) this.aliveTime = 1;
     }
     this.menus.push(overlay);
@@ -398,7 +398,6 @@ class Game {
         this.ctx.fillRect(0, 0, 20, 20);
         this.ctx.restore();
 
-        console.log(`x: ${this.pos.x}`);
         if (this.aliveTime <= 0) this.game.startGame();
       }
 
@@ -418,7 +417,6 @@ class Game {
     this.vanity = [];
     this.player.alive = true;
     this.player.heal();
-    this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
     // this.playSound(this.bgm, 0.4);
     this.cheat = false;
     this.bgm.play();
@@ -440,11 +438,25 @@ class Game {
       this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
       this.ctx.restore();
 
-      console.log(`x: ${this.pos.x}`);
       if (this.aliveTime <= 0) this.alive = false;
     }
 
     this.menus.push(overlay);
+
+    let endEmit = new Emitter(this, {
+      coords: { x: this.player.pos.x, y: this.player.pos.y },
+      r: 5,
+      aliveTime: 110,
+      emitCount: 50,
+      emitSpeed: 8,
+      ejectMultiplier: 10,
+      impulseVariance: 0.9,
+      color: "rgba(0, 205, 205,1)",
+    });
+
+    this.vanity.push(endEmit);
+    this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
+
   }
 
   endGame() {
@@ -669,8 +681,8 @@ class Game {
           this.particles.forEach(entity => entity.update());
           this.enemyParticles = this.enemyParticles.filter(entity => entity.alive);
           this.enemyParticles.forEach(entity => entity.update());
-
-
+          this.menus = this.menus.filter(entity => entity.alive);
+          this.menus.forEach(entity => entity.update());
 
           if (this.player.health <= 0) this.endGame();
         }
@@ -739,6 +751,9 @@ class Game {
 
         this.vanity = this.vanity.filter(entity => entity.alive);
         this.vanity.forEach(entity => entity.update());
+
+        this.menus = this.menus.filter(entity => entity.alive);
+        this.menus.forEach(entity => entity.update());
         break;
       default:
         break;

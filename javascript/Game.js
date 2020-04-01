@@ -305,7 +305,7 @@ class Game {
       this.ctx.save();
       this.ctx.fillStyle = this.color;
       this.ctx.fillRect(0, this.cvs.height / 2 - this.cvs.height / 8 * (60 - this.aliveTime) / 60, this.cvs.width, this.cvs.height / 4 * (60 - this.aliveTime) / 60);
-      if (this.aliveTime <= 0) {
+      if (this.aliveTime <= 0 && this.game.state != STATE_STARTING) {
         if (this.alpha < 1) this.alpha += 0.3;
         this.aliveTime = 0;
         let xOffset = this.cvs.width / 2;
@@ -363,7 +363,7 @@ class Game {
     overlay.height = this.cvs.height;
     overlay.width = this.cvs.width;
     overlay.alpha = 1;
-    overlay.aliveTime = 15;
+    overlay.aliveTime = 30;
     overlay.intialTime = overlay.aliveTime;
 
     overlay.draw = function () {
@@ -375,36 +375,32 @@ class Game {
       this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
       this.ctx.restore();
 
-      if(this.aliveTime <= 1) this.aliveTime = 1;
+      // if(this.aliveTime <= 1) this.aliveTime = 1;
+      if(this.aliveTime === this.intialTime - 10) {
+        let overlay2 = new GameObject(game);
+        overlay2.pos.x = 0,
+          overlay2.pos.y = 0;
+        overlay2.height = this.cvs.height;
+        overlay2.width = this.cvs.width;
+        overlay2.alpha = 1;
+        overlay2.aliveTime = 25;
+        overlay2.intialTime = overlay2.aliveTime;
+        overlay2.draw = function () {
+          this.aliveTime--;
+          this.pos.x = -this.width * 2 + this.width * 2 * Math.pow((this.intialTime - this.aliveTime) / this.intialTime, 2);
+          this.ctx.save();
+          this.ctx.fillStyle = `rgba(88,88,88,${this.alpha})`;
+          this.ctx.rotate(Math.PI / 12);
+          this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
+          this.ctx.fillRect(0, 0, 20, 20);
+          this.ctx.restore();
+
+          if (this.aliveTime <= 0) this.game.startGame();
+        }
+        this.game.menus.push(overlay2);
+      }
     }
     this.menus.push(overlay);
-
-    let drawOverlay2 = function () {
-      let overlay2 = new GameObject(game);
-      overlay2.pos.x = 0,
-      overlay2.pos.y = 0;
-      overlay2.height = this.cvs.height;
-      overlay2.width = this.cvs.width;
-      overlay2.alpha = 1;
-      overlay2.aliveTime = 10;
-      overlay2.intialTime = overlay2.aliveTime;
-      overlay2.draw = function () {
-        this.aliveTime--;
-        this.pos.x = -this.width * 2 + this.width * 2 * Math.pow((this.intialTime - this.aliveTime) / this.intialTime, 2);
-        this.ctx.save();
-        this.ctx.fillStyle = `rgba(88,88,88,${this.alpha})`;
-        this.ctx.rotate(Math.PI / 12);
-        this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
-        this.ctx.fillRect(0, 0, 20, 20);
-        this.ctx.restore();
-
-        if (this.aliveTime <= 0) this.game.startGame();
-      }
-
-      this.menus.push(overlay2);
-    }
-    drawOverlay2 = drawOverlay2.bind(this);
-    setTimeout(drawOverlay2, 140);
   }
 
   startGame() {

@@ -133,6 +133,20 @@ class Beam extends Particle {
             explosionB.aliveTime = 1;
             this.game.vanity.push(explosionB);
             obj.vel.add(knockStraight.multiply(this.knockback));
+
+            let hitImpactBeam = new Emitter(game, {
+              coords: { x: obj.pos.x, y: obj.pos.y },
+              r: 7,
+              aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
+              emitCount: 6,
+              emitSpeed: 6,
+              ejectMultiplier: 9,
+              impulseVariance: 0.25,
+              fanDegree: 10,
+              aliveTime: 35,
+            });
+
+            this.game.vanity.push(hitImpactBeam);
             break;
           case "FINISHER":
             this.game.vanity.push(new DamageNumber(obj, this.damage, 20, 60, knockStraight.x));
@@ -151,9 +165,9 @@ class Beam extends Particle {
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
               emitCount: 6,
               emitSpeed: 6,
-              ejectMultiplier: 8,
+              ejectMultiplier: 12,
               impulseVariance: 0.4,
-              fanDegree: 10,
+              fanDegree: 20,
               aliveTime: 30,
             });
 

@@ -11,7 +11,7 @@ import GameObject from './obj/GameObject';
 import SlashSpark from './obj/SlashSpark';
 import BufferLoader from './lib/BufferLoader';
 import DeathExplosion from './obj/DeathExplosion';
-
+import Emitter from "./obj/Emitter";
 
 // My laptop has a performance limit of around 700 particles
 // Delta time is implemented by accelerating movement to perceive less
@@ -405,6 +405,21 @@ class Game {
       this.particles.push(explode3);
       this.preDefeatSfx.stop();
       this.player.color = 'black'; 
+
+      let endEmit = new Emitter(this, {
+        coords: { x: this.player.pos.x, y: this.player.pos.y },
+        r: 5,
+        aim: new Vector(1,0),
+        aliveTime: 90,
+        emitCount: 100,
+        emitSpeed: 100,
+        ejectMultiplier: 20,
+        impulseVariance: 0.95,
+        fanDegree: 180,
+        color: "rgba(0, 205, 205,1)",
+      });
+
+      this.vanity.push(endEmit);
 
       this.playSound(this.defeatSfx, 0.2);
     }

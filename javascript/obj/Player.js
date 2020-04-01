@@ -39,7 +39,7 @@ const POST_DASH_INVUL = 2;
 const SLASH_COOLDOWN = 11;
 const MAX_COMBOS = 3;
 
-const CHARGE_COST = 150;
+const CHARGE_COST = 100;
 const CHARGING_TIME = 400; // in seconds 
 const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 90;
@@ -276,16 +276,18 @@ class Player extends GameObject {
       beam.knockback = 5;
       this.game.particles.push(beam);
 
-      let shootFlash = new Emitter(game, {
+      let shootFlash = new Emitter(this.game, {
         coords: {x: this.pos.x, y: this.pos.y},
-        r: 4,
+        r: 7,
         aim: this.aim.dup(),
         emittee: Sparkle,
-        aliveTime: 25,
-        emitCount: 7,
-        emitSpeed: 7,
-        ejectMultiplier: 4,
-        impulseVariance: 0.7,
+        aliveTime: 20,
+        emitCount: 8,
+        emitSpeed: 8,
+        ejectMultiplier: 6,
+        impulseVariance: 0.9,
+        fanDegree: 70,
+        color: "rgba(0, 205, 205,1)",
       });
 
       this.game.vanity.push(shootFlash);

@@ -36,6 +36,7 @@ Use Web Audio Context to vary pitch/playback speed on sounds like Melee
 const PATH = document.URL.substr(0, document.URL.lastIndexOf('/'));
 const STATE_INIT = "STATE_INIT";
 const STATE_BEGIN = "STATE_BEGIN";
+const STATE_STARTING = "STATE_STARTING";
 const STATE_RUNNING = "STATE_RUNNING";
 const STATE_OVER = "STATE_OVER";
 
@@ -353,6 +354,60 @@ class Game {
     }
   }
 
+  transitionToStartGame() {
+    this.state = STATE_STARTING;
+    let overlay = new GameObject(game);
+    overlay.pos.x = 0,
+    overlay.pos.y = 0;
+    overlay.height = this.cvs.height;
+    overlay.width = this.cvs.width;
+    overlay.alpha = 1;
+    overlay.aliveTime = 15;
+    overlay.intialTime = overlay.aliveTime;
+
+    overlay.draw = function () {
+      this.aliveTime--;
+      this.pos.x = -this.width * 2 + this.width * 2 * Math.pow((this.intialTime - this.aliveTime) / this.intialTime, 2);
+      this.ctx.save();
+      this.ctx.fillStyle = `rgba(188,188,188,${this.alpha})`;
+      this.ctx.rotate(Math.PI / 12);
+      this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
+      this.ctx.restore();
+
+      console.log(`x: ${this.pos.x}`);
+      if(this.aliveTime <= 1) this.aliveTime = 1;
+    }
+    this.menus.push(overlay);
+
+    let drawOverlay2 = function () {
+      let overlay2 = new GameObject(game);
+      overlay2.pos.x = 0,
+      overlay2.pos.y = 0;
+      overlay2.height = this.cvs.height;
+      overlay2.width = this.cvs.width;
+      overlay2.alpha = 1;
+      overlay2.aliveTime = 10;
+      overlay2.intialTime = overlay2.aliveTime;
+      overlay2.draw = function () {
+        this.aliveTime--;
+        this.pos.x = -this.width * 2 + this.width * 2 * Math.pow((this.intialTime - this.aliveTime) / this.intialTime, 2);
+        this.ctx.save();
+        this.ctx.fillStyle = `rgba(88,88,88,${this.alpha})`;
+        this.ctx.rotate(Math.PI / 12);
+        this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
+        this.ctx.fillRect(0, 0, 20, 20);
+        this.ctx.restore();
+
+        console.log(`x: ${this.pos.x}`);
+        if (this.aliveTime <= 0) this.game.startGame();
+      }
+
+      this.menus.push(overlay2);
+    }
+    drawOverlay2 = drawOverlay2.bind(this);
+    setTimeout(drawOverlay2, 140);
+  }
+
   startGame() {
     if (!this.assetsLoaded) return;
     this.loopCount = 0;
@@ -367,6 +422,29 @@ class Game {
     // this.playSound(this.bgm, 0.4);
     this.cheat = false;
     this.bgm.play();
+
+    let overlay = new GameObject(game);
+    overlay.pos.x = 0,
+    overlay.pos.y = 0;
+    overlay.height = this.cvs.height;
+    overlay.width = this.cvs.width;
+    overlay.alpha = 1;
+    overlay.aliveTime = 15;
+    overlay.intialTime = overlay.aliveTime;
+    overlay.draw = function () {
+      this.aliveTime--;
+      this.pos.x = this.width * 2 * Math.pow((this.intialTime - this.aliveTime) / this.intialTime, 2);
+      this.ctx.save();
+      this.ctx.fillStyle = `rgba(88,88,88,${this.alpha})`;
+      this.ctx.rotate(Math.PI / 12);
+      this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
+      this.ctx.restore();
+
+      console.log(`x: ${this.pos.x}`);
+      if (this.aliveTime <= 0) this.alive = false;
+    }
+
+    this.menus.push(overlay);
   }
 
   endGame() {
@@ -529,6 +607,12 @@ class Game {
             this.player.pos.y = 200 + Math.random() * (this.cvs.height - 200 * 2);
           }
         }
+        this.players.forEach(entity => entity.update());
+        this.entities.forEach(entity => entity.update());
+        this.particles.forEach(entity => entity.update());
+        break;
+
+      case STATE_STARTING:
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
         this.particles.forEach(entity => entity.update());
@@ -852,6 +936,12 @@ class Game {
         this.menus.forEach(entity => entity.draw());
         break;
 
+      case STATE_STARTING:
+        this.particles.forEach(entity => entity.draw());
+        // this.player.draw();
+        this.entities.forEach(entity => entity.draw());
+        this.menus.forEach(entity => entity.draw());
+        break;
       case STATE_RUNNING:
         // Handle drawing of all game objects
         this.drawFreeze();

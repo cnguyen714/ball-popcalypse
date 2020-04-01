@@ -411,8 +411,8 @@ class Game {
         r: 5,
         aim: new Vector(1,0),
         aliveTime: 90,
-        emitCount: 100,
-        emitSpeed: 100,
+        emitCount: 150,
+        emitSpeed: 15,
         ejectMultiplier: 20,
         impulseVariance: 0.95,
         fanDegree: 180,
@@ -699,18 +699,7 @@ class Game {
     
     // === DEBUG SHOW ANGLE
     // let angle = Math.atan2(this.player.aim.y, this.player.aim.x);
-    // this.ctx.beginPath();
     // this.ctx.fillText(`Angle: ${angle / Math.PI * 180}`, this.player.mousePos.x, this.player.mousePos.y);
-    // this.ctx.strokeStyle = "white";
-    // this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
-    // this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
-    // this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
-    // this.ctx.lineTo(this.player.pos.x + 50, this.player.pos.y);
-    // this.ctx.arc(this.player.pos.x, this.player.pos.y, 40, 0, angle);
-
-    // this.ctx.stroke();
-    // this.ctx.closePath();
-    // this.ctx.fillRect(this.player.mousePos.x + 3, this.player.mousePos.y + 3, this.player.dashCooldown, 3);
 
     this.ctx.restore();
   }
@@ -731,6 +720,15 @@ class Game {
     this.ctx.restore();
     this.drawHealth();
     this.drawChargeBar();
+
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "white";
+    this.ctx.lineWidth = 0.5;
+    this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
+    this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
+    this.ctx.stroke();
+    this.ctx.closePath();
+    this.ctx.restore();
   }
 
   drawStats() {

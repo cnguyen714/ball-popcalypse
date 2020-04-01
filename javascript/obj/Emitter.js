@@ -16,7 +16,7 @@ class Emitter extends GameObject {
       aim = new Vector(0, 0),
       emittee = Sparkle,
       emitCount = 5,
-      emitSpeed = 5,
+      emitSpeed = emitCount,
       aliveTime = 20,
       fanDegree = 35,
       ejectMultiplier = 6,
@@ -74,10 +74,10 @@ class Emitter extends GameObject {
         color: this.color,
       })
 
-      this.emitCount -= this.emitSpeed;
       this.game.vanity.push(p);
     }
-
+    
+    this.emitCount -= this.emitSpeed;
     if(this.emitCount <= 0) this.alive = false;
 
     this.addVelocityTimeDelta();

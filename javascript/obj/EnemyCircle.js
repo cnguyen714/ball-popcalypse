@@ -85,7 +85,7 @@ class EnemyCircle extends GameObject {
           aim: this.aim.dup(),
           aliveTime: 20 + this.r / RADIUS,
           emitCount: 3 + this.r / RADIUS,
-          ejectMultiplier: 3 + this.r / RADIUS,
+          ejectSpeed: 3 + this.r / RADIUS,
           impulseVariance: 0.15,
           fanDegree: 10 + this.r / RADIUS,
           color: "red",

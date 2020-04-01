@@ -284,7 +284,7 @@ class Player extends GameObject {
         aliveTime: 20,
         emitCount: 8,
         emitSpeed: 8,
-        ejectMultiplier: 6,
+        ejectSpeed: 6,
         impulseVariance: 0.9,
         fanDegree: 70,
         color: "rgba(0, 205, 205,1)",

@@ -296,7 +296,8 @@ class Game {
     startGameMenu.height = 0;
     startGameMenu.width = this.cvs.width;
     startGameMenu.color = "rgba(0,0,0,0.4)";
-    startGameMenu.aliveTime = 60;
+    startGameMenu.aliveTime = 40;
+    startGameMenu.intialTime = startGameMenu.aliveTime;
     startGameMenu.time = this.timeSeconds;
     startGameMenu.difficulty = this.difficulty;
     startGameMenu.alpha = 0;
@@ -304,7 +305,7 @@ class Game {
       this.aliveTime--;
       this.ctx.save();
       this.ctx.fillStyle = this.color;
-      this.ctx.fillRect(0, this.cvs.height / 2 - this.cvs.height / 8 * (60 - this.aliveTime) / 60, this.cvs.width, this.cvs.height / 4 * (60 - this.aliveTime) / 60);
+      this.ctx.fillRect(0, this.cvs.height / 2 - this.cvs.height / 8 * (startGameMenu.intialTime - this.aliveTime) / startGameMenu.intialTime, this.cvs.width, this.cvs.height / 4 * (startGameMenu.intialTime - this.aliveTime) / startGameMenu.intialTime);
       if (this.aliveTime <= 0 && this.game.state != STATE_STARTING) {
         if (this.alpha < 1) this.alpha += 0.3;
         this.aliveTime = 0;
@@ -358,6 +359,7 @@ class Game {
   transitionToStartGame() {
     this.state = STATE_STARTING;
     let overlay = new GameObject(game);
+
     overlay.pos.x = 0,
     overlay.pos.y = 0;
     overlay.height = this.cvs.height;
@@ -379,11 +381,11 @@ class Game {
       if(this.aliveTime === this.intialTime - 10) {
         let overlay2 = new GameObject(game);
         overlay2.pos.x = 0,
-          overlay2.pos.y = 0;
+        overlay2.pos.y = 0;
         overlay2.height = this.cvs.height;
         overlay2.width = this.cvs.width;
         overlay2.alpha = 1;
-        overlay2.aliveTime = 25;
+        overlay2.aliveTime = 20;
         overlay2.intialTime = overlay2.aliveTime;
         overlay2.draw = function () {
           this.aliveTime--;
@@ -445,7 +447,7 @@ class Game {
       aliveTime: 80,
       emitCount: 80,
       emitSpeed: 16,
-      ejectMultiplier: 10,
+      ejectSpeed: 8,
       decayRate: 0.94,
       impulseVariance: 0.9,
       color: "rgba(0, 205, 205,1)",
@@ -500,9 +502,10 @@ class Game {
         aliveTime: 90,
         emitCount: 150,
         emitSpeed: 15,
-        ejectMultiplier: 20,
+        ejectSpeed: 20,
         impulseVariance: 0.95,
         fanDegree: 180,
+        decayRate: 0.9,
         color: "rgba(0, 205, 205,1)",
       });
 

@@ -17,7 +17,7 @@ class Emitter extends GameObject {
       emitSpeed = emitCount,
       aliveTime = 20,
       fanDegree = 180,
-      ejectFactor = 4,
+      ejectSpeed = 4,
       decayRate = 0.8,
       impulseVariance = 0.9,
       color = "white",
@@ -34,7 +34,7 @@ class Emitter extends GameObject {
     this.emitCount = emitCount;
     this.emitSpeed = emitSpeed;
     this.fanDegree = fanDegree;
-    this.ejectFactor = ejectFactor;
+    this.ejectSpeed = ejectSpeed;
     this.decayRate = decayRate;
     this.impulseVariance = impulseVariance;
     this.active = true;
@@ -64,7 +64,7 @@ class Emitter extends GameObject {
     for (let i = 0; i < this.emitSpeed; i++) {
       let dir = this.aim.dup().normalize();
       dir = Trig.rotateByDegree(dir, -1 * this.fanDegree + Math.random() * this.fanDegree * 2);
-      dir = dir.multiply(this.ejectFactor);
+      dir = dir.multiply(this.ejectSpeed);
       dir = dir.multiply(1 - this.impulseVariance + Math.random() * this.impulseVariance * 2);
       let p = new this.emittee(this.game, {
         coords: {x: this.pos.x, y: this.pos.y}, 

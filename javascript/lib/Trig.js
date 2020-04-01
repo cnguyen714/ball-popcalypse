@@ -17,6 +17,10 @@ class Trig {
 
     return new Vector(Math.sin(angle), Math.cos(angle)).multiply(length);
   }
+
+  static getAngle(vector) {
+    return Math.atan2(vector.x, vector.y);
+  }
 }
 
 export default Trig;

@@ -9,6 +9,7 @@ class Emitter extends GameObject {
     {
       coords = {x: 0, y: 0},
       r = 1,
+      width = 0,
       cb = () => { },
       vel = new Vector(0, 0),
       aim = new Vector(1, 0),
@@ -28,6 +29,7 @@ class Emitter extends GameObject {
     this.vel = vel;
     this.aim = aim;
     this.r = r;
+    this.width = width;
     this.cb = cb;
     this.aliveTime = aliveTime,
     this.emittee = emittee;
@@ -66,8 +68,22 @@ class Emitter extends GameObject {
       dir = Trig.rotateByDegree(dir, -1 * this.fanDegree + Math.random() * this.fanDegree * 2);
       dir = dir.multiply(this.ejectSpeed);
       dir = dir.multiply(1 - this.impulseVariance + Math.random() * this.impulseVariance * 2);
+
+      let spreadX = 0;
+      let spreadY = 0;
+      let angle = new Vector();
+      let adjust = new Vector();
+      let offset = 0;
+      if (this.width > 0) {
+        offset = Math.random() * this.width;
+        angle = this.aim.dup().normalize();
+        angle = Trig.rotateByDegree(angle, 90);
+        adjust = angle.dup().multiply(-this.width / 2);
+        angle = angle.multiply(offset);
+      }
+
       let p = new this.emittee(this.game, {
-        coords: {x: this.pos.x, y: this.pos.y}, 
+        coords: { x: this.pos.x + adjust.x + angle.x, y: this.pos.y + adjust.y + angle.y}, 
         vel: dir,
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,

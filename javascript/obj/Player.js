@@ -206,6 +206,7 @@ class Player extends GameObject {
 
       setTimeout(function () {
         this.charging = false;
+        this.invul = 5;
 
         let kb = this.aim.dup().normalize().multiply(-75);
         this.vel.add(kb);
@@ -213,10 +214,42 @@ class Player extends GameObject {
 
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
         let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
-
-        this.invul = 5;
         this.game.delayedParticles.push(beam);
-        
+
+        let shootFlash = new Emitter(this.game, {
+          coords: { x: this.pos.x, y: this.pos.y },
+          r: 4,
+          aim: this.aim.dup(),
+          emittee: Sparkle,
+          aliveTime: 70,
+          emitCount: 40,
+          emitSpeed: 40,
+          ejectSpeed: 16,
+          impulseVariance: 1.4,
+          fanDegree: 0,
+          color: "rgba(255, 0, 0,1)",
+          decayRate: 0.85,
+          width: 150,
+        });
+
+        this.game.vanity.push(shootFlash);
+        let shootFlash2 = new Emitter(this.game, {
+          coords: { x: this.pos.x, y: this.pos.y },
+          r: 4,
+          aim: this.aim.dup(),
+          emittee: Sparkle,
+          aliveTime: 70,
+          emitCount: 20,
+          emitSpeed: 10,
+          ejectSpeed: 40,
+          impulseVariance: 1,
+          fanDegree: 0,
+          color: "rgba(255, 0, 0,1)",
+          decayRate: 0.9,
+          width: 20,
+        });
+
+        this.game.vanity.push(shootFlash2);
         
         if (this.game.cheat) {
           beam.width = 60;

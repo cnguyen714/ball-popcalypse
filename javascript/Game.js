@@ -443,18 +443,19 @@ class Game {
 
     this.menus.push(overlay);
 
-    let endEmit = new Emitter(this, {
+    let startEmit = new Emitter(this, {
       coords: { x: this.player.pos.x, y: this.player.pos.y },
       r: 5,
-      aliveTime: 110,
-      emitCount: 50,
-      emitSpeed: 8,
+      aliveTime: 80,
+      emitCount: 80,
+      emitSpeed: 16,
       ejectMultiplier: 10,
+      decayRate: 0.94,
       impulseVariance: 0.9,
       color: "rgba(0, 205, 205,1)",
     });
 
-    this.vanity.push(endEmit);
+    this.vanity.push(startEmit);
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
 
   }

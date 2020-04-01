@@ -3,14 +3,12 @@ import GameObject from "./GameObject";
 import Sparkle from "./Sparkle";
 import Trig from "../lib/Trig";
 
-const RADIUS = 1;
-
 class Emitter extends GameObject {
   constructor(
     game,
     {
       coords = {x: 0, y: 0},
-      r = RADIUS,
+      r = 1,
       cb = () => { },
       vel = new Vector(0, 0),
       aim = new Vector(1, 0),
@@ -19,7 +17,8 @@ class Emitter extends GameObject {
       emitSpeed = emitCount,
       aliveTime = 20,
       fanDegree = 180,
-      ejectMultiplier = 4,
+      ejectFactor = 4,
+      decayRate = 0.8,
       impulseVariance = 0.9,
       color = "white",
     }
@@ -35,7 +34,8 @@ class Emitter extends GameObject {
     this.emitCount = emitCount;
     this.emitSpeed = emitSpeed;
     this.fanDegree = fanDegree;
-    this.ejectMultiplier = ejectMultiplier;
+    this.ejectFactor = ejectFactor;
+    this.decayRate = decayRate;
     this.impulseVariance = impulseVariance;
     this.active = true;
     this.color = color;
@@ -64,7 +64,7 @@ class Emitter extends GameObject {
     for (let i = 0; i < this.emitSpeed; i++) {
       let dir = this.aim.dup().normalize();
       dir = Trig.rotateByDegree(dir, -1 * this.fanDegree + Math.random() * this.fanDegree * 2);
-      dir = dir.multiply(this.ejectMultiplier);
+      dir = dir.multiply(this.ejectFactor);
       dir = dir.multiply(1 - this.impulseVariance + Math.random() * this.impulseVariance * 2);
       let p = new this.emittee(this.game, {
         coords: {x: this.pos.x, y: this.pos.y}, 
@@ -72,6 +72,7 @@ class Emitter extends GameObject {
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,
         color: this.color,
+        decayRate: this.decayRate,
       })
 
       this.game.vanity.push(p);

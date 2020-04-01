@@ -63,7 +63,7 @@ class Sparkle extends GameObject {
     this.addVelocityTimeDelta();
 
     if (this.aliveTime < this.initialTime - 6) {
-      this.vel = this.vel.multiply(0.8);
+      this.vel = this.vel.multiply(this.decayRate);
     }
     this.validatePosition(this.cvs.width, this.cvs.height);
   }

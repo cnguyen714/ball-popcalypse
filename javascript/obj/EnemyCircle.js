@@ -74,25 +74,25 @@ class EnemyCircle extends GameObject {
       player.vel.subtract(diff.dup().multiply(this.r / RADIUS));
       this.vel.add(diff.multiply(ENEMY_KNOCKBACK_MULTIPLIER));
       
-      let hitEmit = new Emitter(game, {
-        coords: { x: player.pos.x, y: player.pos.y },
-        r: 5 + this.r / RADIUS,
-        aim: this.aim.dup(),
-        aliveTime: 20 + this.r / RADIUS,
-        emitCount: 3 + this.r / RADIUS,
-        ejectMultiplier: 3 + this.r / RADIUS,
-        impulseVariance: 0.15,
-        fanDegree: 10 + this.r / RADIUS,
-        color: "red",
-      });
-
-      this.game.vanity.push(hitEmit);
-
       player.game.vanity.push(explosion);
       if (player.invul > 0) {
         explosion.color = 'lightblue';
         return false;
       } else {
+        let hitEmit = new Emitter(game, {
+          coords: { x: player.pos.x, y: player.pos.y },
+          r: 5 + this.r / RADIUS,
+          aim: this.aim.dup(),
+          aliveTime: 20 + this.r / RADIUS,
+          emitCount: 3 + this.r / RADIUS,
+          ejectMultiplier: 3 + this.r / RADIUS,
+          impulseVariance: 0.15,
+          fanDegree: 10 + this.r / RADIUS,
+          color: "red",
+        });
+
+        this.game.vanity.push(hitEmit);
+
         player.health -= this.damage;
         player.charge += this.damage;
         if (this.r >= 50) player.invul = 45;

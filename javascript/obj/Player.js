@@ -222,33 +222,33 @@ class Player extends GameObject {
           aim: this.aim.dup(),
           emittee: Sparkle,
           aliveTime: 70,
-          emitCount: 40,
-          emitSpeed: 40,
-          ejectSpeed: 16,
+          emitCount: 60,
+          emitSpeed: 20,
+          ejectSpeed: 10,
           impulseVariance: 1.4,
           fanDegree: 0,
-          color: "rgba(255, 0, 0,1)",
-          decayRate: 0.85,
+          color: "rgba(255, 0, 0, 0.9)",
+          decayRate: 0.9,
           width: 150,
         });
-
         this.game.vanity.push(shootFlash);
+
         let shootFlash2 = new Emitter(this.game, {
           coords: { x: this.pos.x, y: this.pos.y },
-          r: 4,
+          r: 3,
           aim: this.aim.dup(),
           emittee: Sparkle,
-          aliveTime: 70,
-          emitCount: 20,
-          emitSpeed: 10,
-          ejectSpeed: 40,
-          impulseVariance: 1,
+          aliveTime: 130,
+          emitCount: 30,
+          emitSpeed: 15,
+          ejectSpeed: 9,
+          impulseVariance: 1.05,
           fanDegree: 0,
-          color: "rgba(255, 0, 0,1)",
-          decayRate: 0.9,
+          color: "rgba(255, 0, 0, 0.9)",
+          decayRate: 0.96,
           width: 20,
+          lengthForward: 700,
         });
-
         this.game.vanity.push(shootFlash2);
         
         if (this.game.cheat) {

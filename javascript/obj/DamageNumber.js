@@ -91,6 +91,7 @@ class DamageNumber extends GameObject {
       this.alive = false;
     }
     this.aliveTime--;
+    
 
     this.cb();
   }

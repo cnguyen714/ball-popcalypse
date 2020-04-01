@@ -65,12 +65,12 @@ class Particle extends GameObject {
         }
 
         this.game.vanity.push(new DamageNumber(this, this.damage, 11, 30, this.vel.x));
-        // let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
-        // hitspark.aliveTime = 4;
-        // hitspark.growthRate = 1;
-        // hitspark.r = 1;
-        // hitspark.damage = 0;
-        // this.game.vanity.push(hitspark);
+        let hitspark = new Slam(this.game, this.pos.x, this.pos.y);
+        hitspark.aliveTime = 4;
+        hitspark.growthRate = 1;
+        hitspark.r = 1;
+        hitspark.damage = 0;
+        this.game.vanity.push(hitspark);
 
         let hitEmit = new Emitter(game, {
           coords: { x: this.pos.x, y: this.pos.y },

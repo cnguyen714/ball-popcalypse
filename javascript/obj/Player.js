@@ -31,6 +31,7 @@ const DAMPENING_COEFFICIENT = 0.7;
 const CLAMP_SPEED = 200;
 
 const DASH_DURATION = 8;
+const DASH_COUNT = 2;
 const DASH_PATH_DURATION = 13;
 const DASH_SPEED = 32;
 const DASH_COOLDOWN = 90;
@@ -104,9 +105,10 @@ class Player extends GameObject {
     this.slashCooldown = 0;
     this.maxSlashCombo = MAX_COMBOS;
     
+    this.dashing = false;
     this.dashDuration = 0;
+    this.dashPathDuration = 0;
     this.dashDirection = new Vector();
-    this.dashCooldown = 0;
     this.dashCooldown = 0;
     this.maxDashCooldown = DASH_COOLDOWN;
     this.velRestoreDash = new Vector(); 
@@ -147,29 +149,33 @@ class Player extends GameObject {
 
   // Dash in a direction for a few frames
   dash() {
-    if (this.movement.length() === 0) return;
-    if (this.moveState !== STATE_DASHING) {
-      this.moveState = STATE_DASHING;
-      this.invul = Math.max(DASH_DURATION, this.invul);
-      this.noclip = Math.max(DASH_DURATION - 1, this.noclip);
-      this.dashDuration = DASH_DURATION;
-      this.dashCooldown = this.maxDashCooldown;
-      this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
+    if (!this.dashing || this.game.cheat) {
+      this.dashing = true;
+      if (this.movement.length() === 0) return;
+      if (this.moveState !== STATE_DASHING) {
+        this.moveState = STATE_DASHING;
+        this.invul = Math.max(DASH_DURATION, this.invul);
+        this.noclip = Math.max(DASH_DURATION - 1, this.noclip);
+        this.dashDuration = DASH_DURATION;
+        this.dashPathDuration = DASH_PATH_DURATION;
+        this.dashCooldown += this.maxDashCooldown;
+        this.dashDirection = this.movement.dup().multiply(DASH_SPEED);
 
-      this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, this.movement.dup().multiply(-7), 10, "cyan"));
-      let spark = new SlashSpark(this.game, this.pos.x, this.pos.y, "BEAM", 150, 60, 17, Math.PI + Math.atan2(this.movement.y, this.movement.x), 0, true, function() {this.width *= 0.80; this.length *= 1.15});
-      spark.color = [0,255,255];
-      this.game.vanity.push(spark);
-      let cb = function () {
-        this.length *= 1.12;
-        this.width *= 0.85;
+        this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, this.movement.dup().multiply(-7), 10, "cyan"));
+        let spark = new SlashSpark(this.game, this.pos.x, this.pos.y, "BEAM", 150, 60, 17, Math.PI + Math.atan2(this.movement.y, this.movement.x), 0, true, function () { this.width *= 0.80; this.length *= 1.15 });
+        spark.color = [0, 255, 255];
+        this.game.vanity.push(spark);
+        let cb = function () {
+          this.length *= 1.12;
+          this.width *= 0.85;
+        }
+        let angle = Math.random() * Math.PI;
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle, 0, true, cb));
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
+        this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
+        this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, new Vector(), 3));
       }
-      let angle = Math.random() * Math.PI;
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle, 0, true, cb));
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
-      this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
-      this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, new Vector(), 3));
     }
   }
 
@@ -291,13 +297,6 @@ class Player extends GameObject {
       });
 
       this.game.vanity.push(shootFlash);
-
-      // let sp = new Sparkle(game, {
-      //   coords: { x: this.pos.x, y: this.pos.y },
-      //   r: 2,
-      // });
-      // this.vanity.push(sp);
-
     } else {
       if (this.game.loopCount % 5 === 0) {
         this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
@@ -495,7 +494,9 @@ class Player extends GameObject {
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
     if (this.charge > this.chargeCost * CHARGE_STACKS) this.charge = Math.floor(this.chargeCost * CHARGE_STACKS);
-    if (this.dashCooldown > this.maxDashCooldown - DASH_DURATION - DASH_PATH_DURATION) {
+    if (this.dashPathDuration > 0) {
+      this.dashPathDuration--;
+
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "cyan";
       p.aliveTime = DASH_DURATION + 5;
@@ -535,9 +536,10 @@ class Player extends GameObject {
     this.movement.normalize();
 
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
-    if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= 0) this.dash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
+    if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= (DASH_COUNT - 1) * DASH_COOLDOWN) this.dash();
+    if (!this.keyDown[KEY.SHIFT]) this.dashing = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
 
     // Apply movement
@@ -583,15 +585,6 @@ class Player extends GameObject {
         this.width *= 0.8;
       }
       this.game.vanity.push(line);
-
-      // let beam = new Beam(this.game, this.pos.x, this.pos.y, this.aim);
-      // beam.aliveTime = 3;
-      // beam.initialTime = 8;
-      // beam.width = 0.8;
-      // beam.length = 5000;
-      // beam.damage = 0;
-      // beam.knockback = 1;
-      // this.game.particles.push(beam);
     }
 
     // add sparks for charge level

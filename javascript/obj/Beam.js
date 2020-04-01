@@ -105,12 +105,10 @@ class Beam extends Particle {
         if (obj.health <= 0) {
           obj.alive = false;
         } else {
-          if (!this.silenced) {
-            if (this.combo === this.game.player.maxSlashCombo) {
-              this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
-            } else {
-              this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
-            }
+          if (this.combo === this.game.player.maxSlashCombo) {
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
+          } else {
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
           }
         }
 
@@ -125,7 +123,6 @@ class Beam extends Particle {
           case "BEAM":
             let num = new DamageNumber(obj, this.damage, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
             this.game.vanity.push(num);
-            // this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, this.width / 200 * obj.r, obj.r * 20, 20, Math.atan2(this.aim.y, this.aim.x)));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 2, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 3, 60));
 
@@ -134,7 +131,7 @@ class Beam extends Particle {
             this.game.vanity.push(explosionB);
             obj.vel.add(knockStraight.multiply(this.knockback));
 
-            let hitImpactBeam = new Emitter(game, {
+            let hitImpactBeam = new Emitter(this.game, {
               coords: { x: obj.pos.x, y: obj.pos.y },
               r: 7,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
@@ -159,7 +156,7 @@ class Beam extends Particle {
             obj.vel.add(knockStraight.multiply(this.knockback));
             obj.pos.add(knockStraight);
 
-            let hitImpactFin = new Emitter(game, {
+            let hitImpactFin = new Emitter(this.game, {
               coords: { x: obj.pos.x, y: obj.pos.y },
               r: 8,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
@@ -184,7 +181,7 @@ class Beam extends Particle {
             this.game.vanity.push(explosion);
             obj.vel.add(knockStraight.multiply(this.knockback));
 
-            let hitImpact = new Emitter(game, {
+            let hitImpact = new Emitter(this.game, {
               coords: { x: obj.pos.x, y: obj.pos.y },
               r: 6,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),

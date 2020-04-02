@@ -395,7 +395,6 @@ class Game {
           this.ctx.fillStyle = `rgba(88,88,88,${this.alpha})`;
           this.ctx.rotate(Math.PI / 12);
           this.ctx.fillRect(this.pos.x, this.pos.y - this.height * 0.5, this.width * 2, this.height * 2);
-          this.ctx.fillRect(0, 0, 20, 20);
           this.ctx.restore();
 
           if (this.aliveTime <= 0) this.game.startGame();

@@ -88,7 +88,7 @@ class Emitter extends GameObject {
       }
 
       let p = new this.emittee(this.game, {
-        coords: { x: this.pos.x + adjust.x + angle.x + forwardOffset.x, y: this.pos.y + adjust.y + angle.y + forwardOffset.y}, 
+        coords: { x: this.pos.x + adjust.x + angle.x - forwardOffset.x * 0.25 + forwardOffset.x, y: this.pos.y + adjust.y + angle.y - forwardOffset.y * 0.25 + forwardOffset.y}, 
         vel: dir,
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,

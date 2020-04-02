@@ -76,7 +76,7 @@ class Emitter extends GameObject {
       let offset = 0;
       if (this.width > 0) {
         offset = Math.random() * this.width;
-        angle = this.aim.dup().normalize();
+        angle = dir.dup().normalize();
         angle = Trig.rotateByDegree(angle, 90);
         adjust = angle.dup().multiply(-this.width / 2);
         angle = angle.multiply(offset);
@@ -84,7 +84,7 @@ class Emitter extends GameObject {
 
       let forwardOffset = new Vector();
       if(this.lengthForward > 0) {
-        forwardOffset = this.aim.dup().normalize().multiply(Math.random() * this.lengthForward);
+        forwardOffset = dir.dup().normalize().multiply(Math.random() * this.lengthForward);
       }
 
       let p = new this.emittee(this.game, {

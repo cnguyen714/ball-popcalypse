@@ -100,6 +100,7 @@ class Game {
     this.playerChargeFollowSfx = new Audio(`${PATH}/assets/SE_00049.wav`);
     this.enemyResistSlashSfx = new Audio(`${PATH}/assets/SE_00017.wav`);
     this.enemyHitSfx = new Audio(`${PATH}/assets/impact.wav`);
+    this.spawnSfx = new Audio(`${PATH}/assets/spawn.mp3`);
 
     // this.bgm = new Audio(`${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`);
     // this.bgm.loop = true;
@@ -129,7 +130,7 @@ class Game {
         `${PATH}/assets/impact.wav`,
         `${PATH}/assets/305_Battlefield_-_Swords_Bursting.mp3`,
         `${PATH}/assets/Retro Vehicle Motor 02.wav`,
-        
+        `${PATH}/assets/spawn.mp3`
       ],
       finishedLoading
     );
@@ -151,6 +152,7 @@ class Game {
         enemyHitSfx: bufferList[8],
         bgm: bufferList[9],
         preDefeatSfx: bufferList[10],
+        spawnSfx: bufferList[11],
       }
       game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, 0.7);
       game.bgm.loop = true;
@@ -300,14 +302,14 @@ class Game {
     startGameMenu.intialTime = startGameMenu.aliveTime;
     startGameMenu.time = this.timeSeconds;
     startGameMenu.difficulty = this.difficulty;
-    startGameMenu.alpha = 0;
+    startGameMenu.alpha = 0.01;
     startGameMenu.draw = function () {
       this.aliveTime--;
       this.ctx.save();
       this.ctx.fillStyle = this.color;
       this.ctx.fillRect(0, this.cvs.height / 2 - this.cvs.height / 8 * (startGameMenu.intialTime - this.aliveTime) / startGameMenu.intialTime, this.cvs.width, this.cvs.height / 4 * (startGameMenu.intialTime - this.aliveTime) / startGameMenu.intialTime);
-      if (this.aliveTime <= 0 && this.game.state != STATE_STARTING) {
-        if (this.alpha < 1) this.alpha += 0.3;
+      if (this.aliveTime <= 0) {
+        if (this.alpha < 1) this.alpha *= 1.10;
         this.aliveTime = 0;
         let xOffset = this.cvs.width / 2;
         let yOffset = this.cvs.height - 250;
@@ -315,13 +317,12 @@ class Game {
 
         this.ctx.fillStyle = `rgba(0,128,128,${this.alpha})`;
         this.ctx.font = `${this.cvs.height / 8}px sans-serif`;
-        // this.ctx.fillText(`Ball-popcalypse`, this.cvs.width * 0.4 / 16, this.cvs.height * 17/32 );
         this.ctx.fillText(`Ball-popcalypse`, this.cvs.width / 2, this.cvs.height * 17/32 );
         this.ctx.fillStyle = `rgba(128,128,128,${this.alpha})`;
         this.ctx.font = `${this.cvs.height / 32}px sans-serif`;
         this.ctx.fillText(`How long can you survive the ball menace?`, this.cvs.width / 2, this.cvs.height * 19/32 );
 
-        this.ctx.fillStyle = "white";
+        this.ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;;
         this.ctx.font = '20px sans-serif';
         this.ctx.shadowBlur = 4;
         this.ctx.shadowColor = 'black';
@@ -334,7 +335,7 @@ class Game {
         this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 190, yOffset + 13, 200, 180);
         this.ctx.fillText(`Slash`, xOffset + 100, yOffset + 210);
         this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 190, yOffset + 43, 120, 150);
-        this.ctx.fillText(`Blaster`, xOffset + 50, yOffset + 210);
+        this.ctx.fillText(`Burst / [Gatling]`, xOffset + 55, yOffset + 210);
         this.ctx.drawImage(SPACEBAR_ICON, xOffset += 170, yOffset + 113, 200, 75);
         this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 210);
         this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 150);
@@ -385,7 +386,7 @@ class Game {
         overlay2.height = this.cvs.height;
         overlay2.width = this.cvs.width;
         overlay2.alpha = 1;
-        overlay2.aliveTime = 20;
+        overlay2.aliveTime = 15;
         overlay2.intialTime = overlay2.aliveTime;
         overlay2.draw = function () {
           this.aliveTime--;
@@ -400,6 +401,7 @@ class Game {
           if (this.aliveTime <= 0) this.game.startGame();
         }
         this.game.menus.push(overlay2);
+        this.game.playSound(this.game.spawnSfx, 0.6);
       }
     }
     this.menus.push(overlay);
@@ -455,7 +457,6 @@ class Game {
 
     this.vanity.push(startEmit);
     this.particles.push(new Slam(game, this.player.pos.x, this.player.pos.y));
-
   }
 
   endGame() {

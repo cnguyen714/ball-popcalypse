@@ -247,7 +247,7 @@ class Player extends GameObject {
           color: "rgba(255, 0, 0, 0.9)",
           decayRate: 0.96,
           width: 20,
-          lengthForward: 700,
+          lengthForward: 500,
         });
         this.game.vanity.push(shootFlash2);
         
@@ -317,7 +317,7 @@ class Player extends GameObject {
 
       let shootFlash = new Emitter(this.game, {
         coords: {x: this.pos.x, y: this.pos.y},
-        r: 7,
+        r: 6,
         aim: this.aim.dup(),
         emittee: Sparkle,
         aliveTime: 20,
@@ -327,23 +327,26 @@ class Player extends GameObject {
         impulseVariance: 0.9,
         fanDegree: 80,
         color: "rgba(0, 205, 205,1)",
+        lengthForward: 50,
       });
 
       this.game.vanity.push(shootFlash);
 
       let shootFlashThin = new Emitter(this.game, {
         coords: { x: this.pos.x, y: this.pos.y },
-        r: 6,
+        r: 5,
         aim: this.aim.dup(),
         emittee: Sparkle,
         aliveTime: 30,
         emitCount: 15,
         emitSpeed: 15,
-        ejectSpeed: 15,
-        impulseVariance: 1,
-        fanDegree: 2,
+        ejectSpeed: 11,
+        impulseVariance: 0.9,
+        fanDegree: 1,
         color: "rgba(0, 205, 205,1)",
         decayRate: 0.9,
+        width: 5,
+        lengthForward: 400,
       });
 
       this.game.vanity.push(shootFlashThin);

@@ -643,10 +643,19 @@ class Game {
             // let aim = this.player.aim.dup().normalize().multiply(2000 * Math.random());
             let aim = new Vector(0,0);
             // charging effects before firing a beam
-            let width = 500;
+            let width = 1000;
             let thickness = 40;
-            let spread = 60;
+            let spread = 100;
             let aliveTime = 60;
+            let expandRate = 1.2;
+            let thinningRate = 0.7;
+            // let width = 50;
+            // let thickness = 10;
+            // let spread = 200;
+            // let aliveTime = 60;
+            // let expandRate = 1.2;
+            // let thinningRate = 0.7;
+            // if (this.player.charging ){//&& this.fpsCount % 10 === 0) {
             if (this.player.charging && this.fpsCount % 10 === 0) {
               let posX = Math.random() * spread;
               let posY = Math.random() * spread;
@@ -666,8 +675,8 @@ class Game {
               line1.extent = width;
               line1.pos.y = line1.game.player.pos.y + line1.posY - line1.spread / 2 + aim.y;
               line1.cb = function () {
-                this.extent *= 1.6;
-                this.width *= 0.7;
+                this.extent *= expandRate;
+                this.width *= thinningRate;
                 this.length = this.extent;
                 this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2 + aim.x;
               }
@@ -689,16 +698,17 @@ class Game {
               line2.extent = width;
               line2.pos.x = line2.game.player.pos.x + line2.posX - line2.spread / 2 - thickness / 2 + aim.x;
               line2.cb = function () {
-                this.extent *= 1.6;
-                let diff = (this.length - this.length * 0.7) / 2;
+                this.extent *= expandRate;
+                let diff = (this.length - this.length * thinningRate) / 2;
                 this.pos.x += diff;
-                this.length *= 0.7;
+                this.length *= thinningRate;
                 this.width = this.extent;
                 this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2 + aim.y;
               }
               this.vanity.push(line2);
             }
 
+            // if (this.player.charging ){//&& (this.fpsCount + 5) % 10 === 0) {
             if (this.player.charging && (this.fpsCount + 5) % 10 === 0) {
               let posX = Math.random() * spread;
               let posY = Math.random() * spread;
@@ -718,8 +728,8 @@ class Game {
               line3.extent = width;
               line3.pos.y = line3.game.player.pos.y + line3.posY - line3.spread / 2 + aim.y;
               line3.cb = function () {
-                this.extent *= 1.6;
-                this.width *= 0.7;
+                this.extent *= expandRate;
+                this.width *= thinningRate;
                 this.length = this.extent;
                 this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2 + aim.x;
               }
@@ -741,10 +751,10 @@ class Game {
               line4.extent = width;
               line4.pos.x = line4.game.player.pos.x + line4.posX - line4.spread / 2 - thickness / 2 + aim.x;
               line4.cb = function () {
-                this.extent *= 1.6;
-                let diff = (this.length - this.length * 0.7) / 2;
+                this.extent *= expandRate;
+                let diff = (this.length - this.length * thinningRate) / 2;
                 this.pos.x += diff;
-                this.length *= 0.7;
+                this.length *= thinningRate;
                 this.width = this.extent;
                 this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2 + aim.y;
               }

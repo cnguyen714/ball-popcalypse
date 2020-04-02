@@ -88,6 +88,23 @@ class EnemyParticle extends Particle {
     this.addVelocityTimeDelta();
     this.checkAndHitPlayer(this.target);
     this.validatePosition(this.cvs.width, this.cvs.height);
+
+    let thruster = new Emitter(this.game, {
+      coords: { x: this.pos.x, y: this.pos.y },
+      r: this.r - 1,
+      aim: this.vel.dup().multiply(-1),
+      aliveTime: 10,
+      emitCount: 2,
+      emitSpeed: 1,
+      ejectSpeed: 0.5,
+      impulseVariance: .5,
+      fanDegree: 20,
+      color: this.color,
+      decayRate: 0.8,
+    });
+
+    this.game.vanity.push(thruster);
+    
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])

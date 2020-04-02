@@ -5,6 +5,7 @@ import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 import EnemyCircle from "./EnemyCircle";
 import EnemyParticle from "./EnemyParticle";
+import Emitter from "./Emitter";
 
 const RADIUS = 8;
 const COLOR = "orange";
@@ -34,9 +35,9 @@ class RangedEnemy extends EnemyCircle {
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
       if (distance >= KEEPAWAY_RANGE || !game.player.alive) {
-        this.vel.add(this.aim.multiply(this.accel));
+        this.vel.add(this.aim.dup().multiply(this.accel));
       } else {
-        this.vel.add(this.aim.multiply(-this.accel));
+        this.vel.add(this.aim.dup().multiply(-this.accel));
       }
     };
 
@@ -72,8 +73,23 @@ class RangedEnemy extends EnemyCircle {
     let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
     explosion.aliveTime = 7;
     explosion.r = this.r + 20;
-
     this.game.vanity.push(explosion);
+
+    let shootFlash = new Emitter(this.game, {
+      coords: { x: this.pos.x, y: this.pos.y },
+      r: 5,
+      aim: Vector.difference(game.player.pos, this.pos).normalize(),
+      aliveTime: 25,
+      emitCount: 7,
+      emitSpeed: 7,
+      ejectSpeed: 3,
+      impulseVariance: 0.8,
+      fanDegree: 10,
+      color: "rgba(255, 0, 0, 1)",
+      lengthForward: 40,
+    });
+    this.game.vanity.push(shootFlash);
+
   }
 
   update() {

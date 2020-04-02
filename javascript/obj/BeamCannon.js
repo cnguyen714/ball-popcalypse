@@ -8,7 +8,7 @@ import Explosion from "./Explosion";
 const WIDTH = 400;
 const LENGTH = 4000;
 const KNOCKBACK = 80;
-const DAMAGE = 7000;
+const DAMAGE = 9999;
 const DURATION = 120;
 // const COLOR = "white";
 

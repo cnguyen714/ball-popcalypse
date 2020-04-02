@@ -642,7 +642,7 @@ class Game {
           // charging effects before firing a beam
           let width = 400;
           let thickness = 40;
-          let spread = 100;
+          let spread = 60;
           let aliveTime = 60;
           if (this.player.charging && this.fpsCount % 10  === 0) {
             let posX = Math.random() * spread;
@@ -661,12 +661,12 @@ class Game {
             line1.posY = posY;
             line1.spread = spread;
             line1.extent = width;
+            line1.pos.y = line1.game.player.pos.y + line1.posY - line1.spread / 2;
             line1.cb = function () { 
-              this.extent *= 1.4;
+              this.extent *= 1.6;
               this.width *= 0.7;
               this.length = this.extent;
               this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2;
-              this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
             }
             this.vanity.push(line1);
 
@@ -684,11 +684,13 @@ class Game {
             line2.posY = posY;
             line2.spread = spread;
             line2.extent = width;
+            line2.pos.x = line2.game.player.pos.x + line2.posX - line2.spread / 2 - thickness / 2;
             line2.cb = function () {
-              this.extent *= 1.4;
+              this.extent *= 1.6;
+              let diff = (this.length - this.length * 0.7) / 2;
+              this.pos.x += diff;
               this.length *= 0.7;
               this.width = this.extent;
-              this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2;
               this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
             }
             this.vanity.push(line2);
@@ -711,12 +713,12 @@ class Game {
             line3.posY = posY;
             line3.spread = spread;
             line3.extent = width;
+            line3.pos.y = line3.game.player.pos.y + line3.posY - line3.spread / 2;
             line3.cb = function () {
-              this.extent *= 1.4;
+              this.extent *= 1.6;
               this.width *= 0.7;
               this.length = this.extent;
               this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2;
-              this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
             }
             this.vanity.push(line3);
 
@@ -734,11 +736,13 @@ class Game {
             line4.posY = posY;
             line4.spread = spread;
             line4.extent = width;
+            line4.pos.x = line4.game.player.pos.x + line4.posX - line4.spread / 2 - thickness / 2;
             line4.cb = function () {
-              this.extent *= 1.4;
+              this.extent *= 1.6;
+              let diff = (this.length - this.length * 0.7) / 2;
+              this.pos.x += diff;
               this.length *= 0.7;
               this.width = this.extent;
-              this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2;
               this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
             }
             this.vanity.push(line4);

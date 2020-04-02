@@ -43,9 +43,9 @@ const MAX_COMBOS = 3;
 const CHARGE_COST = 100;
 const CHARGING_TIME = 0; // in seconds 
 const CHARGE_STACKS = 2;
-const CHARGE_COOLDOWN = 70;
+const CHARGE_COOLDOWN = 10;
 const CHARGE_FREEZE = 20;
-const SHOOT_COOLDOWN = 10;
+const SHOOT_COOLDOWN = 70;
 const SHOOT_SHOTGUN_PELLETS = 60;
 
 const STATE_WALKING = "STATE_WALKING";
@@ -238,7 +238,7 @@ class Player extends GameObject {
 
         let shootFlash2 = new Emitter(this.game, {
           coords: { x: this.pos.x, y: this.pos.y },
-          r: 15,
+          r: 12,
           aim: this.aim.dup(),
           emittee: Sparkle,
           aliveTime: 90,
@@ -247,7 +247,7 @@ class Player extends GameObject {
           ejectSpeed: 10,
           impulseVariance: 1.0,
           fanDegree: 1,
-          color: "rgba(255, 0, 0, 0.9)",
+          color: "rgba(0, 188, 188, 1)",
           decayRate: 0.92,
           width: 10,
           lengthForward: 1000,

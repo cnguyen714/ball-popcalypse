@@ -41,9 +41,10 @@ const SLASH_COOLDOWN = 11;
 const MAX_COMBOS = 3;
 
 const CHARGE_COST = 100;
-const CHARGING_TIME = 400; // in seconds 
+const CHARGING_TIME = 0; // in seconds 
 const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 90;
+const CHARGE_FREEZE = 22;
 const SHOOT_COOLDOWN = 10;
 const SHOOT_SHOTGUN_PELLETS = 60;
 
@@ -97,6 +98,7 @@ class Player extends GameObject {
     this.beamCooldown = 0;
     this.beamCooldownMax = CHARGE_COOLDOWN;
     this.charging = false;
+    this.discharged = false;
     this.charge = CHARGE_COST;
     this.chargeCost = CHARGE_COST;
         
@@ -199,13 +201,13 @@ class Player extends GameObject {
 
   fireBeam() {
     if (this.charge >= this.chargeCost) {
-      let freezeTime = 18;
+      let freezeTime = CHARGE_FREEZE;
       this.charge -= this.chargeCost;
       this.beamCooldown = !this.game.cheat ? CHARGE_COOLDOWN : 2;
       this.charging = true;
 
       setTimeout(function () {
-        this.charging = false;
+        this.discharged = true;
         this.invul = 5;
 
         let kb = this.aim.dup().normalize().multiply(-75);
@@ -548,6 +550,10 @@ class Player extends GameObject {
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
     if (this.charge > this.chargeCost * CHARGE_STACKS) this.charge = Math.floor(this.chargeCost * CHARGE_STACKS);
+    if (this.discharged) {
+      this.charging = false;
+      this.discharged = false;
+    }
     if (this.dashPathDuration > 0) {
       this.dashPathDuration--;
 
@@ -640,23 +646,6 @@ class Player extends GameObject {
         break;
       default:
         break;
-    }
-
-    // charging effects before firing a beam
-    if (this.charging) {
-      let line  = new Beam(this.game, this.pos.x, this.pos.y, new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1), 0, false);
-      line.width = 10;
-      line.length = 400;
-      line.knockback = 0;
-      line.silenced = true;
-      line.unpausable = true;
-      line.aliveTime = 90;
-      line.color = Beam.COLOR().TEAL;
-      line.cb = function () {
-        this.length *= 0.9;
-        this.width *= 0.8;
-      }
-      this.game.vanity.push(line);
     }
 
     // add sparks for charge level

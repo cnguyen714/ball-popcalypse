@@ -284,16 +284,16 @@ class Player extends GameObject {
         let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
         explosion1.aliveTime = 7;
         explosion1.color = "rgba(255,255,255,.1)";
-        this.game.vanity.push(explosion1);
+        // this.game.vanity.push(explosion1);
 
         let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
         explosion2.aliveTime = 5;
-        this.game.vanity.push(explosion2);
+        // this.game.vanity.push(explosion2);
 
         let explosion3 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
-        explosion3.color = "rgba(255,0,0,.3)";
+        explosion3.color = "rgba(255,50,50,.3)";
         explosion3.aliveTime = 7;
-        this.game.vanity.push(explosion3);
+        // this.game.vanity.push(explosion3);
 
       }.bind(this), CHARGING_TIME);
 
@@ -595,11 +595,11 @@ class Player extends GameObject {
     if (this.keyDown[KEY.D]) this.movement.x += 1;
     this.movement.normalize();
 
-    if(this.movement.length() > 0) {
+    if(this.vel.length() > 0) {
       let thruster = new Emitter(this.game, {
         coords: { x: this.pos.x, y: this.pos.y },
         r: 8,
-        aim: this.movement.dup().multiply(-1),
+        aim: this.vel.dup().multiply(-1),
         aliveTime: 10,
         emitCount: 2,
         emitSpeed: 1,

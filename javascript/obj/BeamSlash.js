@@ -42,6 +42,7 @@ class BeamSlash extends Particle {
     this.arcRate = ARC_DEGREE_RATE * Math.PI / 180;
     this.combo = combo;
     this.knockback = KNOCKBACK;
+    this.iterSpeed = 1;
 
 
     switch(this.combo) {
@@ -53,9 +54,11 @@ class BeamSlash extends Particle {
         this.width *= 0.60;
         this.knockback *= DERVISH_KB_RATE;
         this.damage /= 14;
+        this.iterSpeed = 3;
         break;
       case 0:
         this.knockback *= 1.2;
+        this.iterSpeed = 2;
         break;
       case "FINISHER":
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
@@ -66,6 +69,7 @@ class BeamSlash extends Particle {
         this.length += 60;
         this.width += 30;
         this.game.player.invul = 7;
+        this.iterSpeed = 2;
         break;
       case 1:
         this.direction = DIRECTION.CCW;
@@ -139,14 +143,7 @@ class BeamSlash extends Particle {
     // this.pos.x = this.owner.pos.x;
     // this.pos.y = this.owner.pos.y;
 
-    
-    this.iterBeamArc();
-    if (this.combo === "FINISHER" || this.combo === 0) {
-      this.iterBeamArc();
-      this.aliveTime--;
-    }
-    if (this.combo === this.game.player.maxSlashCombo) {
-      this.iterBeamArc();
+    for (let i = 0; i < this.iterSpeed; i++) {
       this.iterBeamArc();
       this.aliveTime--;
     }
@@ -160,7 +157,6 @@ class BeamSlash extends Particle {
         this.game.particles.push(new BeamSlash(this.game, "FINISHER", 40));
       }
     }
-    this.aliveTime--;
     this.cb();
   }
 

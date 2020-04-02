@@ -640,32 +640,33 @@ class Game {
 
         if (this.pauseTime > 0) {
           // charging effects before firing a beam
-          let width = this.cvs.height;
-          let thickness = 4;
-          let spread = 200;
-          if (this.player.charging && this.fpsCount % 5 === 0) {
+          let width = 600;
+          let thickness = 60;
+          let spread = 100;
+          let aliveTime = 20;
+          if (this.player.charging && this.fpsCount % 8  === 0) {
             let posX = Math.random() * spread;
             let posY = Math.random() * spread;
-            let line1 = new Beam(this, 0, this.player.pos.y - spread/2 + posY, new Vector(), 0, false);
+            let line1 = new Beam(this, 0, this.player.pos.y - spread / 2 + posY, new Vector(), 0, false);
             line1.width = thickness;
             line1.length = width;
             line1.knockback = 0;
             line1.silenced = true;
             line1.unpausable = true;
             line1.paused = false;
-            line1.aliveTime = 2;
-            line1.initialTime = 2;
+            line1.aliveTime = aliveTime;
+            line1.initialTime = aliveTime;
             line1.color = Beam.COLOR().CANNON;
             line1.posX = posX;
             line1.posY = posY;
             line1.spread = spread;
             line1.extent = width;
             line1.cb = function () { 
-              this.extent *= 1.05;
-              this.width *= 0.7;
+              this.extent *= 1.3;
+              this.width *= 0.6;
               this.length = this.extent;
-              this.pos.x = this.game.player.pos.x + this.posX - this.spread/2 - this.extent / 2;
-              this.pos.y = this.game.player.pos.y + this.posY - this.spread/2;
+              this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2;
+              this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
             }
             this.vanity.push(line1);
 
@@ -676,16 +677,16 @@ class Game {
             line2.silenced = true;
             line2.unpausable = true;
             line2.paused = false;
-            line2.aliveTime = 3;
-            line2.initialTime = 3;
+            line2.aliveTime = aliveTime;
+            line2.initialTime = aliveTime;
             line2.color = Beam.COLOR().CANNON;
             line2.posX = posX;
             line2.posY = posY;
             line2.spread = spread;
             line2.extent = width;
             line2.cb = function () {
-              this.extent *= 1.1;
-              this.length *= 0.7;
+              this.extent *= 1.3;
+              this.length *= 0.6;
               this.width = this.extent;
               this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2;
               this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
@@ -693,7 +694,7 @@ class Game {
             this.vanity.push(line2);
           }
 
-          if (this.player.charging && (this.fpsCount + 2) % 5 === 0) {
+          if (this.player.charging && (this.fpsCount + 4) % 8 === 0) {
             let posX = Math.random() * spread;
             let posY = Math.random() * spread;
             let line3 = new Beam(this, 0, this.player.pos.y - spread / 2 + posY, new Vector(), 0, false);
@@ -703,16 +704,16 @@ class Game {
             line3.silenced = true;
             line3.unpausable = true;
             line3.paused = false;
-            line3.aliveTime = 3;
-            line3.initialTime = 3;
+            line3.aliveTime = aliveTime;
+            line3.initialTime = aliveTime;
             line3.color = Beam.COLOR().TEAL;
             line3.posX = posX;
             line3.posY = posY;
             line3.spread = spread;
             line3.extent = width;
             line3.cb = function () {
-              this.extent *= 1.1;
-              this.width *= 0.7;
+              this.extent *= 1.3;
+              this.width *= 0.6;
               this.length = this.extent;
               this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2 - this.extent / 2;
               this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
@@ -726,16 +727,16 @@ class Game {
             line4.silenced = true;
             line4.unpausable = true;
             line4.paused = false;
-            line4.aliveTime = 2;
-            line4.initialTime = 2;
+            line4.aliveTime = aliveTime;
+            line4.initialTime = aliveTime;
             line4.color = Beam.COLOR().TEAL;
             line4.posX = posX;
             line4.posY = posY;
             line4.spread = spread;
             line4.extent = width;
             line4.cb = function () {
-              this.extent *= 1.05;
-              this.length *= 0.7;
+              this.extent *= 1.3;
+              this.length *= 0.6;
               this.width = this.extent;
               this.pos.x = this.game.player.pos.x + this.posX - this.spread / 2;
               this.pos.y = this.game.player.pos.y + this.posY - this.spread / 2;
@@ -1066,13 +1067,13 @@ class Game {
         this.drawFreeze();
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
+        this.player.draw();
         this.vanity.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         this.drawChargeBar();
         this.drawUI();
         this.drawHealth();
         this.enemyParticles.forEach(entity => entity.draw());
-        this.player.draw();
         break;
 
       case STATE_OVER:

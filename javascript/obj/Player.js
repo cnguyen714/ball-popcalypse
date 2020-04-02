@@ -34,7 +34,7 @@ const DASH_DURATION = 8;
 const DASH_COUNT = 2;
 const DASH_PATH_DURATION = 13;
 const DASH_SPEED = 32;
-const DASH_COOLDOWN = 90;
+const DASH_COOLDOWN = 70;
 const POST_DASH_INVUL = 2;
 
 const SLASH_COOLDOWN = 11;
@@ -43,7 +43,7 @@ const MAX_COMBOS = 3;
 const CHARGE_COST = 100;
 const CHARGING_TIME = 0; // in seconds 
 const CHARGE_STACKS = 2;
-const CHARGE_COOLDOWN = 90;
+const CHARGE_COOLDOWN = 70;
 const CHARGE_FREEZE = 22;
 const SHOOT_COOLDOWN = 10;
 const SHOOT_SHOTGUN_PELLETS = 60;

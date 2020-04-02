@@ -640,13 +640,14 @@ class Game {
 
         if (this.pauseTime > 0) {
           // charging effects before firing a beam
-          let width = 400;
+          let width = this.cvs.height;
+          let thickness = 4;
           let spread = 200;
           if (this.player.charging && this.fpsCount % 5 === 0) {
             let posX = Math.random() * spread;
             let posY = Math.random() * spread;
             let line1 = new Beam(this, 0, this.player.pos.y - spread/2 + posY, new Vector(), 0, false);
-            line1.width = 4;
+            line1.width = thickness;
             line1.length = width;
             line1.knockback = 0;
             line1.silenced = true;
@@ -670,7 +671,7 @@ class Game {
 
             let line2 = new Beam(this, 0, 0, new Vector(), 0, false);
             line2.width = width;
-            line2.length = 4;
+            line2.length = thickness;
             line2.knockback = 0;
             line2.silenced = true;
             line2.unpausable = true;
@@ -696,7 +697,7 @@ class Game {
             let posX = Math.random() * spread;
             let posY = Math.random() * spread;
             let line3 = new Beam(this, 0, this.player.pos.y - spread / 2 + posY, new Vector(), 0, false);
-            line3.width = 4;
+            line3.width = thickness;
             line3.length = width;
             line3.knockback = 0;
             line3.silenced = true;
@@ -720,7 +721,7 @@ class Game {
 
             let line4 = new Beam(this, 0, 0, new Vector(), 0, false);
             line4.width = width;
-            line4.length = 4;
+            line4.length = thickness;
             line4.knockback = 0;
             line4.silenced = true;
             line4.unpausable = true;

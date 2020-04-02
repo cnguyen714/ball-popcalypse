@@ -44,7 +44,7 @@ const CHARGE_COST = 100;
 const CHARGING_TIME = 0; // in seconds 
 const CHARGE_STACKS = 2;
 const CHARGE_COOLDOWN = 70;
-const CHARGE_FREEZE = 22;
+const CHARGE_FREEZE = 20;
 const SHOOT_COOLDOWN = 10;
 const SHOOT_SHOTGUN_PELLETS = 60;
 

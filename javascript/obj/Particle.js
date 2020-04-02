@@ -5,11 +5,12 @@ import DamageNumber from "./DamageNumber";
 import Slam from "./Slam";
 import Emitter from "./Emitter";
 
-const RADIUS = 4;
+const RADIUS = 2;
 const KNOCKBACK = 10;
 const DAMAGE = 37;
 const COLOR = "#14ffec";
 const VELOCITY = 10;
+const HIT_RADIUS = 7;
 
 class Particle extends GameObject {
   constructor(
@@ -23,6 +24,7 @@ class Particle extends GameObject {
     this.pos = new Vector(startX, startY);
     this.vel = vel || VELOCITY;
     this.r = RADIUS;
+    this.hitRadius = HIT_RADIUS;
     this.color = COLOR;
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
@@ -49,7 +51,7 @@ class Particle extends GameObject {
     let diff = Vector.difference(this.pos, obj.pos);
     let distSqr = diff.dot(diff);
     if (obj instanceof EnemyCircle) {
-      if (this.r * this.r + obj.r * obj.r > distSqr) {
+      if (this.hitRadius * this.hitRadius + obj.r * obj.r > distSqr) {
         this.alive = false;
         let kb = this.vel.dup();
         kb.normalize();

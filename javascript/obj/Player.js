@@ -212,7 +212,8 @@ class Player extends GameObject {
 
       this.setAim();
       let kb = this.aim.dup().normalize().multiply(-75);
-      this.vel.add(kb);
+      this.vel.add(kb.dup().multiply(1/2));
+
       let aim = kb.dup().normalize().multiply(-1);
 
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
@@ -273,21 +274,23 @@ class Player extends GameObject {
       let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
       explosion1.aliveTime = 7;
       explosion1.color = "rgba(255,255,255,.1)";
-      // this.game.vanity.push(explosion1);
+      this.game.vanity.push(explosion1);
 
       let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
       explosion2.aliveTime = 5;
-      // this.game.vanity.push(explosion2);
+      this.game.vanity.push(explosion2);
 
       let explosion3 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
       explosion3.color = "rgba(255,50,50,.3)";
       explosion3.aliveTime = 7;
-        // this.game.vanity.push(explosion3);
+        this.game.vanity.push(explosion3);
 
       let storeX = this.pos.x;
       let storeY = this.pos.y;
+      let storeMouse = this.mousePos.dup();
       setTimeout(function () {
-        let beam = new BeamCannon(this.game, storeX, storeY, aim);
+        let aim = Vector.difference(storeMouse, this.pos);
+        let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
         beam.color = Beam.COLOR().CANNON;
         beam.width = 400;
         beam.damage = 1000;
@@ -313,6 +316,8 @@ class Player extends GameObject {
         });
         this.game.delayedParticles.push(shootFlash);
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.45);
+        let kb = aim.dup().normalize().multiply(-75);
+        this.vel.add(kb);
       }.bind(this), this.game.normalTimeDelta * freezeTime + 250);
 
 

@@ -367,7 +367,7 @@ class Game {
     overlay.height = this.cvs.height;
     overlay.width = this.cvs.width;
     overlay.alpha = 1;
-    overlay.aliveTime = 30;
+    overlay.aliveTime = 12;
     overlay.intialTime = overlay.aliveTime;
 
     overlay.draw = function () {
@@ -387,7 +387,7 @@ class Game {
         overlay2.height = this.cvs.height;
         overlay2.width = this.cvs.width;
         overlay2.alpha = 1;
-        overlay2.aliveTime = 15;
+        overlay2.aliveTime = 5;
         overlay2.intialTime = overlay2.aliveTime;
         overlay2.draw = function () {
           this.aliveTime--;
@@ -427,7 +427,7 @@ class Game {
     overlay.height = this.cvs.height;
     overlay.width = this.cvs.width;
     overlay.alpha = 1;
-    overlay.aliveTime = 15;
+    overlay.aliveTime = 8;
     overlay.intialTime = overlay.aliveTime;
     overlay.draw = function () {
       this.aliveTime--;
@@ -445,14 +445,15 @@ class Game {
 
     let startEmit = new Emitter(this, {
       coords: { x: this.player.pos.x, y: this.player.pos.y },
-      r: 5,
-      aliveTime: 80,
-      emitCount: 80,
+      r: 6,
+      aliveTime: 120,
+      emitCount: 96,
       emitSpeed: 16,
       ejectSpeed: 8,
       decayRate: 0.94,
       impulseVariance: 0.9,
       color: "rgba(0, 205, 205,1)",
+      cb: function() { this.vel.y -= 0.15; this.vel.x += 0.05 },
     });
 
     this.vanity.push(startEmit);

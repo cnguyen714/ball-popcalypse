@@ -104,6 +104,7 @@ class Emitter extends GameObject {
         aliveTime: this.aliveTime,
         color: this.color,
         decayRate: this.decayRate,
+        cb: this.cb,
       });
 
       this.game.vanity.push(p);

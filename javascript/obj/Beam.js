@@ -49,6 +49,7 @@ class Beam extends Particle {
     this.initialTime = this.aliveTime;
     this.bomb = false;
     this.direction = 0;
+    this.activeTime = 0;
 
     this.color = Beam.COLOR().NORMAL;
 
@@ -101,7 +102,7 @@ class Beam extends Particle {
         let y = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
         let knockStraight = new Vector(x, y);
         
-        obj.health -= this.damage;
+        obj.health -= this.activeTime === 0 ? this.damage : this.damage / this.activeTime * 4;
         if (obj.health <= 0) {
           obj.alive = false;
         } else {
@@ -129,14 +130,14 @@ class Beam extends Particle {
             let explosionB = new Explosion(this.game, obj.pos.x, obj.pos.y, 30);
             explosionB.aliveTime = 1;
             this.game.vanity.push(explosionB);
-            obj.vel.add(knockStraight.multiply(this.knockback));
+            obj.vel.add(knockStraight.multiply(this.aliveTime >= this.initialTime ? this.knockback : this.knockback / 10));
 
             let hitImpactBeam = new Emitter(this.game, {
               coords: { x: obj.pos.x, y: obj.pos.y },
               r: 7,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
               emitCount: 6,
-              emitSpeed: 6,
+              emitSpeed: 3,
               ejectSpeed: 9,
               impulseVariance: 0.25,
               fanDegree: 10,
@@ -203,21 +204,24 @@ class Beam extends Particle {
 
   drawRect() {
     // Offset the rect based on its width but maintain origin
+    this.ctx.save();
     this.ctx.translate(this.pos.x + Math.sin(this.angle) * this.width / 2,
                        this.pos.y - Math.cos(this.angle) * this.width / 2);
     this.ctx.rotate(this.angle);
     this.ctx.fillRect(0, 0, this.length, this.width * 1.1);
+    this.ctx.restore();
   }
 
   update() {
     if (!this.alive) return; //Don't check collision if object is not alive
 
     
-    if (this.aliveTime >= this.initialTime && this.active === true) {
-      this.game.entities.forEach(entity => { this.checkCollision(entity) });
-      // this.game.freeze(5);
-      if(this.combo === "BEAM") {
-        this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
+    if (this.aliveTime + this.activeTime >= this.initialTime && this.active === true) {
+      if (this.activeTime === 0 || this.game.loopCount % 4 === 0) {
+        this.game.entities.forEach(entity => { this.checkCollision(entity) });
+        if(this.combo === "BEAM") {
+          this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
+        }
       }
     }
 

@@ -3,6 +3,16 @@ import GameObject from "./GameObject";
 import Sparkle from "./Sparkle";
 import Trig from "../lib/Trig";
 
+function augment(Obj1, Obj2) {
+  var prop;
+  for (prop in Obj2) {
+    if (Obj2.hasOwnProperty(prop) && !Obj1[prop]) {
+      Obj1[prop] = Obj2[prop];
+    }
+  }
+  return Obj1;
+}
+
 class Emitter extends GameObject {
   constructor(
     game,
@@ -94,7 +104,7 @@ class Emitter extends GameObject {
         aliveTime: this.aliveTime,
         color: this.color,
         decayRate: this.decayRate,
-      })
+      });
 
       this.game.vanity.push(p);
     }

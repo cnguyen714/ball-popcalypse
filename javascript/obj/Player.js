@@ -14,6 +14,7 @@ import DeathExplosion from "./DeathExplosion";
 import BeamCannon from "./BeamCannon";
 import Emitter from "./Emitter";
 import Sparkle from "./Sparkle";
+import Star from "./Star";
 // import shotSfx from '../assets/laser7.wav';
 
 const CLAMP_SPAWN = 200; // Offset from edges
@@ -137,7 +138,7 @@ class Player extends GameObject {
     var canvasRect = this.cvs.getBoundingClientRect();
     this.mousePos.x = e.clientX - canvasRect.left;
     this.mousePos.y = e.clientY - canvasRect.top;
-    this.setAim();
+    // this.setAim();
   }
 
   heal() {
@@ -206,17 +207,94 @@ class Player extends GameObject {
       this.beamCooldown = !this.game.cheat ? CHARGE_COOLDOWN : 2;
       this.charging = true;
 
+      this.discharged = true;
+      this.invul = 5;
+
+      this.setAim();
+      let kb = this.aim.dup().normalize().multiply(-75);
+      this.vel.add(kb);
+      let aim = kb.dup().normalize().multiply(-1);
+
+      this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
+      let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
+      beam.activeTime = 40;
+      beam.aliveTime = 40;
+      beam.initialTime = 40;
+      beam.damage = 8000;
+      beam.knockback = 20;
+      beam.width = 70;
+      beam.color = Beam.COLOR().TEAL;
+      this.game.delayedParticles.push(beam);
+
+      let shootFlash2 = new Emitter(this.game, {
+        coords: { x: this.pos.x, y: this.pos.y },
+        r: 12,
+        aim: this.aim.dup(),
+        emittee: Sparkle,
+        aliveTime: 90,
+        emitCount: 40,
+        emitSpeed: 20,
+        ejectSpeed: 10,
+        impulseVariance: 1.0,
+        fanDegree: 1,
+        color: "rgba(0, 188, 188, 1)",
+        decayRate: 0.92,
+        width: 10,
+        lengthForward: 1000,
+      });
+      this.game.delayedParticles.push(shootFlash2);
+
+      if (this.game.cheat) {
+        beam.width = 60;
+        beam.damage = 600;
+        this.vel.subtract(kb.multiply(0.9));
+        freezeTime = 0;
+        beam.knockback = 5;
+        beam.pos.x += Math.random() * 120 - 60;
+        beam.pos.y += Math.random() * 120 - 60;
+        // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
+        return;
+      };
+
+      this.game.freeze(freezeTime);
+
+      let sparkCB = function () {
+        this.length *= 0.70;
+        this.width *= 0.70;
+      }
+
+      let baseAngle = Math.floor(Math.random() * 360) * Math.PI / 180;
+      let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle, Math.PI / 20, false);
+      let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle + Math.PI / 2, Math.PI / 20, false);
+      spark1.cb = sparkCB;
+      spark2.cb = sparkCB;
+      this.game.vanity.push(spark1);
+      this.game.vanity.push(spark2);
+
+      let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
+      explosion1.aliveTime = 7;
+      explosion1.color = "rgba(255,255,255,.1)";
+      // this.game.vanity.push(explosion1);
+
+      let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
+      explosion2.aliveTime = 5;
+      // this.game.vanity.push(explosion2);
+
+      let explosion3 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
+      explosion3.color = "rgba(255,50,50,.3)";
+      explosion3.aliveTime = 7;
+        // this.game.vanity.push(explosion3);
+
+      let storeX = this.pos.x;
+      let storeY = this.pos.y;
       setTimeout(function () {
-        this.discharged = true;
-        this.invul = 5;
-
-        let kb = this.aim.dup().normalize().multiply(-75);
-        this.vel.add(kb);
-        let aim = kb.dup().normalize().multiply(-1);
-
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
-        let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
-        this.game.delayedParticles.push(beam);
+        let beam = new BeamCannon(this.game, storeX, storeY, aim);
+        beam.color = Beam.COLOR().CANNON;
+        beam.width = 300;
+        beam.damage = 1500;
+        beam.knockback = 40;
+        beam.activeTime = 25;
+        this.game.particles.push(beam);
 
         let shootFlash = new Emitter(this.game, {
           coords: { x: this.pos.x, y: this.pos.y },
@@ -234,72 +312,13 @@ class Player extends GameObject {
           width: 350,
           lengthForward: 300,
         });
-        this.game.vanity.push(shootFlash);
+        this.game.delayedParticles.push(shootFlash);
+      }.bind(this), this.game.normalTimeDelta * freezeTime + 100);
 
-        let shootFlash2 = new Emitter(this.game, {
-          coords: { x: this.pos.x, y: this.pos.y },
-          r: 12,
-          aim: this.aim.dup(),
-          emittee: Sparkle,
-          aliveTime: 90,
-          emitCount: 40,
-          emitSpeed: 20,
-          ejectSpeed: 10,
-          impulseVariance: 1.0,
-          fanDegree: 1,
-          color: "rgba(0, 188, 188, 1)",
-          decayRate: 0.92,
-          width: 10,
-          lengthForward: 1000,
-        });
-        this.game.vanity.push(shootFlash2);
-        
-        if (this.game.cheat) {
-          beam.width = 60;
-          beam.damage = 600;
-          this.vel.subtract(kb.multiply(0.9));
-          freezeTime = 0;
-          beam.knockback = 5;
-          beam.pos.x += Math.random() * 120 - 60;
-          beam.pos.y += Math.random() * 120 - 60;
-          // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
-          return;
-        };
-
-        this.game.freeze(freezeTime);
-
-        let sparkCB = function () {
-          this.length *= 0.70;
-          this.width *= 0.70;
-        }
-
-        let baseAngle = Math.floor(Math.random() * 360) * Math.PI / 180;
-        let spark1 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle, Math.PI / 20, false);
-        let spark2 = new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 70, 2000, 30, baseAngle + Math.PI / 2, Math.PI / 20, false);
-        spark1.cb = sparkCB;
-        spark2.cb = sparkCB;
-        this.game.vanity.push(spark1);
-        this.game.vanity.push(spark2);
-
-        let explosion1 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
-        explosion1.aliveTime = 7;
-        explosion1.color = "rgba(255,255,255,.1)";
-        // this.game.vanity.push(explosion1);
-
-        let explosion2 = new Explosion(this.game, this.pos.x, this.pos.y, 150);
-        explosion2.aliveTime = 5;
-        // this.game.vanity.push(explosion2);
-
-        let explosion3 = new Explosion(this.game, this.pos.x, this.pos.y, 100);
-        explosion3.color = "rgba(255,50,50,.3)";
-        explosion3.aliveTime = 7;
-        // this.game.vanity.push(explosion3);
-
-      }.bind(this), CHARGING_TIME);
 
       setTimeout(function() {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
-      }, CHARGING_TIME + this.game.normalTimeDelta * freezeTime);
+      }, this.game.normalTimeDelta * freezeTime);
     }
   }
 
@@ -322,15 +341,14 @@ class Player extends GameObject {
         coords: {x: this.pos.x, y: this.pos.y},
         r: 6,
         aim: this.aim.dup(),
-        emittee: Sparkle,
         aliveTime: 20,
         emitCount: 8,
         emitSpeed: 8,
         ejectSpeed: 4,
         impulseVariance: 0.9,
         fanDegree: 80,
-        color: "rgba(0, 205, 205,1)",
         lengthForward: 50,
+        color: "rgba(0, 188, 188, 1)",
       });
 
       this.game.vanity.push(shootFlash);

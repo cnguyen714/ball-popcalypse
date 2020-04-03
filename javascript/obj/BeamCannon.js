@@ -32,34 +32,52 @@ class BeamCannon extends Beam {
     this.initialTime = this.aliveTime;
     this.bomb = true;
 
-    this.cb = function () {
-      if (this.width < 4) {
-        this.width *= 0.97;
-      } else {
-        this.width *= 0.75;
-      }
+    // let explosion = new Explosion(game, this.pos.x, this.pos.y);
+    // explosion.aliveTime -= 16;
+    // explosion.color = "white"; 
+    // explosion.r = this.width / 2;
+    // game.particles.push(explosion);
+  }
 
-      if (this.aliveTime < this.initialTime - 40) {
-        let offset = Math.random();
-        let particle = new Particle(
-          this.game,
-          this.pos.x + this.aim.x * offset * 2000,
-          this.pos.y + this.aim.y * offset * 2000,
-          this.aim.dup().multiply(2),
-        );
-        particle.r = Math.random() * 1.5;
-        particle.aliveTime = 20;
-        particle.active = false;
-        particle.cb = particleCb;
-        particle.color = "white";
-        this.game.vanity.push(particle);
+  update() {
+    if (!this.alive) return; //Don't check collision if object is not alive
+
+    if (this.width < 4) {
+      this.width *= 0.97;
+    } else {
+      this.width *= 0.75;
+    }
+
+    if (this.aliveTime < this.initialTime - 40) {
+      let offset = Math.random();
+      let particle = new Particle(
+        this.game,
+        this.pos.x + this.aim.x * offset * 2000,
+        this.pos.y + this.aim.y * offset * 2000,
+        this.aim.dup().multiply(2),
+      );
+      particle.r = Math.random() * 1.5;
+      particle.aliveTime = 20;
+      particle.active = false;
+      particle.cb = particleCb;
+      particle.color = "white";
+      this.game.vanity.push(particle);
+    }
+
+    if (this.aliveTime + this.activeTime >= this.initialTime && this.active === true) {
+      if (this.activeTime === 0 || this.aliveTime >= this.initialTime || this.game.loopCount % this.hitFrequency === 0) {
+        this.game.entities.forEach(entity => { this.checkCollision(entity) });
+        if (this.combo === "BEAM") {
+          this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
+        }
       }
     }
-    let explosion = new Explosion(game, this.pos.x, this.pos.y);
-    explosion.aliveTime -= 16;
-    explosion.color = "white"; 
-    explosion.r = this.width / 2;
-    game.particles.push(explosion);
+
+    if (this.aliveTime <= 0) {
+      this.alive = false;
+    }
+    this.aliveTime--;
+    this.cb();
   }
 }
 

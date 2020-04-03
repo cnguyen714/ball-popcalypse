@@ -60,9 +60,9 @@ const KEY = {
   R: 82,
   ENTER: 13,
   UP: 38,
-  // LEFT: 37,
+  LEFT: 37,
   DOWN: 40,
-  // RIGHT: 39,
+  RIGHT: 39,
   SHIFT: 16,
   SPACE: 32,
   MOUSE_LEFT: 10000,
@@ -141,8 +141,9 @@ class Player extends GameObject {
     // this.setAim();
   }
 
-  heal() {
-    this.health = this.maxHealth;
+  heal(num = this.maxHealth) {
+    this.health += num;
+    this.health = Math.min(this.health, this.maxHealth);
   }
 
   // Set player's unnormalized aim relative to stored mouse position
@@ -152,7 +153,7 @@ class Player extends GameObject {
 
   // Dash in a direction for a few frames
   dash() {
-    if (!this.dashing || this.game.cheat) {
+    if (!this.dashing || this.game.cheat || this.dashCooldown <= this.maxDashCooldown / 2) {
       this.dashing = true;
       if (this.movement.length() === 0) return;
       if (this.moveState !== STATE_DASHING) {
@@ -224,6 +225,27 @@ class Player extends GameObject {
       beam.width = 100;
       beam.color = Beam.COLOR().TEAL;
       this.game.delayedParticles.push(beam);
+
+      let beamInvis = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
+      beamInvis.activeTime = 240;
+      beamInvis.initialTime = 240;
+      beamInvis.aliveTime = 240;
+      beamInvis.damage = 20;
+      beamInvis.knockback = 0;
+      beamInvis.width = 380;
+      beamInvis.length = 100;
+      beamInvis.color = [0,255,0];
+      beamInvis.alpha = 0;
+      beamInvis.paused = false;
+      beamInvis.unpausable = true;
+      beamInvis.silenced = true;
+      beamInvis.hitFrequency = 1;
+      beamInvis.hitLength = beamInvis.length;
+      beamInvis.hitWidth = beamInvis.width;
+      beamInvis.cb = function() {
+        this.pos.add(this.aim.dup().multiply(this.length + 5));
+      }
+      this.game.vanity.push(beamInvis);
 
       let shootFlash2 = new Emitter(this.game, {
         coords: { x: this.pos.x, y: this.pos.y },
@@ -414,7 +436,8 @@ class Player extends GameObject {
         case this.game.STATE_RUNNING:
           this.keyDown[key] = true;
           if (key == KEY.DOWN) for (var i = 1; i < 5; i++) this.game.entities.push(EnemyFactory.spawnCircleRandom(this));
-          if (key == KEY.UP) this.charge += this.chargeCost;
+          if (key == KEY.UP) this.chargeCost = 0;
+          if (key == KEY.RIGHT) this.maxDashCooldown = 20;
           break;
         case this.game.STATE_OVER:
           if (key === KEY.ENTER) this.game.restartGame();
@@ -639,7 +662,7 @@ class Player extends GameObject {
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
-    if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= (DASH_COUNT - 1) * DASH_COOLDOWN) this.dash();
+    if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= (DASH_COUNT - 1) * this.maxDashCooldown) this.dash();
     if (!this.keyDown[KEY.SHIFT]) this.dashing = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
 
@@ -707,7 +730,7 @@ class Player extends GameObject {
     this.ctx.shadowBlur = 6;
     this.ctx.shadowColor = "white";
     this.ctx.lineWidth = 6;
-    this.ctx.arc(this.pos.x, this.pos.y, 20, 0, 2 * Math.PI * (this.dashCooldown / DASH_COOLDOWN));
+    this.ctx.arc(this.pos.x, this.pos.y, 20, 0, 2 * Math.PI * (this.dashCooldown / this.maxDashCooldown));
     this.ctx.stroke();
     this.ctx.closePath();
 

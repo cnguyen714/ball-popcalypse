@@ -40,21 +40,23 @@ class Beam extends Particle {
 
     this.width = width;
     this.length = length;
+    this.hitRatio = HITBOX_RATIO;
     this.origin = new Vector(this.pos.x);
     this.damage = DAMAGE;
     this.knockback = KNOCKBACK;
     this.aliveTime = DURATION;
-    this.hitRatio = HITBOX_RATIO;
     this.active = active;
     this.initialTime = this.aliveTime;
     this.bomb = false;
     this.direction = 0;
     this.activeTime = 0;
+    this.hitFrequency = 4;
+    this.alpha = 0.9;
 
     this.color = Beam.COLOR().NORMAL;
 
-    // this.update = this.update.bind(this);
-    // this.draw = this.draw.bind(this);
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
   }
 
 
@@ -102,10 +104,10 @@ class Beam extends Particle {
         let y = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
         let knockStraight = new Vector(x, y);
         
-        obj.health -= this.activeTime === 0 ? this.damage : this.damage / this.activeTime * 4;
+        obj.health -= this.activeTime === 0 ? this.damage : this.damage / this.activeTime * this.hitFrequency;
         if (obj.health <= 0) {
           obj.alive = false;
-        } else {
+        } else if (!this.silenced) {
           if (this.combo === this.game.player.maxSlashCombo) {
             this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
           } else {
@@ -217,7 +219,7 @@ class Beam extends Particle {
 
     
     if (this.aliveTime + this.activeTime >= this.initialTime && this.active === true) {
-      if (this.activeTime === 0 || this.aliveTime >= this.initialTime || this.game.loopCount % 4 === 0) {
+      if (this.activeTime === 0 || this.aliveTime >= this.initialTime || this.game.loopCount % this.hitFrequency === 0) {
         this.game.entities.forEach(entity => { this.checkCollision(entity) });
         if(this.combo === "BEAM") {
           this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });
@@ -245,9 +247,9 @@ class Beam extends Particle {
       // gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       // this.ctx.fillStyle = gradient;
       // this.ctx.shadowColor = gradient;
-      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
-      this.ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
-      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
+      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${this.alpha})`;
+      this.ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},${this.alpha})`;
+      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},${this.alpha})`;
       this.ctx.shadowBlur = 30;
       this.ctx.closePath();
       this.ctx.stroke();
@@ -273,8 +275,8 @@ class Beam extends Particle {
       // gradient.addColorStop(1.0, `rgba(${color[0]},${color[1]},${color[2]},0)`);
       // this.ctx.fillStyle = gradient;
       // this.ctx.shadowColor = gradient;
-      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
-      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
+      this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3) * this.alpha})`;
+      this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3) * this.alpha})`;
       this.ctx.shadowBlur = 50;
       this.ctx.closePath();
       this.ctx.stroke();

@@ -664,12 +664,12 @@ class Game {
           // charging effects before firing a beam
           
           for (let i = 0; i < 1; i++) {
-            let length = 1000;
+            let length = 400;
             let thickness = 40;
             let spread = 100;
             let aliveTime = 60;
-            let expandRate = 1.2;
-            let thinningRate = 0.7;
+            let expandRate = 1.3;
+            let thinningRate = 0.5;
             if (this.player.charging && this.loopCount % 10 === 0) {
               let star1 = new Star(this, {
                 coords: { x: this.player.pos.x, y: this.player.pos.y},
@@ -703,11 +703,11 @@ class Game {
             for (let i = 0; i < 1; i++) {
               let aim = this.player.aim.dup().normalize().multiply((20 - this.pauseTime) * 120 + 200 * Math.random());
               let length = 70;
-              let thickness = 12;
+              let thickness = 25;
               let spread = 300;
               let aliveTime = 30;
-              let expandRate = 1.09;
-              let thinningRate = 0.75;
+              let expandRate = 1.05;
+              let thinningRate = 0.6;
               if (this.player.charging) {
                 let star3 = new Star(this, {
                   coords: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },

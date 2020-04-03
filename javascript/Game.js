@@ -474,6 +474,26 @@ class Game {
     slam.aliveTime -= 11;
     this.particles.push(slam);
 
+    this.entities.forEach(entity => {
+      let diff = Vector.difference(this.player.pos, entity.pos).normalize();
+
+      entity.vel.add(diff.multiply(4));
+      let hitEmit = new Emitter(this, {
+        coords: { x: entity.pos.x, y: entity.pos.y },
+        r: entity.r + 1,
+        aim: diff.normalize().multiply(-1),
+        emitCount: 4,
+        emitSpeed: 4,
+        ejectSpeed: 10,
+        impulseVariance: 0.5,
+        fanDegree: 15,
+        aliveTime: 20,
+        decayRate: 0.8,
+        lengthForward: 20,
+      });
+      this.vanity.push(hitEmit);
+    });
+
     let postDeath = function() {
       let explode1 = new Slam(game, this.player.pos.x, this.player.pos.y);
       explode1.color = 'white';

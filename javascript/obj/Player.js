@@ -218,11 +218,9 @@ class Player extends GameObject {
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
       beam.activeTime = 40;
-      beam.aliveTime = 40;
-      beam.initialTime = 40;
       beam.damage = 8000;
       beam.knockback = 20;
-      beam.width = 70;
+      beam.width = 100;
       beam.color = Beam.COLOR().TEAL;
       this.game.delayedParticles.push(beam);
 
@@ -246,13 +244,14 @@ class Player extends GameObject {
 
       if (this.game.cheat) {
         beam.width = 60;
-        beam.damage = 600;
-        this.vel.subtract(kb.multiply(0.9));
+        beam.damage = 1500;
+        // this.vel.subtract(kb.multiply(0.9));
         freezeTime = 0;
         beam.knockback = 5;
         beam.pos.x += Math.random() * 120 - 60;
         beam.pos.y += Math.random() * 120 - 60;
-        // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);          
+        // beam = new BeamCannon(this.game, beam.pos.x, beam.pos.y, aim);        
+        beam.activeTime = 20  
         return;
       };
 
@@ -290,10 +289,10 @@ class Player extends GameObject {
       setTimeout(function () {
         let beam = new BeamCannon(this.game, storeX, storeY, aim);
         beam.color = Beam.COLOR().CANNON;
-        beam.width = 300;
-        beam.damage = 1500;
+        beam.width = 400;
+        beam.damage = 1000;
         beam.knockback = 40;
-        beam.activeTime = 25;
+        beam.activeTime = 15;
         this.game.particles.push(beam);
 
         let shootFlash = new Emitter(this.game, {
@@ -313,11 +312,12 @@ class Player extends GameObject {
           lengthForward: 300,
         });
         this.game.delayedParticles.push(shootFlash);
-      }.bind(this), this.game.normalTimeDelta * freezeTime + 100);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.45);
+      }.bind(this), this.game.normalTimeDelta * freezeTime + 250);
 
 
       setTimeout(function() {
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.3);
       }, this.game.normalTimeDelta * freezeTime);
     }
   }

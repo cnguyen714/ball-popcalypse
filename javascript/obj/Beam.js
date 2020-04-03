@@ -217,7 +217,7 @@ class Beam extends Particle {
 
     
     if (this.aliveTime + this.activeTime >= this.initialTime && this.active === true) {
-      if (this.activeTime === 0 || this.game.loopCount % 4 === 0) {
+      if (this.activeTime === 0 || this.aliveTime >= this.initialTime || this.game.loopCount % 4 === 0) {
         this.game.entities.forEach(entity => { this.checkCollision(entity) });
         if(this.combo === "BEAM") {
           this.game.enemyParticles.forEach(entity => { this.checkCollision(entity) });

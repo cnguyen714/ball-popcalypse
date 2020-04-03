@@ -661,6 +661,7 @@ class Game {
                 color: Beam.COLOR().CANNON,
               });
               this.vanity.push(star1);
+              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.2);
             }
 
             if (this.player.charging && (this.loopCount + 5) % 10 === 0) {
@@ -675,6 +676,7 @@ class Game {
                 color: Beam.COLOR().TEAL,
               });
               this.vanity.push(star2);
+              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.2);
             }
 
             for (let i = 0; i < 1; i++) {

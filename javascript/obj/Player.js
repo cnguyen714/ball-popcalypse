@@ -220,9 +220,9 @@ class Player extends GameObject {
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00016.wav`, 0.2);
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
       beam.activeTime = 40;
-      beam.damage = 8000;
+      beam.damage = 10000;
       beam.knockback = 20;
-      beam.width = 100;
+      beam.width = 120;
       beam.color = Beam.COLOR().TEAL;
       this.game.delayedParticles.push(beam);
 

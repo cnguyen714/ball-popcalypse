@@ -921,14 +921,18 @@ class Game {
     this.drawHealth();
     this.drawChargeBar();
 
+    //Aiming line
     this.ctx.beginPath();
     this.ctx.strokeStyle = "white";
-    this.ctx.lineWidth = 0.5;
+    this.ctx.lineWidth = 0.3;
     this.ctx.moveTo(this.player.pos.x, this.player.pos.y);
     this.ctx.lineTo(this.player.mousePos.x, this.player.mousePos.y);
+    let finalPos = Vector.difference(this.player.pos, this.player.mousePos).normalize().multiply(-2000);
+    this.ctx.lineTo(this.player.mousePos.x + finalPos.x, this.player.mousePos.y + finalPos.y);
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.restore();
+
   }
 
   drawStats() {

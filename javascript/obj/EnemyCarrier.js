@@ -30,14 +30,15 @@ class EnemyCarrier extends EnemyCircle {
       let distance = this.aim.length();
       this.aim.normalize();
       let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 3);
-      this.aim.multiply(turnRate).add(this.vel).normalize();
+      let adjustedAim = this.aim.dup().multiply(turnRate).add(this.vel).normalize();
 
       if (distance >= this.aggroRange || !game.player.alive) {
-        this.vel.add(this.aim.dup().multiply(this.accel));
+        this.vel.add(adjustedAim.multiply(this.accel));
       } else {
+        this.vel.add(adjustedAim.multiply(-this.accel * 1.2));
         this.vel.add(this.aim.dup().multiply(-this.accel * 1.2));
       }
-      this.vel.add(Trig.rotateByDegree(Vector.difference(game.player.pos, this.pos).normalize().multiply(-this.accel), this.direction * 90));
+      this.vel.add(Trig.rotateByDegree(this.aim.multiply(-this.accel), this.direction * 90));
 
       if(this.game.loopCount % SPAWN_RATE === 0) {
         let drone = new EnemyCircle(this.game);

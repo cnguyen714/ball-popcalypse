@@ -32,7 +32,7 @@ class Beam extends Particle {
 
   constructor(game, startX, startY, aim, combo = 0, active = true, length = LENGTH, width = WIDTH) {
     super(game, startX, startY);
-    this.aim = aim || this.game.player.aim.dup();
+    this.aim = aim || new Vector(1 , 0);
     this.combo = combo || 0;
 
     // Formula to get the radian angle between the Y axis and a point

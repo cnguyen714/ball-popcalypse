@@ -44,7 +44,6 @@ class BeamSlash extends Particle {
     this.knockback = KNOCKBACK;
     this.iterSpeed = 1;
 
-
     switch(this.combo) {
       case this.game.player.maxSlashCombo:
         this.direction = DIRECTION.CCW;

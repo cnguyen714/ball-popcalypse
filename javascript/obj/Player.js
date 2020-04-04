@@ -291,26 +291,26 @@ class Player extends GameObject {
       explosion3.aliveTime = 7;
         this.game.vanity.push(explosion3);
 
-      // let beamInvis = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
-      // beamInvis.activeTime = 240;
-      // beamInvis.initialTime = 240;
-      // beamInvis.aliveTime = 240;
-      // beamInvis.damage = 20;
-      // beamInvis.knockback = 0;
-      // beamInvis.width = 380;
-      // beamInvis.length = 100;
-      // beamInvis.color = [0, 255, 0];
-      // beamInvis.alpha = 0;
-      // beamInvis.paused = false;
-      // beamInvis.unpausable = true;
-      // beamInvis.silenced = true;
-      // beamInvis.hitFrequency = 1;
-      // beamInvis.hitLength = beamInvis.length;
-      // beamInvis.hitWidth = beamInvis.width;
-      // beamInvis.cb = function () {
-      //   this.pos.add(this.aim.dup().multiply(this.length + 5));
-      // }
-      // this.game.vanity.push(beamInvis);
+      let beamInvis = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
+      beamInvis.activeTime = 240;
+      beamInvis.initialTime = 240;
+      beamInvis.aliveTime = 240;
+      beamInvis.damage = 20;
+      beamInvis.knockback = 0;
+      beamInvis.width = 120;
+      beamInvis.length = 100;
+      beamInvis.color = [0, 255, 0];
+      beamInvis.alpha = 0;
+      beamInvis.paused = false;
+      beamInvis.unpausable = true;
+      beamInvis.silenced = true;
+      beamInvis.hitFrequency = 1;
+      beamInvis.hitLength = beamInvis.length;
+      beamInvis.hitWidth = beamInvis.width;
+      beamInvis.cb = function () {
+        this.pos.add(this.aim.dup().multiply(this.length + 5));
+      }
+      this.game.vanity.push(beamInvis);
 
       let storeX = this.pos.x;
       let storeY = this.pos.y;
@@ -361,7 +361,7 @@ class Player extends GameObject {
       this.shootCooldown = SHOOT_COOLDOWN;
       
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);
-      beam.hitRatio = 0.5;
+      beam.hitRatio = 0.85;
       beam.bomb = false;
       beam.aliveTime = 30;
       beam.initialTime = beam.aliveTime;

@@ -105,7 +105,7 @@ class EnemyParticle extends Particle {
       r: this.r - 1,
       aim: this.vel.dup().multiply(-1),
       aliveTime: 10,
-      emitCount: 2,
+      emitCount: 1,
       emitSpeed: 1,
       ejectSpeed: this.r * 0.1,
       impulseVariance: .5,

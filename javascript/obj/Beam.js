@@ -153,14 +153,14 @@ class Beam extends Particle {
 
             let hitImpactBeam = new Emitter(this.game, {
               pos: { x: obj.pos.x, y: obj.pos.y },
-              r: 7,
+              r: 8,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
-              emitCount: 6,
-              emitSpeed: 3,
+              emitCount: 4,
+              emitSpeed: 2,
               ejectSpeed: 9,
               impulseVariance: 0.25,
               fanDegree: 10,
-              aliveTime: 35,
+              aliveTime: 30,
             });
 
             this.game.vanity.push(hitImpactBeam);

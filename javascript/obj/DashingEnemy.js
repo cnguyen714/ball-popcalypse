@@ -131,7 +131,7 @@ class DashingEnemy extends EnemyCircle {
         r: 6,
         aim: new Vector(0, -1),
         aliveTime: 14,
-        emitCount: 3,
+        emitCount: 2,
         emitSpeed: 1,
         ejectSpeed: 4,
         impulseVariance: 0.2,
@@ -147,28 +147,28 @@ class DashingEnemy extends EnemyCircle {
       });
       this.game.vanity.push(aura);
 
-      let aoeMarker = new Emitter(game, {
-        pos: { x: this.pos.x, y: this.pos.y + 1 },
-        r: 3,
-        aim: this.storedVel.dup().normalize(),
-        aliveTime: 7,
-        emitCount: 2,
-        emitSpeed: 1,
-        ejectSpeed: 1,
-        impulseVariance: 0.2,
-        fanDegree: 0,
-        decayRate: 0.7,
-        width: ATTACK_RANGE + this.game.difficulty / 3,
-        color: "rgba(255,0,0,0.75)",
-        lengthForward: DASH_AGGRO_RANGE + 100,
-        cb: function () {
-          if (this.vel.y > 0) this.vel.y *= 0.6;
-          this.vel.y -= 0.07;
-          // this.vel.y -= this.vel.y * 0.5;
-          this.vel.x -= this.vel.x * 0.5
-        },
-      });
-      this.game.vanity.push(aoeMarker);
+      // let aoeMarker = new Emitter(game, {
+      //   pos: { x: this.pos.x, y: this.pos.y + 1 },
+      //   r: 3,
+      //   aim: this.storedVel.dup().normalize(),
+      //   aliveTime: 7,
+      //   emitCount: 2,
+      //   emitSpeed: 1,
+      //   ejectSpeed: 1,
+      //   impulseVariance: 0.2,
+      //   fanDegree: 0,
+      //   decayRate: 0.7,
+      //   width: ATTACK_RANGE + this.game.difficulty / 3,
+      //   color: "rgba(255,0,0,0.75)",
+      //   lengthForward: DASH_AGGRO_RANGE + 100,
+      //   cb: function () {
+      //     if (this.vel.y > 0) this.vel.y *= 0.6;
+      //     this.vel.y -= 0.07;
+      //     // this.vel.y -= this.vel.y * 0.5;
+      //     this.vel.x -= this.vel.x * 0.5
+      //   },
+      // });
+      // this.game.vanity.push(aoeMarker);
     } else if (this.dashDuration >= POST_DASH_PAUSE) {
       if (this.dashDuration === DASH_DURATION + POST_DASH_PAUSE) {
         this.attackCooldown = 0;

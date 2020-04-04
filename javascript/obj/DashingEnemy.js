@@ -107,15 +107,15 @@ class DashingEnemy extends EnemyCircle {
 
       let star = new Star(this, {
         pos: this.pos.dup(),
-        length: 40,
-        width: 15,
+        length: 50,
+        width: 12,
         aliveTime: 35,
         expandRate: 1.05,
         thinningRate: 0.65,
         color: [255, 0, 0],
       });
       this.game.vanity.push(star);
-      let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 20);
+      let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 25);
       explosion.color = "red";
       explosion.aliveTime = 3;
       this.game.vanity.push(explosion);
@@ -132,7 +132,7 @@ class DashingEnemy extends EnemyCircle {
       this.vel = this.vel.multiply(0);
       let hitEmit = new Emitter(game, {
         pos: { x: this.pos.x, y: this.pos.y + 1 },
-        r: 4,
+        r: 6,
         aim: new Vector(0, -1),
         aliveTime: 14,
         emitCount: 3,
@@ -141,7 +141,7 @@ class DashingEnemy extends EnemyCircle {
         impulseVariance: 0.2,
         // fanDegree: 180,
         decayRate: 0.6,
-        color: "rgba(255,0,0,0.8)",
+        color: "rgba(255,0,0,0.75)",
         lengthForward: 5,
         cb: function () { 
           if(this.vel.y > 0) this.vel.y *= 0.6;
@@ -170,7 +170,7 @@ class DashingEnemy extends EnemyCircle {
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "green";
       p.aliveTime = 8;
-      p.r = 5;
+      p.r = this.r - 2;
       p.active = false;
       p.cb = function () {
         this.aliveTime--;

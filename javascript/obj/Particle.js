@@ -75,7 +75,7 @@ class Particle extends GameObject {
         this.game.vanity.push(hitspark);
 
         let hitEmit = new Emitter(game, {
-          coords: { x: this.pos.x, y: this.pos.y },
+          pos: { x: this.pos.x, y: this.pos.y },
           r: 4,
           aim: this.vel.dup(),
           aliveTime: 20,

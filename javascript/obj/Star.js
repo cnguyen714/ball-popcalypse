@@ -14,7 +14,7 @@ class Star extends Beam {
   constructor(
     game,
     {
-      coords = { x: 0, y: 0 },
+      pos = { x: 0, y: 0 },
       vel = new Vector(0, 0),
       cb = () => { },
       color = Beam.COLOR().TEAL,
@@ -26,8 +26,8 @@ class Star extends Beam {
       thinningRate = 0.75,
     }
   ) {
-    super(game);
-    this.pos = new Vector(coords.x - spread / 2+ Math.random() * spread, coords.y - spread / 2 + Math.random() * spread);
+    super(game, {pos: pos});
+    this.pos = new Vector(pos.x - spread / 2+ Math.random() * spread, pos.y - spread / 2 + Math.random() * spread);
     this.angle = 0;
     this.vel = vel;
     this.color = color;

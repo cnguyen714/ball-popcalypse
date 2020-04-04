@@ -444,7 +444,7 @@ class Game {
     this.menus.push(overlay);
 
     let startEmit = new Emitter(this, {
-      coords: { x: this.player.pos.x, y: this.player.pos.y },
+      pos: { x: this.player.pos.x, y: this.player.pos.y },
       r: 6,
       aliveTime: 120,
       emitCount: 96,
@@ -480,7 +480,7 @@ class Game {
 
       entity.vel.add(diff.multiply(4));
       let hitEmit = new Emitter(this, {
-        coords: { x: entity.pos.x, y: entity.pos.y },
+        pos: { x: entity.pos.x, y: entity.pos.y },
         r: entity.r + 1,
         aim: diff.normalize().multiply(-1),
         emitCount: 4,
@@ -518,7 +518,7 @@ class Game {
       this.player.color = 'black'; 
 
       let endEmit = new Emitter(this, {
-        coords: { x: this.player.pos.x, y: this.player.pos.y },
+        pos: { x: this.player.pos.x, y: this.player.pos.y },
         r: 5,
         aim: new Vector(1,0),
         aliveTime: 90,
@@ -672,7 +672,7 @@ class Game {
             let thinningRate = 0.5;
             if (this.player.charging && this.loopCount % 10 === 0) {
               let star1 = new Star(this, {
-                coords: { x: this.player.pos.x, y: this.player.pos.y},
+                pos: { x: this.player.pos.x, y: this.player.pos.y},
                 length: length,
                 width: thickness,
                 spread: spread,
@@ -687,7 +687,7 @@ class Game {
 
             if (this.player.charging && (this.loopCount + 5) % 10 === 0) {
               let star2 = new Star(this, {
-                coords: { x: this.player.pos.x, y: this.player.pos.y},
+                pos: { x: this.player.pos.x, y: this.player.pos.y},
                 length: length,
                 width: thickness,
                 spread: spread,
@@ -710,7 +710,7 @@ class Game {
               let thinningRate = 0.65;
               if (this.player.charging) {
                 let star3 = new Star(this, {
-                  coords: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },
+                  pos: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },
                   length: length,
                   width: thickness,
                   spread: spread,
@@ -722,7 +722,7 @@ class Game {
                 this.vanity.push(star3);
 
                 let star4 = new Star(this, {
-                  coords: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },
+                  pos: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },
                   length: length,
                   width: thickness,
                   spread: spread,
@@ -796,8 +796,11 @@ class Game {
         // Add cosmetic "suction effect"        
         let randDir = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
         let randPos = randDir.dup().multiply(400);
-        let line = new Beam(this, this.player.pos.x + randPos.x, 
-          this.player.pos.y + randPos.y, randDir, 0, false);
+        let line = new Beam(this, {
+          pos: { x: this.player.pos.x + randPos.x, y: this.player.pos.y + randPos.y }, 
+          aim: randDir,
+          active: false,
+        });
         line.width = 20;
         line.length = 4000;
         line.knockback = 0;

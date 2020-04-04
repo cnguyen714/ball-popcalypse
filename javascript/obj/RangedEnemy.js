@@ -76,7 +76,7 @@ class RangedEnemy extends EnemyCircle {
     this.game.vanity.push(explosion);
 
     let shootFlash = new Emitter(this.game, {
-      coords: { x: this.pos.x, y: this.pos.y },
+      pos: { x: this.pos.x, y: this.pos.y },
       r: 6,
       aim: Vector.difference(game.player.pos, this.pos).normalize(),
       aliveTime: 25,

@@ -41,6 +41,7 @@ class EnemyCircle extends GameObject {
     this.color = COLOR;
     this.damage = DAMAGE;
     this.score = SCORE;
+    this.active = true;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -80,7 +81,7 @@ class EnemyCircle extends GameObject {
         return false;
       } else {
         let hitEmit = new Emitter(game, {
-          coords: { x: player.pos.x, y: player.pos.y },
+          pos: { x: player.pos.x, y: player.pos.y },
           r: 5 + this.r / RADIUS,
           aim: this.aim.dup(),
           aliveTime: 20 + this.r / RADIUS,
@@ -104,6 +105,7 @@ class EnemyCircle extends GameObject {
 
   // Check if enemies are colliding and push them away
   checkAndSpreadEnemy(obj) {
+    if (!obj.active) return;
     // Don't collide objects that are standing directly on each other
     if (obj.pos.equals(this.pos)) return;
 

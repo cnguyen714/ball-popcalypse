@@ -17,7 +17,7 @@ class Emitter extends GameObject {
   constructor(
     game,
     {
-      coords = {x: 0, y: 0},
+      pos = {x: 0, y: 0},
       r = 1,
       width = 0,
       lengthForward = 0,
@@ -36,7 +36,7 @@ class Emitter extends GameObject {
     }
   ) {
     super(game);
-    this.pos = new Vector(coords.x, coords.y);
+    this.pos = new Vector(pos.x, pos.y);
     this.vel = vel;
     this.aim = aim;
     this.r = r;
@@ -98,7 +98,7 @@ class Emitter extends GameObject {
       }
 
       let p = new this.emittee(this.game, {
-        coords: { x: this.pos.x + adjust.x + angle.x - forwardOffset.x * 0.25 + forwardOffset.x, y: this.pos.y + adjust.y + angle.y - forwardOffset.y * 0.25 + forwardOffset.y}, 
+        pos: { x: this.pos.x + adjust.x + angle.x - forwardOffset.x * 0.25 + forwardOffset.x, y: this.pos.y + adjust.y + angle.y - forwardOffset.y * 0.25 + forwardOffset.y}, 
         vel: dir,
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,

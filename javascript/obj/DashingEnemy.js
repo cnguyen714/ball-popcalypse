@@ -8,7 +8,9 @@ import Particle from "./Particle";
 import EnemyParticle from "./EnemyParticle";
 import Emitter from "./Emitter";
 import Star from "./Star";
-// import Beam from "./Beam";
+import EnemyBeam from "./EnemyBeam";
+import BeamSlash from "./BeamSlash";
+import Beam from "./Beam";
 
 const RADIUS = 8;
 const COLOR = "darkgreen";
@@ -23,31 +25,31 @@ const SCORE = 30;
 const BASE_TURN_RATE = 2;
 const ACCEL = 0.6;
 const MAX_SPEED = 4;
-const ATTACK_COOLDOWN = 900;
+const ATTACK_COOLDOWN = 60;
 const ATTACK_DAMAGE = 20;
-const DASH_COOLDOWN = 160;
-const ATTACK_RANGE = 500;
-const DASH_DURATION = 15;
+const ATTACK_RANGE = 60;
+const DASH_COOLDOWN = 180;
+const DASH_AGGRO_RANGE = 500;
+const DASH_DURATION = 16;
 const PREP_DASH_TIME = 40;
 const POST_DASH_PAUSE = 60;
 
 class DashingEnemy extends EnemyCircle {
-  constructor(
-    game, 
+  constructor(game, 
     {
-      coords = {x: 100, y: 100},
+      pos = {x: 100, y: 100},
       color = COLOR,
     }
   ) {
     super(game);
-    this.pos.x = coords.x;
-    this.pos.y = coords.y;
+    this.pos.x = pos.x;
+    this.pos.y = pos.y;
     this.health = HEALTH + game.difficulty * 3;
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 3) / 4;
     this.maxSpeed = MAX_SPEED;
 
-    this.attackCooldown = ATTACK_COOLDOWN;
+    this.attackCooldown = 0;
     this.dashCooldown = 0;
     this.attackDamage = ATTACK_DAMAGE;
     this.r = RADIUS;
@@ -61,7 +63,7 @@ class DashingEnemy extends EnemyCircle {
     this.draw = this.draw.bind(this);
   }
 
-  fire() {
+  attack() {
     if(this.attackCooldown > 0) return;
     if (this.pos.x > this.cvs.width + this.r ||
       this.pos.x < 0 - this.r ||
@@ -69,10 +71,20 @@ class DashingEnemy extends EnemyCircle {
       this.pos.y < 0 - this.r) {
       return;
     };
-    if (Math.abs(Vector.difference(this.pos, this.game.player.pos)) < 100) {
-      this.attackCooldown = ATTACK_COOLDOWN;
 
-    }
+    this.attackCooldown = ATTACK_COOLDOWN;
+    let attack = new BeamSlash(this.game, this, {
+      pos: {x: this.pos.x, y: this.pos.y},
+      beamClass: EnemyBeam,
+      width: 30,
+      length: ATTACK_RANGE + 10,
+      addOffset: this.r + 2,
+      parent: this
+    });
+    attack.beamClass = EnemyBeam;
+    attack.owner = this;
+    attack.color = Beam.COLOR().CANNON;
+    this.game.enemyParticles.push(attack);
   }
 
   dash() {
@@ -84,13 +96,14 @@ class DashingEnemy extends EnemyCircle {
       return;
     };
     
-    if (Math.abs(Vector.difference(this.pos, this.game.player.pos).length()) <= ATTACK_RANGE) {
+    if (Math.abs(Vector.difference(this.pos, this.game.player.pos).length()) <= DASH_AGGRO_RANGE) {
       this.storedVel = Vector.difference(this.game.player.pos, this.pos).normalize().multiply(25);
       this.dashDuration = POST_DASH_PAUSE + DASH_DURATION + PREP_DASH_TIME;
       this.dashCooldown = DASH_COOLDOWN;
+      this.active = false;
 
       let star = new Star(this, {
-        coords: this.pos.dup(),
+        pos: this.pos.dup(),
         length: 40,
         width: 15,
         aliveTime: 35,
@@ -103,7 +116,6 @@ class DashingEnemy extends EnemyCircle {
       explosion.color = "red";
       explosion.aliveTime = 3;
       this.game.vanity.push(explosion);
-
     }
   }
 
@@ -117,8 +129,9 @@ class DashingEnemy extends EnemyCircle {
       this.vel = this.vel.multiply(0);
     } else if (this.dashDuration >= POST_DASH_PAUSE) {
       if (this.dashDuration === DASH_DURATION + POST_DASH_PAUSE) {
+        this.attackCooldown = 0;
         let hitEmit = new Emitter(game, {
-          coords: { x: this.pos.x, y: this.pos.y },
+          pos: { x: this.pos.x, y: this.pos.y },
           r: 6,
           aim: this.storedVel.dup().multiply(-1),
           aliveTime: 20,
@@ -145,6 +158,7 @@ class DashingEnemy extends EnemyCircle {
 
       this.vel = this.storedVel.multiply(0.98);
     } else {
+      this.active = true;
       this.aim = Vector.difference(this.game.player.pos, this.pos);
       this.aim.normalize();
       let turnRate = BASE_TURN_RATE + Math.pow(this.game.difficulty, 1 / 3);
@@ -155,10 +169,16 @@ class DashingEnemy extends EnemyCircle {
       this.dashCooldown > 0 ? this.dashCooldown-- : this.dash();
     }
     this.dashDuration > 0 ? this.dashDuration-- : null;
-    this.attackCooldown > 0 ? this.attackCooldown-- : this.fire();
     
-    // this.validateBound(this.cvs.width, this.cvs.height);
+    if (this.attackCooldown > 0) {
+      this.attackCooldown--;
+    } else {
+      if (this.dashDuration === POST_DASH_PAUSE || Math.abs(Vector.difference(this.pos, this.game.player.pos).length()) <= ATTACK_RANGE) {
+        this.attack();
+      }
+    }
 
+    
     // Many-many collision is very heavy - please refactor at some point or implement quadtree
     this.game.entities.forEach(entity => this.checkCollision(entity));
   }

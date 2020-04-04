@@ -30,30 +30,50 @@ class Beam extends Particle {
     }
   }
 
-  constructor(game, startX, startY, aim, combo = 0, active = true, length = LENGTH, width = WIDTH) {
-    super(game, startX, startY);
-    this.aim = aim || new Vector(1 , 0);
-    this.combo = combo || 0;
+  constructor(game, 
+    {
+      pos = { x: 100, y: 100 },
+      aim = new Vector(1, 0),
+      combo = 0,
+      active = true,
+      length = LENGTH,
+      width = WIDTH,
+      aliveTime = DURATION,
+      initialTime = aliveTime,
+      knockback = KNOCKBACK,
+      damage = DAMAGE,
+      hitRatio = HITBOX_RATIO,
+      direction = 0,
+      color = Beam.COLOR().NORMAL,
+      alpha = 0.9,
+      activeTime = 0,
+      hitFrequency = 4,
+    }
+    ) {
+    super(game, pos.x, pos.y);
+
+    this.pos = new Vector(pos.x, pos.y);
+    this.aim = aim;
+    this.combo = combo;
+    this.active = active;
+    this.length = length;
+    this.width = width;
+    this.aliveTime = aliveTime;
+    this.initialTime = initialTime;
+    this.knockback = knockback;
+    this.damage = damage;
+    this.hitRatio = hitRatio;
+    this.direction = direction;
+    this.color = color;
+    this.alpha = alpha;
+    this.activeTime = activeTime;
+    this.hitFrequency = hitFrequency;
+
 
     // Formula to get the radian angle between the Y axis and a point
     this.angle = Math.atan2(this.aim.y, this.aim.x);
-
-    this.width = width;
-    this.length = length;
-    this.hitRatio = HITBOX_RATIO;
     this.origin = new Vector(this.pos.x);
-    this.damage = DAMAGE;
-    this.knockback = KNOCKBACK;
-    this.aliveTime = DURATION;
-    this.active = active;
-    this.initialTime = this.aliveTime;
     this.bomb = false;
-    this.direction = 0;
-    this.activeTime = 0;
-    this.hitFrequency = 4;
-    this.alpha = 0.9;
-
-    this.color = Beam.COLOR().NORMAL;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -124,7 +144,7 @@ class Beam extends Particle {
 
             break;
           case "BEAM":
-            let num = new DamageNumber(obj, this.damage, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
+            let num = new DamageNumber(obj, this.activeTime === 0 ? this.damage : this.damage / this.activeTime * this.hitFrequency, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
             this.game.vanity.push(num);
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 2, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 3, 60));
@@ -135,7 +155,7 @@ class Beam extends Particle {
             obj.vel.add(knockStraight.multiply(this.aliveTime >= this.initialTime ? this.knockback : this.knockback / 10));
 
             let hitImpactBeam = new Emitter(this.game, {
-              coords: { x: obj.pos.x, y: obj.pos.y },
+              pos: { x: obj.pos.x, y: obj.pos.y },
               r: 7,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
               emitCount: 6,
@@ -160,7 +180,7 @@ class Beam extends Particle {
             obj.pos.add(knockStraight);
 
             let hitImpactFin = new Emitter(this.game, {
-              coords: { x: obj.pos.x, y: obj.pos.y },
+              pos: { x: obj.pos.x, y: obj.pos.y },
               r: 8,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
               emitCount: 6,
@@ -185,7 +205,7 @@ class Beam extends Particle {
             obj.vel.add(knockStraight.multiply(this.knockback));
 
             let hitImpact = new Emitter(this.game, {
-              coords: { x: obj.pos.x, y: obj.pos.y },
+              pos: { x: obj.pos.x, y: obj.pos.y },
               r: 6,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
               emitCount: 4,
@@ -254,7 +274,6 @@ class Beam extends Particle {
       this.ctx.closePath();
       this.ctx.stroke();
 
-
       // this.ctx.shadowColor = color;
       // this.ctx.strokeStyle = "black";
 
@@ -264,9 +283,7 @@ class Beam extends Particle {
     } else {
       this.ctx.save();
 
-
       let color = Beam.COLOR().FADE;
-      // let color = this.color;
       this.ctx.beginPath();
 
       // let gradient = this.ctx.createLinearGradient(0, 0, this.length, this.width * 1.1);

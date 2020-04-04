@@ -14,9 +14,10 @@ const MAP = {
 
 // const SPAWN_OFFSET = 20;
 const BASE_TURN_RATE = 0.25;
-const BOSS_SPAWN_RATE = 15;
+const BOSS_SPAWN_RATE = 0;
+// const BOSS_SPAWN_RATE = 15;
 const RANGED_SPAWN_RATE = 60;
-const DASH_SPAWN_RATE = 60;
+const DASH_SPAWN_RATE = 999;
 
 export const randomEdgePos = (canvas, radius) => {
   let side = Math.floor(Math.random() * 4);
@@ -53,7 +54,7 @@ export const spawnCircleRandom = (player) => {
   } else if (num <= (enemyRate += RANGED_SPAWN_RATE)) {
     enemy = new RangedEnemy(player.game);
   } else if (num <= (enemyRate += DASH_SPAWN_RATE)) {
-    enemy = new DashingEnemy(player.game, {coords: {x: spawnPos.x, y: spawnPos.y}});
+    enemy = new DashingEnemy(player.game, {pos: {x: spawnPos.x, y: spawnPos.y}});
     // enemy = new DashingEnemy(player.game);
   } else {
     enemy = new EnemyCircle(player.game);

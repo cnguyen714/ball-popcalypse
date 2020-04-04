@@ -44,7 +44,7 @@ export const fireBulletAtCursorB = (player) => {
 }
 
 export const fireBeamAtCursor = (player) => {
-  let p = new Beam(player.game, player.pos.x, player.pos.y);
+  let p = new Beam(player.game, {pos: player.pos});
   p.color = player.color;
 
   let aim = new Vector(1, 1);

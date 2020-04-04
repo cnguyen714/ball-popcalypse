@@ -185,7 +185,7 @@ class Player extends GameObject {
 
   slash() {
     this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
-    this.game.particles.push(new BeamSlash(this.game, this.slashCombo));
+    this.game.particles.push(new BeamSlash(this.game, this, {pos: this.pos, combo: this.slashCombo}));
     if (this.slashCombo === this.maxSlashCombo) {
       this.slashCooldown = SLASH_COOLDOWN + 60;
       this.slashCombo = 0;
@@ -227,7 +227,7 @@ class Player extends GameObject {
       this.game.delayedParticles.push(beam);
 
       let shootFlash2 = new Emitter(this.game, {
-        coords: { x: this.pos.x, y: this.pos.y },
+        pos: { x: this.pos.x, y: this.pos.y },
         r: 10,
         aim: this.aim.dup(),
         emittee: Sparkle,
@@ -326,7 +326,7 @@ class Player extends GameObject {
         this.game.particles.push(beam);
 
         let shootFlash = new Emitter(this.game, {
-          coords: { x: this.pos.x, y: this.pos.y },
+          pos: { x: this.pos.x, y: this.pos.y },
           r: 4,
           aim: this.aim.dup(),
           emittee: Sparkle,
@@ -370,7 +370,7 @@ class Player extends GameObject {
       this.game.particles.push(beam);
 
       let shootFlash = new Emitter(this.game, {
-        coords: {x: this.pos.x, y: this.pos.y},
+        pos: {x: this.pos.x, y: this.pos.y},
         r: 6,
         aim: this.aim.dup(),
         aliveTime: 20,
@@ -386,7 +386,7 @@ class Player extends GameObject {
       this.game.vanity.push(shootFlash);
 
       let shootFlashThin = new Emitter(this.game, {
-        coords: { x: this.pos.x, y: this.pos.y },
+        pos: { x: this.pos.x, y: this.pos.y },
         r: 5,
         aim: this.aim.dup(),
         emittee: Sparkle,
@@ -648,7 +648,7 @@ class Player extends GameObject {
 
     if(this.vel.length() > 0) {
       let thruster = new Emitter(this.game, {
-        coords: { x: this.pos.x, y: this.pos.y },
+        pos: { x: this.pos.x, y: this.pos.y },
         r: 8,
         aim: this.vel.dup().multiply(-1),
         aliveTime: 10,

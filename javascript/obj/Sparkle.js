@@ -13,7 +13,7 @@ class Sparkle extends GameObject {
   constructor(
     game,
     {  
-      coords = {x: 0, y: 0},
+      pos = {x: 0, y: 0},
       vel = new Vector(0, 0),
       cb = () => { },
       color = COLOR,
@@ -23,7 +23,7 @@ class Sparkle extends GameObject {
     }
   ) {
     super(game);
-    this.pos = new Vector(coords.x, coords.y);
+    this.pos = new Vector(pos.x, pos.y);
     this.vel = vel;
     this.initialR = r;
     this.r = r;

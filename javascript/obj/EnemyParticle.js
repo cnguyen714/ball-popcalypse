@@ -63,7 +63,7 @@ class EnemyParticle extends Particle {
         if (this.r > RADIUS) player.invul = 45;
 
         let hitEmit = new Emitter(game, {
-          coords: { x: player.pos.x, y: player.pos.y },
+          pos: { x: player.pos.x, y: player.pos.y },
           r: 6,
           aim: this.vel.dup(),
           aliveTime: 20,
@@ -90,7 +90,7 @@ class EnemyParticle extends Particle {
     this.validatePosition(this.cvs.width, this.cvs.height);
 
     let thruster = new Emitter(this.game, {
-      coords: { x: this.pos.x, y: this.pos.y },
+      pos: { x: this.pos.x, y: this.pos.y },
       r: this.r - 1,
       aim: this.vel.dup().multiply(-1),
       aliveTime: 10,

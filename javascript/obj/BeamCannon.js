@@ -21,7 +21,7 @@ let particleCb = function () {
 
 class BeamCannon extends Beam {
   constructor(game, startX, startY, aim, length = LENGTH, width = WIDTH, dmg = DAMAGE, kb = KNOCKBACK) {
-    super(game, startX, startY, aim);
+    super(game, {pos: {x: startX, y: startY}, aim: aim});
     this.width = width;
     this.length = length;
     this.damage = dmg;

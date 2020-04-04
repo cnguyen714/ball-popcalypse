@@ -17,32 +17,45 @@ const DIRECTION = {
   CCW: -1,
   CW: 1,
 }
-// const COLOR = "white";
 
 //
 // Beam factory that creates a new Beams in an arc over a duration
 //
 class BeamSlash extends Particle {
-  constructor(game, 
-      combo, 
-      addOffset = 0,
-      width = WIDTH,
-      length = LENGTH) {
+  constructor(game, owner = game.player,
+  {
+    pos = { x: owner.pos.x, y: owner.pos.y},
+    combo = 0,
+    beamClass = Beam,
+    addOffset = OFFSET,
+    width = WIDTH,
+    length = LENGTH,
+    damage = DAMAGE,
+    aliveTime = DURATION,
+    direction = DIRECTION.CW,
+    active = false,
+    arcRate = ARC_DEGREE_RATE * Math.PI / 180,
+    iterSpeed = 1,
+    kb = KNOCKBACK,
+    color = Beam.COLOR().AQUA,
+  }
+  ) {
     super(game);
-    this.owner = this.game.player;
-    this.pos = new Vector(this.owner.pos.x, this.owner.pos.y);
-    this.color = Beam.COLOR().AQUA;
+    this.owner = owner;
+    this.pos = new Vector(pos.x, pos.y);
+    this.color = color;
+    this.beamClass = beamClass;
     this.width = width;
     this.length = length;
-    this.damage = DAMAGE;
-    this.aliveTime = DURATION;
+    this.damage = damage;
+    this.aliveTime = aliveTime;
     this.directions = DIRECTION;
-    this.direction = DIRECTION.CW;
-    this.active = false;
-    this.arcRate = ARC_DEGREE_RATE * Math.PI / 180;
+    this.direction = direction;
+    this.active = active;
+    this.arcRate = arcRate;
     this.combo = combo;
-    this.knockback = KNOCKBACK;
-    this.iterSpeed = 1;
+    this.knockback = kb;
+    this.iterSpeed = iterSpeed;
 
     switch(this.combo) {
       case this.game.player.maxSlashCombo:
@@ -89,7 +102,6 @@ class BeamSlash extends Particle {
 
     this.startOffsetDegree = -addOffset + ARC_DEGREE_RATE * (this.aliveTime / 4);
 
-
     this.aim = this.owner.aim;
     let angle = this.startOffsetDegree * Math.PI / 180 * this.direction;
     angle += this.direction * 40 * Math.PI / 180;
@@ -122,13 +134,18 @@ class BeamSlash extends Particle {
       this.length *= 0.997;
 
     }
-    let p = new Beam(this.game, this.pos.x + this.aim.x * OFFSET, this.pos.y + this.aim.y * OFFSET, this.aim, this.combo);
-    p.color = this.color;
-    p.length = this.length;
-    p.width = this.width;
-    p.damage = this.damage;
-    p.knockback = this.knockback;
-    p.direction = this.direction;
+    let p = new this.beamClass(this.game, {
+      pos: {x: this.pos.x + this.aim.x * OFFSET, y: this.pos.y + this.aim.y * OFFSET},
+      aim: this.aim, 
+      combo: this.combo,
+      color: this.color,
+      length: this.length,
+      width: this.width,
+      damage: this.damage,
+      knockback: this.knockback,
+      direction: this.direction,
+      parent: this,
+    });
     this.game.particles.push(p);
   }
 
@@ -153,7 +170,7 @@ class BeamSlash extends Particle {
       // combo finisher
       if (this.combo === this.game.player.maxSlashCombo) {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.22);
-        this.game.particles.push(new BeamSlash(this.game, "FINISHER", 40));
+        this.game.particles.push(new BeamSlash(this.game, this.owner, {combo: "FINISHER", addOffset: 40}));
       }
     }
     this.cb();

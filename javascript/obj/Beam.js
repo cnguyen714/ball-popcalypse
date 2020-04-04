@@ -5,7 +5,7 @@ import Explosion from "./Explosion";
 import Particle from "./Particle";
 import DamageNumber from "./DamageNumber";
 import SlashSpark from "./SlashSpark";
-import EnemyParticle from "./EnemyParticle";
+import EnemyParticle from "./EnemyFireball";
 import Trig from "../lib/Trig";
 import Emitter from "./Emitter";
 

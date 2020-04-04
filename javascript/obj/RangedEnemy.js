@@ -4,7 +4,7 @@ import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 import EnemyCircle from "./EnemyCircle";
-import EnemyParticle from "./EnemyParticle";
+import EnemyFireball from "./EnemyFireball";
 import Emitter from "./Emitter";
 import Star from "./Star";
 
@@ -70,7 +70,7 @@ class RangedEnemy extends EnemyCircle {
     let attackRadius = this.r * 2 + this.game.difficulty / 2;
 
     let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL - (this.game.difficulty / 50));
-    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: attackRadius});
+    let p = new EnemyFireball(this.game, {pos: this.pos, vel, r: attackRadius});
     this.game.enemyParticles.push(p);
     let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
     explosion.aliveTime = 5;

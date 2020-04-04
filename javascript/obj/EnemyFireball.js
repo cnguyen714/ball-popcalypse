@@ -15,7 +15,7 @@ const SCORE = 1;
 const HITBOX_RATIO = 0.3;
 
 
-class EnemyParticle extends Particle {
+class EnemyFireball extends Particle {
   constructor(game, {
     pos = {x: 100, y: 100},
     vel = new Vector(1, 0),
@@ -67,7 +67,7 @@ class EnemyParticle extends Particle {
         player.charge += this.damage;
         if (this.r > RADIUS) player.invul = 45;
 
-        let hitEmit = new Emitter(game, {
+        let bloodSplat = new Emitter(game, {
           pos: { x: player.pos.x, y: player.pos.y },
           r: 6,
           aim: this.vel.dup(),
@@ -78,8 +78,24 @@ class EnemyParticle extends Particle {
           fanDegree: 10,
           color: "red",
         });
+        this.game.vanity.push(bloodSplat);
 
-        this.game.vanity.push(hitEmit);
+        let fireSpark = new Emitter(this.game, {
+          pos: this.pos,
+          r: 6,
+          aim: this.vel.dup().multiply(-1),
+          aliveTime: 45,
+          emitCount: 24,
+          emitSpeed: 8,
+          fanDegree: 40,
+          ejectSpeed: 4,
+          decayRate: 0.94,
+          impulseVariance: 0.8,
+          color: "rgba(255, 98, 41, 1)",
+          cb: function () { this.vel.y -= 0.1; },
+        });
+        this.game.vanity.push(fireSpark);
+
         this.game.vanity.push(new DamageNumber(player, this.damage, {
           size: 30,
           duration: 30,
@@ -144,4 +160,4 @@ class EnemyParticle extends Particle {
   }
 }
 
-export default EnemyParticle;
+export default EnemyFireball;

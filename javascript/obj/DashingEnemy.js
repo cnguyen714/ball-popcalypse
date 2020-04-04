@@ -5,7 +5,7 @@ import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 import EnemyCircle from "./EnemyCircle";
 import Particle from "./Particle";
-import EnemyParticle from "./EnemyParticle";
+import EnemyParticle from "./EnemyFireball";
 import Emitter from "./Emitter";
 import Star from "./Star";
 import EnemyBeam from "./EnemyBeam";

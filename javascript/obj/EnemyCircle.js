@@ -24,7 +24,7 @@ class EnemyCircle extends GameObject {
     super(game);
     this.aiCallback = () => {
       this.aim = Vector.difference(game.player.pos, this.pos).normalize();
-      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 3);
+      let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 4);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
       this.vel.add(this.aim.multiply(this.accel));
@@ -32,8 +32,8 @@ class EnemyCircle extends GameObject {
 
     this.health = HEALTH + game.difficulty * 2;
 
-    this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 2);
-    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 2);
+    this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 3);
+    this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 3);
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 

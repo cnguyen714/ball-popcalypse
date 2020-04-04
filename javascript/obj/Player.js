@@ -226,42 +226,26 @@ class Player extends GameObject {
       beam.color = Beam.COLOR().TEAL;
       this.game.delayedParticles.push(beam);
 
-      let beamInvis = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
-      beamInvis.activeTime = 240;
-      beamInvis.initialTime = 240;
-      beamInvis.aliveTime = 240;
-      beamInvis.damage = 20;
-      beamInvis.knockback = 0;
-      beamInvis.width = 380;
-      beamInvis.length = 100;
-      beamInvis.color = [0,255,0];
-      beamInvis.alpha = 0;
-      beamInvis.paused = false;
-      beamInvis.unpausable = true;
-      beamInvis.silenced = true;
-      beamInvis.hitFrequency = 1;
-      beamInvis.hitLength = beamInvis.length;
-      beamInvis.hitWidth = beamInvis.width;
-      beamInvis.cb = function() {
-        this.pos.add(this.aim.dup().multiply(this.length + 5));
-      }
-      this.game.vanity.push(beamInvis);
-
       let shootFlash2 = new Emitter(this.game, {
         coords: { x: this.pos.x, y: this.pos.y },
-        r: 12,
+        r: 10,
         aim: this.aim.dup(),
         emittee: Sparkle,
-        aliveTime: 90,
-        emitCount: 40,
+        aliveTime: 60,
+        emitCount: 60,
         emitSpeed: 20,
-        ejectSpeed: 10,
-        impulseVariance: 1.0,
+        ejectSpeed: 8,
+        impulseVariance: 1,
         fanDegree: 1,
         color: "rgba(0, 188, 188, 1)",
-        decayRate: 0.92,
+        decayRate: 0.9,
         width: 10,
-        lengthForward: 1000,
+        lengthForward: 1100,
+        cb: function() {
+          if (this.aliveTime === this.initialTime - freezeTime + 1) {
+            this.vel.add(this.vel.dup().normalize().multiply(20));
+          }
+        }
       });
       this.game.delayedParticles.push(shootFlash2);
 
@@ -306,6 +290,27 @@ class Player extends GameObject {
       explosion3.color = "rgba(255,50,50,.3)";
       explosion3.aliveTime = 7;
         this.game.vanity.push(explosion3);
+
+      // let beamInvis = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
+      // beamInvis.activeTime = 240;
+      // beamInvis.initialTime = 240;
+      // beamInvis.aliveTime = 240;
+      // beamInvis.damage = 20;
+      // beamInvis.knockback = 0;
+      // beamInvis.width = 380;
+      // beamInvis.length = 100;
+      // beamInvis.color = [0, 255, 0];
+      // beamInvis.alpha = 0;
+      // beamInvis.paused = false;
+      // beamInvis.unpausable = true;
+      // beamInvis.silenced = true;
+      // beamInvis.hitFrequency = 1;
+      // beamInvis.hitLength = beamInvis.length;
+      // beamInvis.hitWidth = beamInvis.width;
+      // beamInvis.cb = function () {
+      //   this.pos.add(this.aim.dup().multiply(this.length + 5));
+      // }
+      // this.game.vanity.push(beamInvis);
 
       let storeX = this.pos.x;
       let storeY = this.pos.y;

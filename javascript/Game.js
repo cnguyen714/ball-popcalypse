@@ -705,9 +705,9 @@ class Game {
               let length = 70;
               let thickness = 25;
               let spread = 300;
-              let aliveTime = 30;
+              let aliveTime = 35;
               let expandRate = 1.05;
-              let thinningRate = 0.6;
+              let thinningRate = 0.65;
               if (this.player.charging) {
                 let star3 = new Star(this, {
                   coords: { x: this.player.pos.x + aim.x, y: this.player.pos.y + aim.y },

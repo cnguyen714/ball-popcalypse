@@ -12,7 +12,7 @@ const DAMAGE = 10;
 const COLOR = "#ff6229";
 const VELOCITY = 6;
 const SCORE = 1;
-const HITBOX_RATIO = 0.9;
+const HITBOX_RATIO = 0.8;
 
 class EnemyParticle extends Particle {
   constructor(
@@ -64,10 +64,10 @@ class EnemyParticle extends Particle {
 
         let hitEmit = new Emitter(game, {
           coords: { x: player.pos.x, y: player.pos.y },
-          r: 7,
+          r: 6,
           aim: this.vel.dup(),
           aliveTime: 20,
-          emitCount: 6,
+          emitCount: 1,
           ejectSpeed: 7,
           impulseVariance: 0.15,
           fanDegree: 10,

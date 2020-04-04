@@ -48,8 +48,11 @@ class GameObject {
   // Multiply velocity by the fractional difference in timeDelta
   // Does not skip frames, but gives the illusion of same speed
   addVelocityTimeDelta() {
-    // this.pos.add(this.vel.dup().multiply(this.game.timeDelta / this.game.normalTimeDelta));
-    this.pos.add(this.vel);
+    if(this.game.fps <= 50) {
+      this.pos.add(this.vel.dup().multiply(this.game.timeDelta / this.game.normalTimeDelta));
+    } else {
+      this.pos.add(this.vel);
+    }
   }
 }
 

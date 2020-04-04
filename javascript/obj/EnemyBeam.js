@@ -121,6 +121,7 @@ class EnemyBeam extends Beam {
         color: "rgba(255, 0, 0,1)",
         cb: function () { this.vel.y -= 0.10; },
       });
+      this.game.vanity.push(hitSpark);
 
       obj.vel.add(knockStraight.multiply(this.knockback));
       this.game.vanity.push(new DamageNumber(obj, this.damage, {
@@ -129,7 +130,6 @@ class EnemyBeam extends Beam {
         velX: this.aim.x * 8,
         type: "ENEMY",
       }));
-      this.game.vanity.push(hitSpark);
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.10);
       if (obj.health <= 0) {
         obj.alive = false;

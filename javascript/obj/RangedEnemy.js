@@ -6,6 +6,7 @@ import Explosion from "./Explosion";
 import EnemyCircle from "./EnemyCircle";
 import EnemyParticle from "./EnemyParticle";
 import Emitter from "./Emitter";
+import Star from "./Star";
 
 const RADIUS = 10;
 const COLOR = "orange";
@@ -22,11 +23,11 @@ const ACCEL = 3;
 const MAX_SPEED = 5;
 const FIRE_COOLDOWN = 180;
 const FIRE_VEL = 6;
-const KEEPAWAY_RANGE = 500;
 
 class RangedEnemy extends EnemyCircle {
   constructor(game) {
     super(game);
+    this.aggroRange = this.cvs.height / 4 + 50;
     this.aiCallback = () => {
       this.aim = Vector.difference(game.player.pos, this.pos);
       let distance = this.aim.length();
@@ -34,7 +35,7 @@ class RangedEnemy extends EnemyCircle {
       let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 3);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
-      if (distance >= KEEPAWAY_RANGE || !game.player.alive) {
+      if (distance >= this.aggroRange || !game.player.alive) {
         this.vel.add(this.aim.dup().multiply(this.accel));
       } else {
         this.vel.add(this.aim.dup().multiply(-this.accel));
@@ -66,14 +67,26 @@ class RangedEnemy extends EnemyCircle {
       return;
     };
     this.attackCooldown = FIRE_COOLDOWN;
+    let attackRadius = this.r * 2 + this.game.difficulty / 2;
 
-    let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL);
-    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: this.r * 2 + this.game.difficulty / 2});
+    let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL - (this.game.difficulty / 50));
+    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: attackRadius});
     this.game.enemyParticles.push(p);
     let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
-    explosion.aliveTime = 7;
-    explosion.r = this.r + 20;
+    explosion.aliveTime = 5;
+    explosion.r = attackRadius;
+    explosion.color = "orange"
     this.game.vanity.push(explosion);
+    let star = new Star(this, {
+      pos: this.pos.dup(),
+      length: attackRadius + 30,
+      width: 12,
+      aliveTime: 35,
+      expandRate: 1.05,
+      thinningRate: 0.65,
+      color: [255, 165, 0],
+    });
+    this.game.vanity.push(star);
 
     let shootFlash = new Emitter(this.game, {
       pos: { x: this.pos.x, y: this.pos.y },
@@ -89,6 +102,14 @@ class RangedEnemy extends EnemyCircle {
     });
     this.game.vanity.push(shootFlash);
 
+  }
+
+  validateBound(rectX, rectY) {
+    let r = this.r / 2;
+    if (this.pos.x + r > rectX) this.pos.x = rectX - r;
+    if (this.pos.y + r > rectY) this.pos.y = rectY - r;
+    if (this.pos.x - r < 0) this.pos.x = r;
+    if (this.pos.y - r < 0) this.pos.y = r;
   }
 
   update() {

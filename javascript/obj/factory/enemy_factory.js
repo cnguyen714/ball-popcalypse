@@ -4,6 +4,7 @@ import EnemyCircle from '../EnemyCircle';
 import LargeEnemyCircle from "../LargeEnemyCircle";
 import RangedEnemy from "../RangedEnemy";
 import DashingEnemy from "../DashingEnemy";
+import EnemyCarrier from "../EnemyCarrier";
 
 const MAP = {
   TOP: 0,
@@ -14,7 +15,8 @@ const MAP = {
 
 // const SPAWN_OFFSET = 20;
 const BASE_TURN_RATE = 0.25;
-const BOSS_SPAWN_RATE = 15;
+const LARGE_SPAWN_RATE = 20;
+const CARRIER_SPAWN_RATE = 10;
 const RANGED_SPAWN_RATE = 70;
 const DASH_SPAWN_RATE = 100;
 
@@ -48,13 +50,14 @@ export const spawnCircleRandom = (player) => {
   let enemy;
   let spawnPos = randomEdgePos(player.cvs, 100);
 
-  if (num <= (enemyRate += BOSS_SPAWN_RATE + player.game.difficulty / 20)) {
+  if (num <= (enemyRate += LARGE_SPAWN_RATE - player.game.difficulty / 20)) {
     enemy = new LargeEnemyCircle(player.game);
+  } else if (num <= (enemyRate += CARRIER_SPAWN_RATE + player.game.difficulty / 10)) {
+    enemy = new EnemyCarrier(player.game);
   } else if (num <= (enemyRate += RANGED_SPAWN_RATE + player.game.difficulty / 10)) {
     enemy = new RangedEnemy(player.game);
   } else if (num <= (enemyRate += DASH_SPAWN_RATE + player.game.difficulty / 3)) {
     enemy = new DashingEnemy(player.game, {pos: {x: spawnPos.x, y: spawnPos.y}});
-    // enemy = new DashingEnemy(player.game);
   } else {
     enemy = new EnemyCircle(player.game);
   }

@@ -103,7 +103,7 @@ class Particle extends GameObject {
     if (!this.alive) return;
     this.ctx.save();
     this.ctx.beginPath();
-    this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
+    this.ctx.arc(this.pos.x, this.pos.y, Math.max(this.r, 0), 0, 2 * Math.PI);
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
     // this.ctx.strokeStyle = this.color;

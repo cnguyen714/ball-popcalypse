@@ -1,5 +1,6 @@
 
 import Vector from "../lib/Vector";
+import Trig from "../lib/Trig";
 import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";
@@ -10,8 +11,8 @@ const COLOR = "#a64942";
 const HEALTH = 6000;
 const HEALTH_CAP = 18000;
 
-const BASE_TURN_RATE = 0.25;
-const ACCEL = 2;
+const BASE_TURN_RATE = 0.15;
+const ACCEL = 1.5;
 const MAX_SPEED = 4;
 const DAMAGE = 40;
 
@@ -23,7 +24,7 @@ class LargeEnemyCircle extends EnemyCircle {
       let turnRate = BASE_TURN_RATE + Math.pow(game.difficulty, 1 / 2);
       this.aim.multiply(turnRate).add(this.vel).normalize();
 
-      this.vel.add(this.aim.multiply(this.accel));
+      this.vel.add(this.aim.multiply(this.accel));  
     };
 
     this.r = Math.floor(50 + Math.random() * 50);
@@ -47,6 +48,15 @@ class LargeEnemyCircle extends EnemyCircle {
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
+  }
+
+  validateBound(rectX, rectY) {
+    if(this.game.state !== "STATE_RUNNING") return;
+    let r = 0;
+    if (this.pos.x + r > rectX) this.pos.x = rectX - r;
+    if (this.pos.y + r > rectY) this.pos.y = rectY - r;
+    if (this.pos.x - r < 0) this.pos.x = r;
+    if (this.pos.y - r < 0) this.pos.y = r;
   }
 
   checkCollision(obj) {

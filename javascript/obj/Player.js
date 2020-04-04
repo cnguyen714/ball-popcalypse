@@ -361,7 +361,7 @@ class Player extends GameObject {
       this.shootCooldown = SHOOT_COOLDOWN;
       
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);
-      beam.hitRatio = 0.85;
+      beam.hitRatio = 1.3;
       beam.bomb = false;
       beam.aliveTime = 30;
       beam.initialTime = beam.aliveTime;

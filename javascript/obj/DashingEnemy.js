@@ -14,8 +14,8 @@ import Beam from "./Beam";
 
 const RADIUS = 12;
 const COLOR = "darkgreen";
-const HEALTH = 1500;
-const HEALTH_CAP = 2500;
+const HEALTH = 1000;
+const HEALTH_CAP = 1500;
 const DAMAGE = 1;
 const SCORE = 30;
 const BASE_TURN_RATE = 2;
@@ -26,7 +26,7 @@ const ATTACK_DAMAGE = 20;
 const ATTACK_RANGE = 60;
 const DASH_COOLDOWN = 180;
 const DASH_AGGRO_RANGE = 500;
-const DASH_DURATION = 16;
+const DASH_DURATION = 17;
 const PREP_DASH_TIME = 40;
 const POST_DASH_PAUSE = 60;
 
@@ -172,7 +172,7 @@ class DashingEnemy extends EnemyCircle {
     } else if (this.dashDuration >= POST_DASH_PAUSE) {
       if (this.dashDuration === DASH_DURATION + POST_DASH_PAUSE) {
         this.attackCooldown = 0;
-        let hitEmit = new Emitter(game, {
+        let dust = new Emitter(game, {
           pos: { x: this.pos.x, y: this.pos.y },
           r: 6,
           aim: this.storedVel.dup().multiply(-1),
@@ -184,7 +184,7 @@ class DashingEnemy extends EnemyCircle {
           fanDegree: 10,
           color: "white",
         });
-        this.game.vanity.push(hitEmit);
+        this.game.vanity.push(dust);
       }
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "green";

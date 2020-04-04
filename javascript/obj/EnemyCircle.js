@@ -10,7 +10,7 @@ const RADIUS = 7;
 const COLOR = "#a64942";
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
-const DAMPENING_COEFFICIENT = 0.65;
+const DAMPENING_COEFFICIENT = 0.55;
 const SPREAD_FACTOR = 2.0;
 const HEALTH = 100;
 const HEALTH_CAP = 200;
@@ -49,8 +49,7 @@ class EnemyCircle extends GameObject {
   }
 
   dampSpeed() {
-    let vel = this.vel.length();
-    if (vel > this.maxSpeed) {
+    if (this.vel.length() > this.maxSpeed) {
       this.vel.multiply(DAMPENING_COEFFICIENT);
       if (this.vel.length() < this.maxSpeed) {
         this.vel = this.vel.normalize().multiply(this.maxSpeed);

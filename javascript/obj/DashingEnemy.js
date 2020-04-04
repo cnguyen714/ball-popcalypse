@@ -12,7 +12,7 @@ import EnemyBeam from "./EnemyBeam";
 import BeamSlash from "./BeamSlash";
 import Beam from "./Beam";
 
-const RADIUS = 8;
+const RADIUS = 12;
 const COLOR = "darkgreen";
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
@@ -77,7 +77,7 @@ class DashingEnemy extends EnemyCircle {
       pos: {x: this.pos.x, y: this.pos.y},
       beamClass: EnemyBeam,
       width: 30,
-      length: ATTACK_RANGE + 10,
+      length: ATTACK_RANGE + 10 + this.game.difficulty / 3,
       addOffset: this.r + 5,
       parent: this,
       cb: () => {
@@ -144,8 +144,8 @@ class DashingEnemy extends EnemyCircle {
         color: "rgba(255,0,0,0.8)",
         lengthForward: 5,
         cb: function () { 
-          if(this.vel.y > 0) this.vel.y *= 0.5;
-          this.vel.y -= 0.10; 
+          if(this.vel.y > 0) this.vel.y *= 0.6;
+          this.vel.y -= 0.07; 
           // this.vel.y -= this.vel.y * 0.5;
           this.vel.x -= this.vel.x * 0.5 },
       });

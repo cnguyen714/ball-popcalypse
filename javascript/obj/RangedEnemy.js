@@ -7,7 +7,7 @@ import EnemyCircle from "./EnemyCircle";
 import EnemyParticle from "./EnemyParticle";
 import Emitter from "./Emitter";
 
-const RADIUS = 8;
+const RADIUS = 10;
 const COLOR = "orange";
 const KNOCKBACK = 10;
 const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
@@ -68,7 +68,7 @@ class RangedEnemy extends EnemyCircle {
     this.attackCooldown = FIRE_COOLDOWN;
 
     let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL);
-    let p = new EnemyParticle(this.game, this.pos.x, this.pos.y, vel);
+    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: this.r * 2 + this.game.difficulty / 4});
     this.game.enemyParticles.push(p);
     let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
     explosion.aliveTime = 7;
@@ -80,8 +80,7 @@ class RangedEnemy extends EnemyCircle {
       r: 6,
       aim: Vector.difference(game.player.pos, this.pos).normalize(),
       aliveTime: 25,
-      emitCount: 7,
-      emitSpeed: 7,
+      emitCount: 8,
       ejectSpeed: 5,
       impulseVariance: 0.8,
       fanDegree: 50,

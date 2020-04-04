@@ -6,30 +6,33 @@ import Particle from "./Particle";
 import Explosion from "./Explosion";
 import Emitter from "./Emitter";
 
-const RADIUS = 10;
+const RADIUS = 20;
 const KNOCKBACK = 30;
 const DAMAGE = 10;
 const COLOR = "#ff6229";
-const VELOCITY = 6;
+const VELOCITY = 7;
 const SCORE = 1;
 const HITBOX_RATIO = 0.8;
 
 class EnemyParticle extends Particle {
-  constructor(
-    game,
-    startX = 0,
-    startY = 0,
-    vel = new Vector(0, 0),
-    cb = () => { }
+  constructor(game, {
+    pos = {x: 100, y: 100},
+    vel = new Vector(1, 0),
+    cb = () => { },
+    r = RADIUS,
+    damage = DAMAGE,
+    knockback = KNOCKBACK,
+    color = COLOR,
+  }
   ) {
     super(game);
-    this.pos = new Vector(startX, startY);
-    this.vel = vel || VELOCITY;
-    this.r = RADIUS;
-    this.color = COLOR;
-    this.damage = DAMAGE;
-    this.knockback = KNOCKBACK;
+    this.pos = new Vector(pos.x, pos.y);
+    this.vel = vel;
     this.cb = cb;
+    this.r = r;
+    this.damage = damage;
+    this.knockback = knockback;
+    this.color = color;
     this.aliveTime = 1;
     this.active = true;
     this.target = this.game.player;
@@ -96,7 +99,7 @@ class EnemyParticle extends Particle {
       aliveTime: 10,
       emitCount: 2,
       emitSpeed: 1,
-      ejectSpeed: 0.5,
+      ejectSpeed: this.r * 0.1,
       impulseVariance: .5,
       fanDegree: 20,
       color: this.color,

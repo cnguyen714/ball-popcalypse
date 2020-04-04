@@ -122,6 +122,7 @@ class EnemyBeam extends Beam {
         color: "rgba(255, 0, 0,1)",
         cb: function () { this.vel.y -= 0.10; },
       });
+      obj.vel.add(knockStraight.multiply(this.knockback));
       this.game.vanity.push(hitSpark);
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.10);
       if (obj.health <= 0) {

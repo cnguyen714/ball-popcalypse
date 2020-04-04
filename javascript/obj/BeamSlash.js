@@ -155,6 +155,7 @@ class BeamSlash extends Particle {
 
   update() {
     if (!this.alive) return; 
+    this.cb();
 
     // this.pos.x = this.owner.pos.x;
     // this.pos.y = this.owner.pos.y;
@@ -173,7 +174,6 @@ class BeamSlash extends Particle {
         this.game.particles.push(new BeamSlash(this.game, this.owner, {combo: "FINISHER", addOffset: 40}));
       }
     }
-    this.cb();
   }
 
   draw() {

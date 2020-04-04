@@ -64,7 +64,7 @@ class DashingEnemy extends EnemyCircle {
   }
 
   attack() {
-    if(this.attackCooldown > 0) return;
+    if (this.attackCooldown > 0 || this.dashDuration > 0) return;
     if (this.pos.x > this.cvs.width + this.r ||
       this.pos.x < 0 - this.r ||
       this.pos.y > this.cvs.height + this.r ||
@@ -78,8 +78,11 @@ class DashingEnemy extends EnemyCircle {
       beamClass: EnemyBeam,
       width: 30,
       length: ATTACK_RANGE + 10,
-      addOffset: this.r + 2,
-      parent: this
+      addOffset: this.r + 5,
+      parent: this,
+      cb: () => {
+        this.pos = this.owner.pos.dup()
+      }
     });
     attack.beamClass = EnemyBeam;
     attack.owner = this;
@@ -127,6 +130,21 @@ class DashingEnemy extends EnemyCircle {
 
     if (this.dashDuration > DASH_DURATION + POST_DASH_PAUSE) {
       this.vel = this.vel.multiply(0);
+      let hitEmit = new Emitter(game, {
+        pos: { x: this.pos.x, y: this.pos.y + 1 },
+        r: this.r,
+        aim: new Vector(0, -1),
+        aliveTime: 7,
+        emitCount: 1,
+        emitSpeed: 1,
+        ejectSpeed: 2,
+        impulseVariance: 0.7,
+        fanDegree: 90,
+        decayRate: 0.6,
+        color: "rgba(255,0,0,1)",
+        cb: function () { this.vel.y -= 0.20; this.vel.x -= this.vel.x * 0.7 },
+      });
+      this.game.vanity.push(hitEmit);
     } else if (this.dashDuration >= POST_DASH_PAUSE) {
       if (this.dashDuration === DASH_DURATION + POST_DASH_PAUSE) {
         this.attackCooldown = 0;

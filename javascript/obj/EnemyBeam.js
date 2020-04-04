@@ -63,9 +63,8 @@ class EnemyBeam extends Beam {
   checkCollision(obj) {
     if (!obj.alive) return; //Don't check collision if object is not alive
     if (!this.active) return;
-    // if (this.parent && this.parent.hitTarget) return;
-    if(obj.noclip || obj.invul) return;
-
+    if (this.parent && this.parent.hitTarget) return;
+    if (obj.noclip >= 0 || obj.invul >= 0) return;
     if (!this.hitWidth) this.hitWidth = this.width * this.hitRatio;
     if (!this.hitLength) this.hitLength = this.length * this.hitRatio;
 
@@ -107,13 +106,13 @@ class EnemyBeam extends Beam {
       console.log("hit");
       obj.health -= this.damage;
       obj.charge += this.damage;
-      obj.invul += 10;
+      // obj.invul += 10;
       if(this.parent) this.parent.hitTarget = true;
       let hitSpark = new Emitter(this.game, {
         pos: obj.pos,
         r: 6,
         aim: knockStraight.normalize(),
-        aliveTime: 70,
+        aliveTime: 50,
         emitCount: 24,
         emitSpeed: 8,
         fanDegree: 20,
@@ -121,7 +120,7 @@ class EnemyBeam extends Beam {
         decayRate: 0.94,
         impulseVariance: 0.8,
         color: "rgba(255, 0, 0,1)",
-        cb: function () { this.vel.y -= 0.15; },
+        cb: function () { this.vel.y -= 0.10; },
       });
       this.game.vanity.push(hitSpark);
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.10);

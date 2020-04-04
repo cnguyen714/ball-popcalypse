@@ -14,17 +14,13 @@ import Beam from "./Beam";
 
 const RADIUS = 12;
 const COLOR = "darkgreen";
-const KNOCKBACK = 10;
-const ENEMY_KNOCKBACK_MULTIPLIER = 2.5;
-const DAMPENING_COEFFICIENT = 0.7;
-const SPREAD_FACTOR = 2.0;
 const HEALTH = 1500;
 const HEALTH_CAP = 2500;
 const DAMAGE = 1;
 const SCORE = 30;
 const BASE_TURN_RATE = 2;
-const ACCEL = 0.6;
-const MAX_SPEED = 4;
+const ACCEL = 0.7;
+const MAX_SPEED = 5;
 const ATTACK_COOLDOWN = 60;
 const ATTACK_DAMAGE = 20;
 const ATTACK_RANGE = 60;
@@ -130,7 +126,7 @@ class DashingEnemy extends EnemyCircle {
 
     if (this.dashDuration > DASH_DURATION + POST_DASH_PAUSE) {
       this.vel = this.vel.multiply(0);
-      let hitEmit = new Emitter(game, {
+      let aura = new Emitter(game, {
         pos: { x: this.pos.x, y: this.pos.y + 1 },
         r: 6,
         aim: new Vector(0, -1),
@@ -149,7 +145,30 @@ class DashingEnemy extends EnemyCircle {
           // this.vel.y -= this.vel.y * 0.5;
           this.vel.x -= this.vel.x * 0.5 },
       });
-      this.game.vanity.push(hitEmit);
+      this.game.vanity.push(aura);
+
+      let aoeMarker = new Emitter(game, {
+        pos: { x: this.pos.x, y: this.pos.y + 1 },
+        r: 3,
+        aim: this.storedVel.dup().normalize(),
+        aliveTime: 7,
+        emitCount: 2,
+        emitSpeed: 1,
+        ejectSpeed: 1,
+        impulseVariance: 0.2,
+        fanDegree: 0,
+        decayRate: 0.7,
+        width: ATTACK_RANGE + this.game.difficulty / 3,
+        color: "rgba(255,0,0,0.75)",
+        lengthForward: DASH_AGGRO_RANGE + 100,
+        cb: function () {
+          if (this.vel.y > 0) this.vel.y *= 0.6;
+          this.vel.y -= 0.07;
+          // this.vel.y -= this.vel.y * 0.5;
+          this.vel.x -= this.vel.x * 0.5
+        },
+      });
+      this.game.vanity.push(aoeMarker);
     } else if (this.dashDuration >= POST_DASH_PAUSE) {
       if (this.dashDuration === DASH_DURATION + POST_DASH_PAUSE) {
         this.attackCooldown = 0;
@@ -196,7 +215,7 @@ class DashingEnemy extends EnemyCircle {
     if (this.attackCooldown > 0) {
       this.attackCooldown--;
     } else {
-      if (this.dashDuration === POST_DASH_PAUSE || Math.abs(Vector.difference(this.pos, this.game.player.pos).length()) <= ATTACK_RANGE) {
+      if (this.dashDuration === POST_DASH_PAUSE || Math.abs(Vector.difference(this.pos, this.game.player.pos).length()) <= ATTACK_RANGE + this.game.difficulty / 3) {
         this.attack();
       }
     }

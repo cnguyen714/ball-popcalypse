@@ -22,7 +22,7 @@ const PLAYER_RADIUS = 11;
 const COLOR = '#0d7377';
 const MAX_HEALTH = 250;
 
-const MAX_SPEED = 7;
+const MAX_SPEED = 8;
 const MIN_SPEED = 0.1;
 const ACCEL = 3;
 const DECEL = 0.9;
@@ -600,6 +600,7 @@ class Player extends GameObject {
     if (this.beamCooldown > 0) this.beamCooldown--;
     if (this.invul >= 0) this.invul--;
     if (this.noclip >= 0) this.noclip--;
+    if (this.game.loopCount % 60) this.charge++;
     if (this.charge > this.chargeCost * CHARGE_STACKS) this.charge = Math.floor(this.chargeCost * CHARGE_STACKS);
     if (this.discharged) {
       this.charging = false;

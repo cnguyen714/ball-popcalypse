@@ -68,7 +68,7 @@ class RangedEnemy extends EnemyCircle {
     this.attackCooldown = FIRE_COOLDOWN;
 
     let vel = this.pos.dup().subtract(this.game.player.pos).normalize().multiply(-FIRE_VEL);
-    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: this.r * 2 + this.game.difficulty / 4});
+    let p = new EnemyParticle(this.game, {pos: this.pos, vel, r: this.r * 2 + this.game.difficulty / 2});
     this.game.enemyParticles.push(p);
     let explosion = new Explosion(this.game, this.pos.x, this.pos.y);
     explosion.aliveTime = 7;

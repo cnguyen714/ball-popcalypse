@@ -7,12 +7,13 @@ import Explosion from "./Explosion";
 import Emitter from "./Emitter";
 
 const RADIUS = 20;
-const KNOCKBACK = 30;
+const KNOCKBACK = 40;
 const DAMAGE = 10;
 const COLOR = "#ff6229";
 const VELOCITY = 7;
 const SCORE = 1;
-const HITBOX_RATIO = 0.8;
+const HITBOX_RATIO = 0.3;
+
 
 class EnemyParticle extends Particle {
   constructor(game, {
@@ -48,9 +49,10 @@ class EnemyParticle extends Particle {
     let distSqr = diff.dot(diff);
 
     // if (player.moveState === "STATE_DASHING") return;
-    if (this.r * this.r + player.r * player.r > distSqr * HITBOX_RATIO) {
+    if ((this.r * this.r + player.r * player.r) * HITBOX_RATIO > distSqr) {
       if(player.alive) this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r * 2);
+      
       explosion.color = 'red';
       explosion.aliveTime = 5;
 
@@ -78,6 +80,12 @@ class EnemyParticle extends Particle {
         });
 
         this.game.vanity.push(hitEmit);
+        this.game.vanity.push(new DamageNumber(player, this.damage, {
+          size: 30,
+          duration: 30,
+          velX: this.vel.x * 4,
+          type: "ENEMY",
+        }));
       }
       this.alive = false;
       player.game.vanity.push(explosion);
@@ -120,6 +128,15 @@ class EnemyParticle extends Particle {
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
     this.ctx.strokeStyle = "red";
+    this.ctx.stroke();
+
+    this.ctx.beginPath();
+    this.ctx.arc(this.pos.x, this.pos.y, this.r * (HITBOX_RATIO + 0.1), 0, 2 * Math.PI);
+    this.ctx.shadowBlur = 0;
+    this.ctx.lineWidth = 0.5;
+    this.ctx.fillStyle = "rgba(0,0,0,0)";
+    this.ctx.fill();
+    this.ctx.strokeStyle = "black";
     this.ctx.stroke();
 
     this.ctx.closePath();

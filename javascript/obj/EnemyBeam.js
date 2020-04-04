@@ -13,7 +13,7 @@ import Beam from "./Beam";
 const WIDTH = 60;
 const LENGTH = 150;
 const HITBOX_RATIO = 0.95;
-const KNOCKBACK = 10;
+const KNOCKBACK = 90;
 const DAMAGE = 20;
 const DURATION = 13;
 
@@ -103,7 +103,6 @@ class EnemyBeam extends Beam {
       let y = diff.y * Math.cos(this.angle) + diff.x * Math.sin(this.angle);
       let knockStraight = new Vector(x, y);
 
-      console.log("hit");
       obj.health -= this.damage;
       obj.charge += this.damage;
       // obj.invul += 10;
@@ -122,7 +121,14 @@ class EnemyBeam extends Beam {
         color: "rgba(255, 0, 0,1)",
         cb: function () { this.vel.y -= 0.10; },
       });
+
       obj.vel.add(knockStraight.multiply(this.knockback));
+      this.game.vanity.push(new DamageNumber(obj, this.damage, {
+        size: 30,
+        duration: 30,
+        velX: this.aim.x * 8,
+        type: "ENEMY",
+      }));
       this.game.vanity.push(hitSpark);
       this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.10);
       if (obj.health <= 0) {

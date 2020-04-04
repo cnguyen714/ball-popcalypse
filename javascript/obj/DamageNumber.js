@@ -2,7 +2,7 @@ import Vector from "../lib/Vector";
 
 import GameObject from "./GameObject";
 
-const SIZE = 15;
+const SIZE = 35;
 const DURATION = 50;
 const FREEZE_DURATION = 3;
 const DEFAULT_TYPE = "BASE";
@@ -14,38 +14,48 @@ const COLOR = {
   NORMAL: [255, 255, 255],
   CRIT: [255, 255, 0],
   CANNON: [0, 0, 0],
+  ENEMY: [255, 0, 0],
 }
 //
 // Damage Number
 //
 class DamageNumber extends GameObject {
-  constructor(damagedObj,
-    damage,
+  constructor(damagedObj, damage, {
     size = SIZE,
-    duration = DURATION,
-    orientation = 0) {
+    aliveTime = DURATION,
+    initialTime = aliveTime,
+    freezeTime = FREEZE_DURATION,
+    velX = 0.5,
+    alpha = 1,
+    type = "NORMAL",
+  }) {
     super(damagedObj.game);
     let x = damagedObj.pos.x;
     let y = damagedObj.pos.y;
 
     this.pos = new Vector(x - VARIANCE / 2 + Math.random() * VARIANCE, y - VARIANCE / 2 + Math.random() * VARIANCE);
     this.damage = damage;
+    this.alive = alpha;
     this.size = size;
-    this.aliveTime = duration;
-    this.freezeTime = FREEZE_DURATION;
-    this.initialTime = this.aliveTime;
-    this.type = "BASE";
+    this.aliveTime = aliveTime;
+    this.initialTime = initialTime;
+    this.freezeTime = freezeTime;
+    this.alpha = alpha;
+    this.type = type;
     this.paused = false;
-    if (orientation > MAX_SIDE_VEL) orientation = MAX_SIDE_VEL;
-    if (orientation < -MAX_SIDE_VEL) orientation = -MAX_SIDE_VEL;
+    if (velX > MAX_SIDE_VEL) velX = MAX_SIDE_VEL;
+    if (velX < -MAX_SIDE_VEL) velX = -MAX_SIDE_VEL;
 
 
-    this.vel = new Vector(-2 + Math.random() * 4 + orientation, -7);
+    this.vel = new Vector(-2 + Math.random() * 4 + velX, -7);
     this.cb = () => {};
 
     switch (this.type) {
-      case "BASE":
+      case "NORMAL":
         this.color = COLOR.NORMAL;
+        break;
+      case "ENEMY":
+        this.color = COLOR.ENEMY;
         break;
       default:
         this.color = COLOR.NORMAL;
@@ -68,7 +78,7 @@ class DamageNumber extends GameObject {
     //   color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`;
     // }
     let percent = (this.aliveTime) / (this.initialTime);
-    color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent})`;
+    color = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${percent * this.alpha})`;
 
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
@@ -86,7 +96,6 @@ class DamageNumber extends GameObject {
       this.vel.y += GRAVITY;
     }
 
-
     if (this.aliveTime <= 0) {
       this.alive = false;
     }
@@ -97,7 +106,6 @@ class DamageNumber extends GameObject {
   }
 
   draw() {
-    return;
     this.drawNum();
   }
 }

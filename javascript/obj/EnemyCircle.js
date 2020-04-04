@@ -4,6 +4,7 @@ import Player from './Player';
 import GameObject from "./GameObject";
 import Explosion from "./Explosion";
 import Emitter from "./Emitter";
+import DamageNumber from "./DamageNumber";
 
 const RADIUS = 7;
 const COLOR = "#a64942";
@@ -66,6 +67,12 @@ class EnemyCircle extends GameObject {
     // if (player.moveState === "STATE_DASHING") return;
     if (this.r * this.r + player.r * player.r > distSqr) {
       this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
+      if(this.damage > 1) this.game.vanity.push(new DamageNumber(player, this.damage, {
+        size: 20 + this.r / 4, 
+        duration: 30, 
+        velX: this.vel.x * 2,
+        type: "ENEMY",
+      }));
       let explosion = new Explosion(game, player.pos.x + diff.x / 2, player.pos.y + diff.y / 2, this.r);
       explosion.color = 'red';
       explosion.aliveTime = 5;

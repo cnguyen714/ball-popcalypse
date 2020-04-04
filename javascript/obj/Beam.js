@@ -137,15 +137,12 @@ class Beam extends Particle {
 
         switch (this.combo) {
           case this.game.player.maxSlashCombo:
-            this.game.vanity.push(new DamageNumber(obj, this.damage, 11, 30, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x - 50 + Math.random() * 100, obj.pos.y - 50 + Math.random() * 100, this.combo, Math.random() * 4, 30 + Math.random() * 70));
             obj.vel.add(knockStraight.multiply(-this.knockback));
 
             break;
           case "BEAM":
-            let num = new DamageNumber(obj, this.activeTime === 0 ? this.damage : this.damage / this.activeTime * this.hitFrequency, 40 * Math.log(this.damage) / Math.log(7000), 70, knockStraight.x)
-            this.game.vanity.push(num);
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 2, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 3, 60));
 
@@ -169,7 +166,6 @@ class Beam extends Particle {
             this.game.vanity.push(hitImpactBeam);
             break;
           case "FINISHER":
-            this.game.vanity.push(new DamageNumber(obj, this.damage, 20, 60, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 15, 150, 50));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
@@ -194,7 +190,6 @@ class Beam extends Particle {
             this.game.vanity.push(hitImpactFin);
             break;
           default:
-            this.game.vanity.push(new DamageNumber(obj, this.damage, 15, 50, knockStraight.x));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 60));

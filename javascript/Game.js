@@ -314,7 +314,7 @@ class Game {
         if (this.alpha < 1) this.alpha *= 1.10;
         this.aliveTime = 0;
         let xOffset = this.cvs.width / 2;
-        let yOffset = this.cvs.height - 250;
+        let yOffset = this.cvs.height - 270;
         this.ctx.textAlign = 'center';
 
         this.ctx.fillStyle = `rgba(0,128,128,${this.alpha})`;
@@ -330,13 +330,14 @@ class Game {
         this.ctx.shadowColor = 'black';
         
         this.ctx.fillText(`Press a key or mousebutton to start`, xOffset , yOffset);
-        this.ctx.drawImage(SPACEBAR_ICON, xOffset -= 465  , yOffset + 145, 90, 60);
+        this.ctx.drawImage(SPACEBAR_ICON, xOffset -= 445  , yOffset + 145, 90, 60);
         this.ctx.fillText(`Shift`, xOffset + 30, yOffset + 175);
+        this.ctx.fillText(`Dash`, xOffset + 40, yOffset + 225);
         this.ctx.drawImage(WASD, xOffset += 90, yOffset + 60, 180, 130);
         this.ctx.fillText(`Movement`, xOffset + 85, yOffset + 210);
         this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 190, yOffset + 13, 200, 180);
-        this.ctx.fillText(`Slash`, xOffset + 100, yOffset + 210);
-        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 190, yOffset + 43, 120, 150);
+        this.ctx.fillText(`Slash / [Charge]`, xOffset + 90, yOffset + 210);
+        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 200, yOffset + 43, 120, 150);
         this.ctx.fillText(`Burst / [Gatling]`, xOffset + 55, yOffset + 210);
         this.ctx.drawImage(SPACEBAR_ICON, xOffset += 170, yOffset + 113, 200, 75);
         this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 210);

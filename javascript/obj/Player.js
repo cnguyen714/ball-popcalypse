@@ -1,5 +1,6 @@
 
 import Vector from "../lib/Vector";
+import Trig from "../lib/Trig";
 import GameObject from "./GameObject";
 import * as EnemyFactory from './factory/enemy_factory';
 
@@ -38,7 +39,8 @@ const DASH_SPEED = 32;
 const DASH_COOLDOWN = 70;
 const POST_DASH_INVUL = 2;
 
-const SLASH_COOLDOWN = 11;
+const SLASH_COOLDOWN = 9;
+const MAX_SLASH_CHARGE = 30;
 const MAX_COMBOS = 3;
 
 const CHARGE_COST = 100;
@@ -104,6 +106,7 @@ class Player extends GameObject {
     this.chargeCost = CHARGE_COST;
         
     this.slashReset = 0;
+    this.slashCharge = 0;
     this.slashCombo = 0;
     this.slashCooldown = 0;
     this.maxSlashCombo = MAX_COMBOS;
@@ -200,6 +203,45 @@ class Player extends GameObject {
       this.slashReset = SLASH_COOLDOWN * 1.6;
     }
   }
+
+  chargeSlash() {
+    this.slashCombo = 0;
+    this.slashCooldown = 30;
+    this.shootCooldown = 30;
+    this.invul += 10;
+    this.dashDuration = 2;
+    this.dashPathDuration = DASH_PATH_DURATION;
+    this.moveState = STATE_DASHING;
+    this.dashing = true;
+    this.dashDirection = this.aim.dup().normalize().multiply(DASH_SPEED);
+    this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
+    this.game.particles.push(new BeamSlash(this.game, this, 
+      { 
+        pos: this.pos.dup().add(this.dashDirection.dup().multiply(5)), 
+        combo: "CHARGE", 
+        centerOffset: Math.max(Math.min(400, Vector.difference(this.pos.dup().add(this.dashDirection.dup().multiply(5)), this.mousePos).length()), 150) 
+      }));
+  
+    let slashFlash = new Emitter(this.game, {
+      pos: { x: this.pos.x, y: this.pos.y },
+      r: 6,
+      aim: Trig.rotateByDegree(this.aim, 30),
+      aliveTime: 40,
+      emitCount: 50,
+      emitSpeed: 25,
+      ejectSpeed: 9,
+      impulseVariance: 0.8,
+      fanDegree: 60,
+      color: "rgba(0, 188, 188, 1)",
+      decayRate: 1.1,
+      width: 100,
+      lengthForward: 40,
+      forwardOffset: Math.min(750, Vector.difference(this.pos, this.mousePos).length() + 300),
+      emitAngle: -45,
+    });
+    console.log(Vector.difference(this.pos, this.mousePos).length());
+    this.game.delayedParticles.push(slashFlash);
+  } 
 
   fireBeam() {
     if (this.charge >= this.chargeCost) {
@@ -665,7 +707,35 @@ class Player extends GameObject {
       this.game.vanity.push(thruster);
     }
 
-    if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCooldown <= 0) this.slash();
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge === 0 && this.slashCooldown <= 0) this.slash();
+    if (this.keyDown[KEY.MOUSE_LEFT]) {
+      this.slashCharge++; 
+      this.slashCharge = Math.min(this.slashCharge, MAX_SLASH_CHARGE + 1);
+    } 
+    if (!this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge >= MAX_SLASH_CHARGE) {
+      this.slashCharge = 0;
+      this.chargeSlash();
+    } else if (!this.keyDown[KEY.MOUSE_LEFT]) {
+      this.slashCharge = 0;
+    }
+    if(this.slashCharge === MAX_SLASH_CHARGE) {
+      let star = new Star(this, {
+        pos: this.pos.dup(),
+        length: 60,
+        width: 16,
+        aliveTime: 35,
+        expandRate: 1.05,
+        thinningRate: 0.65,
+        color: [0, 188, 188],
+      });
+      this.game.vanity.push(star);
+      let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 25);
+      explosion.color = "teal";
+      explosion.aliveTime = 3;
+      this.game.vanity.push(explosion);
+    }
+
+    if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge === 0 && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= (DASH_COUNT - 1) * this.maxDashCooldown) this.dash();

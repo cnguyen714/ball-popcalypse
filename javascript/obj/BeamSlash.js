@@ -12,7 +12,7 @@ const DAMAGE = 300;
 const DURATION = 7;
 const ARC_DEGREE_RATE = 20;
 const DERVISH_KB_RATE = 0.1;
-const OFFSET = 15;
+const CENTER_OFFSET = 15;
 const DIRECTION = {
   CCW: -1,
   CW: 1,
@@ -27,7 +27,8 @@ class BeamSlash extends Particle {
     pos = { x: owner.pos.x, y: owner.pos.y},
     combo = 0,
     beamClass = Beam,
-    addOffset = OFFSET,
+    offsetDegree = 0,
+    centerOffset = CENTER_OFFSET,
     width = WIDTH,
     length = LENGTH,
     damage = DAMAGE,
@@ -56,31 +57,11 @@ class BeamSlash extends Particle {
     this.combo = combo;
     this.knockback = kb;
     this.iterSpeed = iterSpeed;
+    this.centerOffset = centerOffset;
 
     switch(this.combo) {
-      case this.game.player.maxSlashCombo:
-        this.direction = DIRECTION.CCW;
-        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75;
-        this.aliveTime *= 11;
-        this.length *= 0.60;
-        this.width *= 0.60;
-        this.knockback *= DERVISH_KB_RATE;
-        this.damage /= 14;
-        this.iterSpeed = 3;
-        break;
       case 0:
         this.knockback *= 1.2;
-        this.iterSpeed = 2;
-        break;
-      case "FINISHER":
-        this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180; 
-        this.damage = this.damage * 2.5;
-        this.color = Beam.COLOR().CRIT;;
-        this.knockback = this.knockback * 1.4;
-        this.aliveTime += 2;
-        this.length += 60;
-        this.width += 30;
-        this.game.player.invul = 7;
         this.iterSpeed = 2;
         break;
       case 1:
@@ -96,11 +77,44 @@ class BeamSlash extends Particle {
         this.length *= 1.2;
         this.width *= 1.25;
         break;
+      case this.game.player.maxSlashCombo:
+        this.direction = DIRECTION.CCW;
+        this.arcRate = (ARC_DEGREE_RATE) * Math.PI / 180 * 0.75;
+        this.aliveTime *= 11;
+        this.length *= 0.60;
+        this.width *= 0.60;
+        this.knockback *= DERVISH_KB_RATE;
+        this.damage /= 14;
+        this.iterSpeed = 3;
+        break;
+      case "FINISHER":
+        this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180;
+        this.damage = this.damage * 2.5;
+        this.color = Beam.COLOR().CRIT;;
+        this.knockback = this.knockback * 1.4;
+        this.aliveTime += 2;
+        this.length += 60;
+        this.width += 30;
+        this.game.player.invul = 7;
+        this.iterSpeed = 2;
+        break;
+      case "CHARGE":
+        this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180;
+        this.damage = this.damage * 3;
+        // this.color = Beam.COLOR().FADE;
+        this.knockback = this.knockback * 4;
+        this.aliveTime += -1;
+        this.length = 90;
+        this.width = 160;
+        this.game.player.invul = 7;
+        this.iterSpeed = 3;
+        offsetDegree = -30;
+        break;
       default:
           break;
     }
 
-    this.startOffsetDegree = -addOffset + ARC_DEGREE_RATE * (this.aliveTime / 4);
+    this.startOffsetDegree = -offsetDegree + ARC_DEGREE_RATE * (this.aliveTime / 4);
 
     this.aim = this.owner.aim;
     let angle = this.startOffsetDegree * Math.PI / 180 * this.direction;
@@ -135,7 +149,7 @@ class BeamSlash extends Particle {
 
     }
     let p = new this.beamClass(this.game, {
-      pos: {x: this.pos.x + this.aim.x * OFFSET, y: this.pos.y + this.aim.y * OFFSET},
+      pos: {x: this.pos.x + this.aim.x * this.centerOffset, y: this.pos.y + this.aim.y * this.centerOffset},
       aim: this.aim, 
       combo: this.combo,
       color: this.color,
@@ -171,7 +185,7 @@ class BeamSlash extends Particle {
       // combo finisher
       if (this.combo === this.game.player.maxSlashCombo) {
         this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.22);
-        this.game.particles.push(new BeamSlash(this.game, this.owner, {combo: "FINISHER", addOffset: 40}));
+        this.game.particles.push(new BeamSlash(this.game, this.owner, {combo: "FINISHER", offsetDegree: 40}));
       }
     }
   }

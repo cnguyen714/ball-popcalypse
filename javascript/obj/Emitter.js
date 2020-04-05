@@ -21,6 +21,7 @@ class Emitter extends GameObject {
       r = 1,
       width = 0,
       lengthForward = 0,
+      forwardOffset = 0,
       cb = () => { },
       vel = new Vector(0, 0),
       aim = new Vector(1, 0),
@@ -33,6 +34,7 @@ class Emitter extends GameObject {
       decayRate = 0.8,
       impulseVariance = 0.9,
       color = "white",
+      emitAngle = 0,
     }
   ) {
     super(game);
@@ -42,6 +44,7 @@ class Emitter extends GameObject {
     this.r = r;
     this.width = width;
     this.lengthForward = lengthForward;
+    this.forwardOffset = forwardOffset;
     this.cb = cb;
     this.aliveTime = aliveTime,
     this.emittee = emittee;
@@ -53,6 +56,7 @@ class Emitter extends GameObject {
     this.impulseVariance = impulseVariance;
     this.active = true;
     this.color = color;
+    this.emitAngle = emitAngle;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);
@@ -92,14 +96,17 @@ class Emitter extends GameObject {
         angle = angle.multiply(offset);
       }
 
-      let forwardOffset = new Vector();
+      let forwardVariance = new Vector();
       if(this.lengthForward > 0) {
-        forwardOffset = dir.dup().normalize().multiply(Math.random() * this.lengthForward);
+        forwardVariance = dir.dup().normalize().multiply(Math.random() * this.lengthForward + this.forwardOffset);
       }
 
       let p = new this.emittee(this.game, {
-        pos: { x: this.pos.x + adjust.x + angle.x - forwardOffset.x * 0.25 + forwardOffset.x, y: this.pos.y + adjust.y + angle.y - forwardOffset.y * 0.25 + forwardOffset.y}, 
-        vel: dir,
+        pos: { 
+          x: this.pos.x + adjust.x + angle.x - forwardVariance.x * 0.25 + forwardVariance.x, 
+          y: this.pos.y + adjust.y + angle.y - forwardVariance.y * 0.25 + forwardVariance.y,
+        }, 
+        vel: Trig.rotateByDegree(dir, this.emitAngle),
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,
         color: this.color,

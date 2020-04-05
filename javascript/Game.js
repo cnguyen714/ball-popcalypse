@@ -1,5 +1,6 @@
 
 import Vector from './lib/Vector';
+import Trig from './lib/Trig';
 import Player from './obj/Player';
 import Particle from './obj/Particle';
 import * as ParticleFactory from './obj/factory/particle_factory';
@@ -931,7 +932,24 @@ class Game {
     this.ctx.lineTo(this.player.mousePos.x + finalPos.x, this.player.mousePos.y + finalPos.y);
     this.ctx.stroke();
     this.ctx.closePath();
-    this.ctx.restore();
+
+    
+    if(this.player.slashCharge > 20) {
+      this.ctx.restore();
+      this.ctx.save();
+      this.ctx.strokeStyle = "white";
+      this.ctx.lineWidth = 0.3;
+      this.ctx.fillStyle = "rgba(0,0,0,0)";
+      this.ctx.beginPath();
+      // let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length() * 2), 250);
+      let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length()), 275);
+      let aim = this.player.aim.dup();
+      aim.x *= -1;
+      let arcPos = Trig.getAngle(aim) + Math.PI / 4;
+      this.ctx.arc(this.player.pos.x, this.player.pos.y, dist, arcPos , arcPos + Math.PI / 2);
+      this.ctx.stroke();
+      this.ctx.closePath();
+    }
 
   }
 

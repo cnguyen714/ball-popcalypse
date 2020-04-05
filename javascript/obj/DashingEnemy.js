@@ -74,7 +74,6 @@ class DashingEnemy extends EnemyCircle {
       beamClass: EnemyBeam,
       width: 30,
       length: ATTACK_RANGE + 10 + this.game.difficulty / 3,
-      addOffset: this.r + 5,
       parent: this,
       cb: () => {
         this.pos = this.owner.pos.dup()

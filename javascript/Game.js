@@ -158,9 +158,8 @@ class Game {
         preDefeatSfx: bufferList[10],
         spawnSfx: bufferList[11],
       }
-      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, 0.7);
-      game.bgm.loop = true;
-      game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, 1.5);
+      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, {vol: 0.6, loop: true});
+      game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, {vol: 1.4});
       // game.bgm.sourceNode.loop = true;
       // game.bgm.gainNode.gain.value = 0.4;
       // let source0 = context.createBufferSource();
@@ -203,16 +202,17 @@ class Game {
       game.assetsLoaded = true;
     }
 
-    function createAudio(game, buffer, vol = 1.0) {
+    function createAudio(game, buffer, {
+      vol = 1.0,
+      sourceNode = null,
+      gainNode = null,
+      startedAt = 0,
+      pausedAt = 0,
+      playing = false,
+      volume = vol,
+      loop = false
+    }) {
       let context = game.audioContext;
-      let obj = {};
-      var sourceNode = null,
-          gainNode = null,
-          startedAt = 0,
-          pausedAt = 0,
-          playing = false,
-          volume = vol,
-          loop = false;
 
       let play = function() {
         if(game.mute) return;
@@ -988,7 +988,7 @@ class Game {
     yOffset -= 15 + 12 * 6;
     this.ctx.fillText(`->  Movement`, xOffset, yOffset += 15);
     this.ctx.fillText(`->  Dash`, xOffset, yOffset += 12);
-    this.ctx.fillText(`->  Slash`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Slash Combo`, xOffset, yOffset += 12);
     this.ctx.fillText(`->  Quickdraw`, xOffset, yOffset += 12);
     this.ctx.fillText(`->  Beam`, xOffset, yOffset += 12);
     this.ctx.fillText(`->  Gatling`, xOffset, yOffset += 12);

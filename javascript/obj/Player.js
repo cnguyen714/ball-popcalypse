@@ -468,6 +468,7 @@ class Player extends GameObject {
     if (this.shooting === false) {
       this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
       this.shooting = true;
+      this.slashCooldown = 6;
       this.shootCooldown = SHOOT_COOLDOWN;
       
       let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, this.aim, 4000, 50, 200, 10);

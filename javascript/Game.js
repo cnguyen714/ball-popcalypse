@@ -783,7 +783,7 @@ class Game {
 
           // Generate enemies -
           // Throttle making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam
-          let spawnRate = 20 - Math.floor(this.difficulty);
+          let spawnRate = 20 - Math.floor(this.difficulty * 0.8);
           spawnRate = spawnRate <= 1 ? 1 : spawnRate;
           if (this.loopCount % Math.floor((BASE_SPAWN_RATE + spawnRate) * (this.fps >= MIN_FRAME_RATE ? 1 : 2) || this.loopCount % 30 === 0) === 0 && this.pauseTime === 0 && this.loopCount > SPAWN_LOCKOUT_TIME) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
@@ -801,13 +801,13 @@ class Game {
 
             this.difficulty += 0.002 * this.difficultyRate;
             this.score += entity.score;
-            this.player.charge++;
+            this.player.charge += entity.chargeReward;
             let dust = new Emitter(this, {
               pos: { x: entity.pos.x, y: entity.pos.y },
               r: 8,
-              aliveTime: 20,
-              emitCount: 4,
-              emitSpeed: 2,
+              aliveTime: 30,
+              emitCount: 3 * entity.chargeReward,
+              emitSpeed: 3,
               ejectSpeed: 6,
               impulseVariance: 0.1,
               decayRate: 0.9,
@@ -815,7 +815,7 @@ class Game {
               lengthForward: 30,
               // angle: 270,
               cb: function() {
-                this.vel.add(Vector.difference(this.game.player.pos, this.pos).normalize().multiply(3));
+                this.vel.add(Vector.difference(this.game.player.pos, this.pos).normalize().multiply(1.8));
               }
             });
             this.vanity.push(dust);
@@ -989,7 +989,7 @@ class Game {
       this.ctx.restore();
       this.ctx.save();
       this.ctx.strokeStyle = "white";
-      this.ctx.lineWidth = 0.3;
+      this.ctx.lineWidth = 0.7;
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.beginPath();
       // let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length() * 2), 250);

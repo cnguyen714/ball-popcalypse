@@ -105,13 +105,13 @@ class BeamSlash extends Particle {
         break;
       case "CHARGE":
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180;
-        this.damage = this.damage * 4;
+        this.damage = this.damage * 5;
         // this.color = Beam.COLOR().FADE;
         this.knockback = this.knockback * 4;
         this.aliveTime += -1;
         this.beamAliveTime = 40;
         this.length = 110;
-        this.width = 160;
+        this.width = 185;
         this.game.player.invul = 7;
         this.iterSpeed = 2;
         offsetDegree = -30;

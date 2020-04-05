@@ -16,12 +16,20 @@ const HEALTH = 100;
 const HEALTH_CAP = 200;
 const DAMAGE = 1;
 const SCORE = 1;
+const CHARGE_REWARD = 1;
 const BASE_TURN_RATE = 2;
 const ACCEL = 0.4;
 const MAX_SPEED = 4;
 
 class EnemyCircle extends GameObject {
-  constructor(game) {
+  constructor(game, {
+    pos = {x: 100, y: 100},
+    r = RADIUS,
+    color = COLOR,
+    damage = DAMAGE,
+    score = SCORE,
+    chargeReward = CHARGE_REWARD,
+  }) {
     super(game);
     this.aiCallback = () => {
       this.aim = Vector.difference(game.player.pos, this.pos).normalize();
@@ -32,16 +40,17 @@ class EnemyCircle extends GameObject {
     };
 
     this.health = HEALTH + game.difficulty * 2;
-
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 3);
     this.maxSpeed = MAX_SPEED + Math.random() * Math.pow(game.difficulty, 1 / 3);
 
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
 
-    this.r = RADIUS;
-    this.color = COLOR;
-    this.damage = DAMAGE;
-    this.score = SCORE;
+    this.pos = new Vector(pos.x, pos.y);
+    this.r = r;
+    this.color = color;
+    this.damage = damage;
+    this.score = score;
+    this.chargeReward = chargeReward;
     this.active = true;
 
     this.update = this.update.bind(this);

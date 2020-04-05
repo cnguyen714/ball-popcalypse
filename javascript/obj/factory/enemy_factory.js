@@ -46,20 +46,20 @@ export const randomEdgePos = (canvas, radius) => {
 
 export const spawnCircleRandom = (player) => {
   let num = Math.floor(Math.random() * 1000);
-  let enemyRate = 0
+  let enemyRate = 0;
   let enemy;
   let spawnPos = randomEdgePos(player.cvs, 100);
 
   if (num <= (enemyRate += LARGE_SPAWN_RATE - player.game.difficulty / 20)) {
-    enemy = new LargeEnemyCircle(player.game);
+    enemy = new LargeEnemyCircle(player.game, { pos: { x: spawnPos.x, y: spawnPos.y } });
   } else if (num <= (enemyRate += CARRIER_SPAWN_RATE + player.game.difficulty / 10)) {
-    enemy = new EnemyCarrier(player.game);
+    enemy = new EnemyCarrier(player.game, { pos: { x: spawnPos.x, y: spawnPos.y } });
   } else if (num <= (enemyRate += RANGED_SPAWN_RATE + player.game.difficulty / 10)) {
-    enemy = new RangedEnemy(player.game);
+    enemy = new RangedEnemy(player.game, { pos: { x: spawnPos.x, y: spawnPos.y } } );
   } else if (num <= (enemyRate += DASH_SPAWN_RATE + player.game.difficulty / 3)) {
-    enemy = new DashingEnemy(player.game, {pos: {x: spawnPos.x, y: spawnPos.y}});
+    enemy = new DashingEnemy(player.game, {pos: { x: spawnPos.x, y: spawnPos.y } });
   } else {
-    enemy = new EnemyCircle(player.game);
+    enemy = new EnemyCircle(player.game, { pos: { x: spawnPos.x, y: spawnPos.y }});
   }
 
   enemy.pos.x = spawnPos.x;

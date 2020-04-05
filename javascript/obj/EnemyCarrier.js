@@ -16,13 +16,15 @@ const BASE_TURN_RATE = 0.1;
 const ACCEL = 1.2;
 const MAX_SPEED = 3;
 const DAMAGE = 20;
+const SCORE = 20;
+const CHARGE_REWARD = 1;
 // const KEEPAWAY_RANGE = 650;
 const SPAWN_RATE = 12;
 const LAUNCH_SPEED = 100;
 
 class EnemyCarrier extends EnemyCircle {
-  constructor(game) {
-    super(game);
+  constructor(game, props) {
+    super(game, props);
     this.direction = 1;
     this.aggroRange = this.cvs.height / 4 + Math.random() * 300;
     this.aiCallback = () => {
@@ -41,13 +43,11 @@ class EnemyCarrier extends EnemyCircle {
       this.vel.add(Trig.rotateByDegree(this.aim.multiply(-this.accel), this.direction * 90));
 
       if(this.game.loopCount % SPAWN_RATE === 0) {
-        let drone = new EnemyCircle(this.game);
         let angle = Trig.rotateByDegree(Vector.difference(game.player.pos, this.pos), 90 - Math.random() * 180).normalize();
+        let spawnX = this.pos.x + angle.x * (this.r + 10);
+        let spawnY = this.pos.y + angle.y * (this.r + 10);
+        let drone = new EnemyCircle(this.game, { pos: { x: spawnX, y: spawnY}});
         drone.vel = angle.dup().multiply(LAUNCH_SPEED);
-        let spawnX = this.pos.x + angle.x * (this.r + drone.r + 3);
-        let spawnY = this.pos.y + angle.y * (this.r + drone.r + 3);
-        drone.pos.x = spawnX;
-        drone.pos.y = spawnY;
         this.game.entities.push(drone);
 
         let star = new Star(this, {
@@ -99,7 +99,8 @@ class EnemyCarrier extends EnemyCircle {
 
     this.color = COLOR;
     this.damage = DAMAGE;
-    this.score = this.r * 2;
+    this.chargeReward = CHARGE_REWARD;
+    this.score = SCORE + this.r * 2;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);

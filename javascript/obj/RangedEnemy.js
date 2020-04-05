@@ -18,6 +18,7 @@ const HEALTH = 600;
 const HEALTH_CAP = 1200;
 const DAMAGE = 1;
 const SCORE = 20;
+const CHARGE_REWARD = 3;
 const BASE_TURN_RATE = 2;
 const ACCEL = 3;
 const MAX_SPEED = 5;
@@ -25,8 +26,8 @@ const FIRE_COOLDOWN = 180;
 const FIRE_VEL = 6;
 
 class RangedEnemy extends EnemyCircle {
-  constructor(game) {
-    super(game);
+  constructor(game, props) {
+    super(game, props);
     this.aggroRange = this.cvs.height / 4 + 50;
     this.aiCallback = () => {
       this.aim = Vector.difference(game.player.pos, this.pos);
@@ -54,6 +55,7 @@ class RangedEnemy extends EnemyCircle {
     this.color = COLOR;
     this.damage = DAMAGE;
     this.score = SCORE;
+    this.chargeReward = CHARGE_REWARD;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);

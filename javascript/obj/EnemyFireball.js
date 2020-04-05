@@ -12,6 +12,7 @@ const DAMAGE = 10;
 const COLOR = "#ff6229";
 const VELOCITY = 7;
 const SCORE = 1;
+const CHARGE_REWARD = 1;
 const HITBOX_RATIO = 0.3;
 
 
@@ -38,6 +39,7 @@ class EnemyFireball extends Particle {
     this.active = true;
     this.target = this.game.player;
     this.score = SCORE;
+    this.chargeReward = CHARGE_REWARD;
     this.health = 1;
 
     this.update = this.update.bind(this);

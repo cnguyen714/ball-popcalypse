@@ -18,6 +18,7 @@ const HEALTH = 1000;
 const HEALTH_CAP = 1500;
 const DAMAGE = 1;
 const SCORE = 30;
+const CHARGE_REWARD = 4;
 const BASE_TURN_RATE = 2;
 const ACCEL = 0.7;
 const MAX_SPEED = 5;
@@ -37,9 +38,7 @@ class DashingEnemy extends EnemyCircle {
       color = COLOR,
     }
   ) {
-    super(game);
-    this.pos.x = pos.x;
-    this.pos.y = pos.y;
+    super(game, {pos: new Vector(pos.x, pos.y)});
     this.health = HEALTH + game.difficulty * 3;
     if (this.health > HEALTH_CAP) this.health = HEALTH_CAP;
     this.accel = ACCEL + Math.random() * Math.pow(game.difficulty, 1 / 3) / 4;
@@ -54,6 +53,7 @@ class DashingEnemy extends EnemyCircle {
     this.score = SCORE;
     this.dashDuration = 0;
     this.storedVel = this.aim;
+    this.chargeReward = CHARGE_REWARD;
 
     this.update = this.update.bind(this);
     this.draw = this.draw.bind(this);

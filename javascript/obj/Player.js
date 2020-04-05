@@ -306,7 +306,7 @@ class Player extends GameObject {
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
 
 
-    this.game.freeze(3);
+    this.game.freeze(4);
   } 
 
   fireBeam() {
@@ -463,6 +463,7 @@ class Player extends GameObject {
   }
 
   shoot() {
+    this.slashCharge = 0;
     if (this.shooting === false) {
       this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
       this.shooting = true;

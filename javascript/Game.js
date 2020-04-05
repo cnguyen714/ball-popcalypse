@@ -86,6 +86,8 @@ class Game {
     this.filePath = PATH;
     this.assetsLoaded = false;
     this.cheat = false;
+    this.player = new Player(this);
+
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
     this.prevTime = (new Date).getTime();
@@ -525,14 +527,20 @@ class Game {
         pos: { x: this.player.pos.x, y: this.player.pos.y },
         r: 5,
         aim: new Vector(1,0),
-        aliveTime: 90,
-        emitCount: 150,
-        emitSpeed: 15,
-        ejectSpeed: 20,
-        impulseVariance: 0.95,
+        aliveTime: 240,
+        emitCount: 450,
+        emitSpeed: 150,
+        ejectSpeed: 30,
+        impulseVariance: 0.8,
         fanDegree: 180,
-        decayRate: 0.9,
+        decayRate: 0.95,
+        lengthForward: 300,
+        emitAngle: 90,
         color: "rgba(0, 205, 205,1)",
+        cb: function () {
+          if (!this.attractForce) this.attractForce = Math.random() * 0.25;
+          this.vel.add(Trig.rotateByDegree(Vector.difference(this.game.player.pos, this.pos).normalize(), -25 - this.attractForce * 100).multiply( 0.05 + this.attractForce * 2));
+        }
       });
 
       this.vanity.push(endEmit);
@@ -638,7 +646,7 @@ class Game {
         break;
 
       case STATE_BEGIN:
-        if (this.loopCount % 120 === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
+        if (this.entities.length < 300 && this.loopCount % 120 === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           if (this.loopCount % 240 === 0) {
             this.player.pos.x = 200 + Math.random() * (this.cvs.width - 200 * 2);
@@ -647,15 +655,37 @@ class Game {
         }
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
+        this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
-        break;
+        this.enemyParticles = this.enemyParticles.filter(entity => entity.alive);
+        this.enemyParticles.forEach(entity => entity.update());
+        this.vanity = this.vanity.filter(entity => entity.alive);
+        this.vanity.forEach(entity => entity.update());
 
+        if (this.loopCount % 20 === 0) {
+          let star = new Star(this, {
+            pos: this.player.pos,
+            length: 4,
+            width: 2,
+            aliveTime: 30,
+            expandRate: 1.02,
+            thinningRate: 0.8,
+            color: [0, 188, 188],
+            angle: Math.random() * 180,
+          });
+          this.vanity.push(star)
+        }
+        break;
       case STATE_STARTING:
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
+        this.particles = this.particles.filter(entity => entity.alive);
         this.particles.forEach(entity => entity.update());
+        this.enemyParticles = this.enemyParticles.filter(entity => entity.alive);
+        this.enemyParticles.forEach(entity => entity.update());
+        this.vanity = this.vanity.filter(entity => entity.alive);
+        this.vanity.forEach(entity => entity.update());
         break;
-
       case STATE_RUNNING:
 
         if (this.pauseTime === 0) {
@@ -1089,16 +1119,18 @@ class Game {
         break;
 
       case STATE_BEGIN:
-        this.particles.forEach(entity => entity.draw());
-        // this.player.draw();
         this.entities.forEach(entity => entity.draw());
+        this.particles.forEach(entity => entity.draw());
+        this.enemyParticles.forEach(entity => entity.draw());
+        this.vanity.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         break;
 
       case STATE_STARTING:
-        this.particles.forEach(entity => entity.draw());
-        // this.player.draw();
         this.entities.forEach(entity => entity.draw());
+        this.particles.forEach(entity => entity.draw());
+        this.enemyParticles.forEach(entity => entity.draw());
+        this.vanity.forEach(entity => entity.draw());
         this.menus.forEach(entity => entity.draw());
         break;
       case STATE_RUNNING:

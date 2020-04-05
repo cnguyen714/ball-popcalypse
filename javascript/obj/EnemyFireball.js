@@ -45,6 +45,7 @@ class EnemyFireball extends Particle {
   }
 
   checkAndHitPlayer(player) {
+    if (!player.alive) return;
     let diff = Vector.difference(this.pos, player.pos);
     let distSqr = diff.dot(diff);
 

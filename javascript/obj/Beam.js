@@ -155,8 +155,8 @@ class Beam extends Particle {
               pos: { x: obj.pos.x, y: obj.pos.y },
               r: 8,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
-              emitCount: 4,
-              emitSpeed: 2,
+              emitCount: 3,
+              emitSpeed: 1,
               ejectSpeed: 9,
               impulseVariance: 0.25,
               fanDegree: 10,
@@ -177,10 +177,10 @@ class Beam extends Particle {
 
             let hitImpactFin = new Emitter(this.game, {
               pos: { x: obj.pos.x, y: obj.pos.y },
-              r: 8,
+              r: 10,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
-              emitCount: 6,
-              emitSpeed: 6,
+              emitCount: 4,
+              emitSpeed: 2,
               ejectSpeed: 12,
               impulseVariance: 0.4,
               fanDegree: 20,
@@ -201,10 +201,10 @@ class Beam extends Particle {
 
             let hitImpact = new Emitter(this.game, {
               pos: { x: obj.pos.x, y: obj.pos.y },
-              r: 6,
+              r: 8,
               aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
-              emitCount: 4,
-              emitSpeed: 4,
+              emitCount: 3,
+              emitSpeed: 1,
               ejectSpeed: 6,
               impulseVariance: 0.3,
               decayRate: 0.85,

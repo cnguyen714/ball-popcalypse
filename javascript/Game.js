@@ -806,8 +806,8 @@ class Game {
               pos: { x: entity.pos.x, y: entity.pos.y },
               r: 8,
               aliveTime: 30,
-              emitCount: 3 * entity.chargeReward,
-              emitSpeed: 3,
+              emitCount: 2 * entity.chargeReward,
+              emitSpeed: 2,
               ejectSpeed: 6,
               impulseVariance: 0.1,
               decayRate: 0.9,
@@ -985,10 +985,10 @@ class Game {
     this.ctx.closePath();
 
     
-    if(this.player.slashCharge > 20) {
+    if(this.player.slashCharge > 15) {
       this.ctx.restore();
       this.ctx.save();
-      this.ctx.strokeStyle = "white";
+      this.ctx.strokeStyle = this.player.slashCharge >= this.player.slashChargeNeeded ? "orange" : "white";
       this.ctx.lineWidth = 0.7;
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.beginPath();

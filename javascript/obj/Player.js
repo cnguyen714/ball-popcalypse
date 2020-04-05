@@ -40,7 +40,7 @@ const DASH_COOLDOWN = 70;
 const POST_DASH_INVUL = 2;
 
 const SLASH_COOLDOWN = 9;
-const MAX_SLASH_CHARGE = 30;
+const CHARGE_SLASH_TIME = 30;
 const MAX_COMBOS = 3;
 
 const CHARGE_COST = 100;
@@ -107,6 +107,7 @@ class Player extends GameObject {
         
     this.slashReset = 0;
     this.slashCharge = 0;
+    this.slashChargeNeeded = CHARGE_SLASH_TIME;
     this.slashCombo = 0;
     this.slashCooldown = 0;
     this.maxSlashCombo = MAX_COMBOS;
@@ -213,7 +214,7 @@ class Player extends GameObject {
       this.slashCooldown = SLASH_COOLDOWN;
       this.shootCooldown = this.slashCooldown + 5;
       this.slashCombo++;
-      this.slashReset = SLASH_COOLDOWN * 1.6;
+      this.slashReset = SLASH_COOLDOWN * 2;
     }
   }
 
@@ -428,7 +429,7 @@ class Player extends GameObject {
         let beam = new BeamCannon(this.game, this.pos.x, this.pos.y, aim);
         beam.color = Beam.COLOR().CANNON;
         beam.width = 400;
-        beam.damage = 1000;
+        beam.damage = 1500;
         beam.knockback = 40;
         beam.activeTime = 15;
         this.game.particles.push(beam);
@@ -777,15 +778,15 @@ class Player extends GameObject {
     if (this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge === 0 && this.slashCooldown <= 0) this.slash();
     if (this.keyDown[KEY.MOUSE_LEFT]) {
       this.slashCharge++; 
-      this.slashCharge = Math.min(this.slashCharge, MAX_SLASH_CHARGE + 1);
+      this.slashCharge = Math.min(this.slashCharge, this.slashChargeNeeded + 1);
     } 
-    if (!this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge >= MAX_SLASH_CHARGE) {
+    if (!this.keyDown[KEY.MOUSE_LEFT] && this.slashCharge >= this.slashChargeNeeded) {
       this.slashCharge = 0;
       this.chargeSlash();
     } else if (!this.keyDown[KEY.MOUSE_LEFT]) {
       this.slashCharge = 0;
     }
-    if(this.slashCharge === MAX_SLASH_CHARGE) {
+    if (this.slashCharge === this.slashChargeNeeded) {
       let star = new Star(this, {
         pos: this.pos.dup(),
         length: 250,

@@ -128,10 +128,10 @@ class DashingEnemy extends EnemyCircle {
       this.vel = this.vel.multiply(0);
       let aura = new Emitter(game, {
         pos: { x: this.pos.x, y: this.pos.y + 1 },
-        r: 6,
+        r: 8,
         aim: new Vector(0, -1),
         aliveTime: 14,
-        emitCount: 2,
+        emitCount: 1,
         emitSpeed: 1,
         ejectSpeed: 4,
         impulseVariance: 0.2,

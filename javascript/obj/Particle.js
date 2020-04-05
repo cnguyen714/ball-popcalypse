@@ -78,8 +78,8 @@ class Particle extends GameObject {
           r: 4,
           aim: this.vel.dup(),
           aliveTime: 20,
-          emitCount: 2,
-          ejectSpeed: 4,
+          emitCount: 1,
+          ejectSpeed: 1,
           impulseVariance: 0.15,
           fanDegree: 10,
         });

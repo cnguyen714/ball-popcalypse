@@ -28,7 +28,7 @@ class LargeEnemyCircle extends EnemyCircle {
       this.vel.add(this.aim.multiply(this.accel));  
     };
 
-    this.r = this.r || Math.floor(50 + Math.random() * 50);
+    this.r = Math.floor(50 + Math.random() * 50);
     if (this.game.state === "STATE_OVER") this.r *= 1 + Math.random() * 4;
 
     if (Math.floor(Math.random() * 5) % 3 === 0) {

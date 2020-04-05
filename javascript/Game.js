@@ -331,23 +331,23 @@ class Game {
         this.ctx.shadowBlur = 4;
         this.ctx.shadowColor = 'black';
         
-        this.ctx.fillText(`Press a key or mousebutton to start`, xOffset , yOffset);
+        this.ctx.fillText(`Press a key or mousebutton to start`, xOffset + 25 , yOffset);
         this.ctx.drawImage(SPACEBAR_ICON, xOffset -= 445  , yOffset + 145, 90, 60);
         this.ctx.fillText(`Shift`, xOffset + 30, yOffset + 175);
         this.ctx.fillText(`Dash`, xOffset + 40, yOffset + 225);
         this.ctx.drawImage(WASD, xOffset += 90, yOffset + 60, 180, 130);
         this.ctx.fillText(`Movement`, xOffset + 85, yOffset + 210);
         this.ctx.drawImage(LEFT_MOUSE_ICON, xOffset += 190, yOffset + 13, 200, 180);
-        this.ctx.fillText(`Slash / [Charge]`, xOffset + 90, yOffset + 210);
-        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 200, yOffset + 43, 120, 150);
-        this.ctx.fillText(`Burst / [Gatling]`, xOffset + 55, yOffset + 210);
+        this.ctx.fillText(`Slash / [Quickdraw]`, xOffset + 90, yOffset + 210);
+        this.ctx.drawImage(RIGHT_MOUSE_ICON, xOffset += 230, yOffset + 43, 120, 150);
+        this.ctx.fillText(`Beam / [Gatling]`, xOffset + 55, yOffset + 210);
         this.ctx.drawImage(SPACEBAR_ICON, xOffset += 170, yOffset + 113, 200, 75);
         this.ctx.fillText(`Cannon`, xOffset + 90, yOffset + 210);
         this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 150);
 
         this.ctx.drawImage(LINKED_IN_ICON, 10, 10, 80, 80);
         this.ctx.textAlign = 'left';
-        this.ctx.fillText(`If you experience significant lag executing player attacks, please try the game on Google Chrome`, 110, 40);
+        this.ctx.fillText(`If you experience significant lag, please try the game on Google Chrome`, 110, 40);
       }
       this.ctx.restore();
     }
@@ -969,6 +969,31 @@ class Game {
     this.ctx.fillText(`Highscore: ${this.highscore}`, xOffset, yOffset += 20);
     this.ctx.fillText(`Time: ${this.timeSeconds}`, xOffset, yOffset += 20);
     this.ctx.fillText(`Difficulty: ${this.difficulty.toFixed(2)}`, xOffset, yOffset += 20);
+    this.ctx.fillText(`Controls`, xOffset + 70, yOffset += 40);
+    
+    this.ctx.font = '11px sans-serif';
+    this.ctx.textAlign = 'right';
+
+    xOffset = 110;
+    this.ctx.fillText(`WASD keys `, xOffset, yOffset += 15);
+    this.ctx.fillText(`Shift `, xOffset, yOffset += 12);
+    this.ctx.fillText(`Left Mouse `, xOffset, yOffset += 12);
+    this.ctx.fillText(`Hold [Left Mouse] `, xOffset, yOffset += 12);
+    this.ctx.fillText(`Right Mouse `, xOffset, yOffset += 12);
+    this.ctx.fillText(`Hold [Right Mouse] `, xOffset, yOffset += 12);
+    this.ctx.fillText(`Spacebar `, xOffset, yOffset += 12);
+
+    this.ctx.textAlign = 'left';
+    xOffset += 10;
+    yOffset -= 15 + 12 * 6;
+    this.ctx.fillText(`->  Movement`, xOffset, yOffset += 15);
+    this.ctx.fillText(`->  Dash`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Slash`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Quickdraw`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Beam`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Gatling`, xOffset, yOffset += 12);
+    this.ctx.fillText(`->  Cannon`, xOffset, yOffset += 12);
+
     this.ctx.restore();
     this.drawHealth();
     this.drawChargeBar();

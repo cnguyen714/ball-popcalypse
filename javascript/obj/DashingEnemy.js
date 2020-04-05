@@ -110,6 +110,7 @@ class DashingEnemy extends EnemyCircle {
         color: [255, 0, 0],
       });
       this.game.vanity.push(star);
+      
       let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 25);
       explosion.color = "red";
       explosion.aliveTime = 3;
@@ -184,6 +185,18 @@ class DashingEnemy extends EnemyCircle {
           color: "white",
         });
         this.game.vanity.push(dust);
+        let p = new Particle(game, this.pos.x, this.pos.y);
+        p.color = "green";
+        p.aliveTime = 30;
+        p.initialTime = 30;
+        p.r = this.r - 2;
+        p.active = false;
+        p.cb = function () {
+          this.color = `rgba(20,155,20,${this.aliveTime / this.initialTime})`;
+          this.aliveTime--;
+          if (this.aliveTime <= 0) this.alive = false;
+        }
+        this.game.vanity.push(p);
       }
       let p = new Particle(game, this.pos.x, this.pos.y);
       p.color = "green";

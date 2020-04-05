@@ -182,6 +182,19 @@ class Player extends GameObject {
         this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
         this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
         this.game.vanity.push(new Explosion(this.game, this.pos.x, this.pos.y, this.r * 2, new Vector(), 3));
+
+        let p = new Particle(game, this.pos.x, this.pos.y);
+        p.color = "green";
+        p.aliveTime = 30;
+        p.initialTime = 30;
+        p.r = this.r;
+        p.active = false;
+        p.cb = function () {
+          this.color = `rgba(0,188,188,${this.aliveTime / this.initialTime})`;
+          this.aliveTime--;
+          if (this.aliveTime <= 0) this.alive = false;
+        }
+        this.game.vanity.push(p);
       }
     }
   }
@@ -266,6 +279,18 @@ class Player extends GameObject {
       lengthForward: -200,
     });
     this.game.vanity.push(dust);
+    let p = new Particle(game, this.pos.x, this.pos.y);
+    p.color = "green";
+    p.aliveTime = 30;
+    p.initialTime = 30;
+    p.r = this.r;
+    p.active = false;
+    p.cb = function () {
+      this.color = `rgba(0,188,188,${this.aliveTime / this.initialTime})`;
+      this.aliveTime--;
+      if (this.aliveTime <= 0) this.alive = false;
+    }
+    this.game.vanity.push(p);
 
     let spark = new SlashSpark(this.game, this.pos.x, this.pos.y, "BEAM", 150, 60, 17, Math.PI + Math.atan2(this.aim.y, this.aim.x), 0, true, function () { this.width *= 0.80; this.length *= 1.15 });
     spark.color = [0, 255, 255];

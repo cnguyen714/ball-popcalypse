@@ -343,6 +343,8 @@ class Game {
         this.ctx.fillText(`Spacebar`, xOffset + 65, yOffset + 150);
 
         this.ctx.drawImage(LINKED_IN_ICON, 10, 10, 80, 80);
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(`If you experience significant lag executing player attacks, please try the game on Google Chrome`, 110, 40);
       }
       this.ctx.restore();
     }

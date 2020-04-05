@@ -20,10 +20,12 @@ class Sparkle extends GameObject {
       r = RADIUS,
       decayRate = DECAY,
       aliveTime = DURATION,
+      aim = new Vector(1, 0),
     }
   ) {
     super(game);
     this.pos = new Vector(pos.x, pos.y);
+    this.aim = aim;
     this.vel = vel;
     this.initialR = r;
     this.r = r;

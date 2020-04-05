@@ -769,6 +769,23 @@ class Game {
             this.difficulty += 0.002 * this.difficultyRate;
             this.score += entity.score;
             this.player.charge++;
+            let dust = new Emitter(this, {
+              pos: { x: entity.pos.x, y: entity.pos.y },
+              r: 8,
+              aliveTime: 20,
+              emitCount: 4,
+              emitSpeed: 2,
+              ejectSpeed: 6,
+              impulseVariance: 0.1,
+              decayRate: 0.9,
+              color: "rgba(0,188,188,1)",
+              lengthForward: 30,
+              // angle: 270,
+              cb: function() {
+                this.vel.add(Vector.difference(this.game.player.pos, this.pos).normalize().multiply(3));
+              }
+            });
+            this.vanity.push(dust);
           });
 
           // Handle updates

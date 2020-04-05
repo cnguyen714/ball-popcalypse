@@ -101,11 +101,14 @@ class Emitter extends GameObject {
         forwardVariance = dir.dup().normalize().multiply(Math.random() * this.lengthForward + this.forwardOffset);
       }
 
+      let posX = this.pos.x + adjust.x + angle.x - forwardVariance.x * 0.25 + forwardVariance.x;
+      let posY = this.pos.y + adjust.y + angle.y - forwardVariance.y * 0.25 + forwardVariance.y
       let p = new this.emittee(this.game, {
         pos: { 
-          x: this.pos.x + adjust.x + angle.x - forwardVariance.x * 0.25 + forwardVariance.x, 
-          y: this.pos.y + adjust.y + angle.y - forwardVariance.y * 0.25 + forwardVariance.y,
+          x: posX, 
+          y: posY,
         }, 
+        aim: Vector.difference(new Vector(posX, posY), this.pos).normalize(),
         vel: Trig.rotateByDegree(dir, this.emitAngle),
         r: this.r * Math.random() * 1.3,
         aliveTime: this.aliveTime,

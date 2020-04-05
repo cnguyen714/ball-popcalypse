@@ -228,20 +228,24 @@ class Player extends GameObject {
   
     let slashFlash = new Emitter(this.game, {
       pos: { x: this.pos.x, y: this.pos.y },
-      r: 6,
+      r: 7,
       aim: Trig.rotateByDegree(this.aim, 10),
       aliveTime: 40,
       emitCount: 90,
-      emitSpeed: 30,
-      ejectSpeed: 9,
-      impulseVariance: 0.8,
+      emitSpeed: 45,
+      ejectSpeed: 14,
+      impulseVariance: 0.2,
       fanDegree: 60,
       color: "rgba(0, 188, 188, 1)",
       decayRate: 0.8,
       width: 100,
-      lengthForward: 40,
+      lengthForward: 30,
       forwardOffset: Math.max(Math.min(600, Vector.difference(this.pos.dup().add(this.dashDirection.dup().multiply(5)), this.mousePos).length() * 1.2), 150) + 150,
-      emitAngle: -45,
+      emitAngle: -50,
+      cb: function() {
+        // this.vel.subtract(this.aim.dup().multiply(0.4));
+        // this.vel.y += 0.05;
+      }
     });
     this.game.delayedParticles.push(slashFlash);
 

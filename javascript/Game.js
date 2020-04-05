@@ -735,11 +735,12 @@ class Game {
                 this.vanity.push(star4);
               }
             }
-
           }
 
           this.vanity = this.vanity.filter(entity => entity.alive);
           this.vanity.filter(entity => !entity.paused).forEach(entity => entity.update());
+          this.particles = this.particles.filter(entity => entity.alive);
+          this.particles.filter(entity => !entity.paused).forEach(entity => entity.update());
         } else {
           if (this.loopCount % DIFFICULTY_INTERVAL === 0) {
             this.difficulty += DIFFICULTY_GROWTH;
@@ -942,7 +943,7 @@ class Game {
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.beginPath();
       // let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length() * 2), 250);
-      let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length()), 275);
+      let dist = Math.max(Math.min(600, Vector.difference(this.player.pos, this.player.mousePos).length()), 275);
       let aim = this.player.aim.dup();
       aim.x *= -1;
       let arcPos = Trig.getAngle(aim) + Math.PI / 4;

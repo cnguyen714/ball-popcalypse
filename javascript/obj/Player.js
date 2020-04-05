@@ -215,32 +215,69 @@ class Player extends GameObject {
     this.dashing = true;
     this.dashDirection = this.aim.dup().normalize().multiply(DASH_SPEED);
     this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
-    this.game.particles.push(new BeamSlash(this.game, this, 
-      { 
-        pos: this.pos.dup().add(this.dashDirection.dup().multiply(5)), 
-        combo: "CHARGE", 
-        centerOffset: Math.max(Math.min(400, Vector.difference(this.pos.dup().add(this.dashDirection.dup().multiply(5)), this.mousePos).length()), 150) 
-      }));
+    let beam = new BeamSlash(this.game, this,
+      {
+        pos: this.pos.dup().add(this.dashDirection.dup().multiply(5)),
+        combo: "CHARGE",
+        alpha: 0.04,
+        centerOffset: Math.max(Math.min(450, Vector.difference(this.pos.dup().add(this.dashDirection.dup().multiply(5)), this.mousePos).length()), 150)
+      })
+      beam.paused = false;
+      beam.unpausable = true;
+    this.game.particles.push(beam);
   
     let slashFlash = new Emitter(this.game, {
       pos: { x: this.pos.x, y: this.pos.y },
       r: 6,
-      aim: Trig.rotateByDegree(this.aim, 30),
+      aim: Trig.rotateByDegree(this.aim, 10),
       aliveTime: 40,
-      emitCount: 50,
-      emitSpeed: 25,
+      emitCount: 90,
+      emitSpeed: 30,
       ejectSpeed: 9,
       impulseVariance: 0.8,
       fanDegree: 60,
       color: "rgba(0, 188, 188, 1)",
-      decayRate: 1.1,
+      decayRate: 0.8,
       width: 100,
       lengthForward: 40,
-      forwardOffset: Math.min(750, Vector.difference(this.pos, this.mousePos).length() + 300),
+      forwardOffset: Math.max(Math.min(600, Vector.difference(this.pos.dup().add(this.dashDirection.dup().multiply(5)), this.mousePos).length() * 1.2), 150) + 150,
       emitAngle: -45,
     });
-    console.log(Vector.difference(this.pos, this.mousePos).length());
     this.game.delayedParticles.push(slashFlash);
+
+    let dust = new Emitter(game, {
+      pos: { x: this.pos.x, y: this.pos.y },
+      r: 8,
+      aim: this.aim.dup().multiply(-1),
+      aliveTime: 30,
+      emitCount: 16,
+      emitSpeed: 8,
+      ejectSpeed: 16,
+      impulseVariance: 0.7,
+      fanDegree: 30,
+      decayRate: 0.75,
+      width: 30,
+      color: "white",
+      forwardOffset: -200,
+      lengthForward: -200,
+    });
+    this.game.vanity.push(dust);
+
+    let spark = new SlashSpark(this.game, this.pos.x, this.pos.y, "BEAM", 150, 60, 17, Math.PI + Math.atan2(this.aim.y, this.aim.x), 0, true, function () { this.width *= 0.80; this.length *= 1.15 });
+    spark.color = [0, 255, 255];
+    this.game.vanity.push(spark);
+    let cb = function () {
+      this.length *= 1.12;
+      this.width *= 0.85;
+    }
+    let angle = Math.random() * Math.PI;
+    this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle, 0, true, cb));
+    this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
+    this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
+    this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
+
+
+    this.game.freeze(3);
   } 
 
   fireBeam() {
@@ -721,17 +758,28 @@ class Player extends GameObject {
     if(this.slashCharge === MAX_SLASH_CHARGE) {
       let star = new Star(this, {
         pos: this.pos.dup(),
-        length: 60,
-        width: 16,
+        length: 250,
+        width: 24,
         aliveTime: 35,
         expandRate: 1.05,
-        thinningRate: 0.65,
+        thinningRate: 0.7,
         color: [0, 188, 188],
       });
       this.game.vanity.push(star);
-      let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 25);
+      let star2 = new Star(this, {
+        pos: this.pos.dup(),
+        length: 100,
+        width: 24,
+        aliveTime: 35,
+        expandRate: 1.05,
+        thinningRate: 0.7,
+        color: [200, 0, 0],
+        angle: Math.PI / 4,
+      });
+      this.game.vanity.push(star2);
+      let explosion = new Explosion(game, this.pos.x, this.pos.y, this.r + 50);
       explosion.color = "teal";
-      explosion.aliveTime = 3;
+      explosion.aliveTime = 4;
       this.game.vanity.push(explosion);
     }
 

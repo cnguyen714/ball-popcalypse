@@ -10,6 +10,7 @@ const LENGTH = 150;
 const KNOCKBACK = 10;
 const DAMAGE = 300;
 const DURATION = 7;
+const BEAM_DURATION = 13;
 const ARC_DEGREE_RATE = 20;
 const DERVISH_KB_RATE = 0.1;
 const CENTER_OFFSET = 15;
@@ -39,6 +40,8 @@ class BeamSlash extends Particle {
     iterSpeed = 1,
     kb = KNOCKBACK,
     color = Beam.COLOR().AQUA,
+    beamAliveTime = BEAM_DURATION,
+    alpha = 1,
   }
   ) {
     super(game);
@@ -50,6 +53,7 @@ class BeamSlash extends Particle {
     this.length = length;
     this.damage = damage;
     this.aliveTime = aliveTime;
+    this.beamAliveTime = beamAliveTime;
     this.directions = DIRECTION;
     this.direction = direction;
     this.active = active;
@@ -58,6 +62,7 @@ class BeamSlash extends Particle {
     this.knockback = kb;
     this.iterSpeed = iterSpeed;
     this.centerOffset = centerOffset;
+    this.alpha = alpha;
 
     switch(this.combo) {
       case 0:
@@ -100,18 +105,19 @@ class BeamSlash extends Particle {
         break;
       case "CHARGE":
         this.arcRate = (ARC_DEGREE_RATE * 1.1) * Math.PI / 180;
-        this.damage = this.damage * 3;
+        this.damage = this.damage * 4;
         // this.color = Beam.COLOR().FADE;
         this.knockback = this.knockback * 4;
         this.aliveTime += -1;
-        this.length = 90;
+        this.beamAliveTime = 40;
+        this.length = 110;
         this.width = 160;
         this.game.player.invul = 7;
-        this.iterSpeed = 3;
+        this.iterSpeed = 2;
         offsetDegree = -30;
         break;
       default:
-          break;
+        break;
     }
 
     this.startOffsetDegree = -offsetDegree + ARC_DEGREE_RATE * (this.aliveTime / 4);
@@ -131,11 +137,11 @@ class BeamSlash extends Particle {
     let arcRate = this.arcRate * this.direction;
     let newAim = this.aim.dup();
     newAim.multiply(1, -1);
-
+    
     let x2 = newAim.x * Math.cos(arcRate) - newAim.y * Math.sin(arcRate);
     let y2 = newAim.y * Math.cos(arcRate) + newAim.x * Math.sin(arcRate);
     this.aim = new Vector(x2, y2).normalize();
-
+    
     if (this.combo === -1) {
       this.length += 5;
       this.width += 5;
@@ -146,7 +152,7 @@ class BeamSlash extends Particle {
     } else {
       // this.length -= 2;
       this.length *= 0.997;
-
+      
     }
     let p = new this.beamClass(this.game, {
       pos: {x: this.pos.x + this.aim.x * this.centerOffset, y: this.pos.y + this.aim.y * this.centerOffset},
@@ -159,7 +165,11 @@ class BeamSlash extends Particle {
       knockback: this.knockback,
       direction: this.direction,
       parent: this,
+      aliveTime: this.beamAliveTime,
+      alpha: this.alpha,
     });
+    p.unpausable = this.unpausable;
+    p.paused = this.paused;
     this.game.particles.push(p);
   }
 

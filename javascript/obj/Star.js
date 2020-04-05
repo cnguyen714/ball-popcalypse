@@ -24,11 +24,12 @@ class Star extends Beam {
       aliveTime = 60,
       expandRate = 1.06,
       thinningRate = 0.75,
+      angle = 0,
     }
   ) {
     super(game, {pos: pos});
     this.pos = new Vector(pos.x - spread / 2+ Math.random() * spread, pos.y - spread / 2 + Math.random() * spread);
-    this.angle = 0;
+    this.angle = angle;
     this.vel = vel;
     this.color = color;
     this.cb = cb;
@@ -78,6 +79,7 @@ class Star extends Beam {
   drawRect() {
     // Offset the rect based on its width but maintain origin
     this.ctx.translate(this.pos.x, this.pos.y);
+    this.ctx.rotate(this.angle);
     this.ctx.fillRect(0, this.width / -2, this.length, this.width);
     this.ctx.rotate(Math.PI / 2);
     this.ctx.fillRect(0, this.width / -2, this.length, this.width);

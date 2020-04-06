@@ -151,8 +151,6 @@ class SlashSpark extends Particle {
       }
     }
 
-
-
     if (this.aliveTime <= 0) {
       this.alive = false;
     }

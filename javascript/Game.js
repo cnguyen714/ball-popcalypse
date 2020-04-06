@@ -1009,25 +1009,33 @@ class Game {
     this.ctx.lineTo(this.player.mousePos.x + finalPos.x, this.player.mousePos.y + finalPos.y);
     this.ctx.stroke();
     this.ctx.closePath();
+    this.ctx.restore();
 
-    
     if(this.player.slashCharge > 15) {
-      this.ctx.restore();
       this.ctx.save();
       this.ctx.strokeStyle = this.player.slashCharge >= this.player.slashChargeNeeded ? "orange" : "white";
       this.ctx.lineWidth = 0.7;
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       this.ctx.beginPath();
       // let dist = Math.max(Math.min(550, Vector.difference(this.player.pos, this.player.mousePos).length() * 2), 250);
-      let dist = Math.max(Math.min(600, Vector.difference(this.player.pos, this.player.mousePos).length()), 275);
+      let dist = Math.max(Math.min(600, Vector.difference(this.player.pos, this.player.mousePos).length()), 300);
       let aim = this.player.aim.dup();
       aim.x *= -1;
       let arcPos = Trig.getAngle(aim) + Math.PI / 4;
       this.ctx.arc(this.player.pos.x, this.player.pos.y, dist, arcPos , arcPos + Math.PI / 2);
       this.ctx.stroke();
       this.ctx.closePath();
+      this.ctx.strokeStyle = "white";
+      this.ctx.beginPath();
+      this.ctx.arc(this.player.pos.x, this.player.pos.y, 300, arcPos + Math.PI / 128 * 31, arcPos + Math.PI / 128 * 33);
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.beginPath();
+      this.ctx.arc(this.player.pos.x, this.player.pos.y, 600, arcPos + Math.PI / 128 * 31, arcPos + Math.PI / 128 * 33);
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.restore();
     }
-
   }
 
   drawStats() {

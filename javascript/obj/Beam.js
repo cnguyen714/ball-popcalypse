@@ -1,4 +1,5 @@
 import Vector from "../lib/Vector";
+import Trig from "../lib/Trig";
 import EnemyCircle from "./EnemyCircle";
 import Explosion from "./Explosion";
 
@@ -6,7 +7,6 @@ import Particle from "./Particle";
 import DamageNumber from "./DamageNumber";
 import SlashSpark from "./SlashSpark";
 import EnemyParticle from "./EnemyFireball";
-import Trig from "../lib/Trig";
 import Emitter from "./Emitter";
 
 const WIDTH = 60;
@@ -188,6 +188,37 @@ class Beam extends Particle {
             });
 
             this.game.vanity.push(hitImpactFin);
+            break;
+          case "CHARGE":
+            // this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 12, 150, 50, Trig.getAngle(Trig.rotateByDegree(Vector.difference(obj.pos, this.game.player.pos), 90))));
+            let loc = Trig.rotateByDegree(Vector.difference(this.game.player.pos, obj.pos), 0);
+            let angle = Math.atan2(-loc.x, loc.y);
+            // console.log(loc);
+            console.log(angle / Math.PI * 180);
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 12, 150, 50, angle ));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 40));
+            this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, 0, 4, 60));
+            let explosionC = new Explosion(this.game, obj.pos.x, obj.pos.y, 50);
+            explosionC.aliveTime = 3;
+            this.game.vanity.push(explosionC);
+            
+            obj.vel.add(knockStraight.multiply(this.knockback));
+            obj.pos.add(knockStraight);
+
+            let hitQuickdraw = new Emitter(this.game, {
+              pos: { x: obj.pos.x, y: obj.pos.y },
+              r: 11,
+              aim: Trig.rotateByDegree(this.aim.dup(), -90 * this.direction),
+              emitCount: 4,
+              emitSpeed: 2,
+              ejectSpeed: 14,
+              impulseVariance: 0.4,
+              fanDegree: 20,
+              aliveTime: 30,
+            });
+
+            this.game.vanity.push(hitQuickdraw);
+
             break;
           default:
             this.game.vanity.push(new SlashSpark(this.game, obj.pos.x, obj.pos.y, this.combo, 3, 40));

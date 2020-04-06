@@ -223,11 +223,11 @@ class Player extends GameObject {
     this.slashCooldown = 30;
     this.shootCooldown = 30;
     this.invul += 10;
-    this.dashDuration = 2;
-    this.dashPathDuration = DASH_PATH_DURATION;
+    this.dashPathDuration = DASH_PATH_DURATION - 2;
     this.moveState = STATE_DASHING;
     this.dashing = true;
     this.dashDirection = this.aim.dup().normalize().multiply(DASH_SPEED);
+    this.dashDuration = 4;
     this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.2);
     let beam = new BeamSlash(this.game, this,
       {
@@ -668,6 +668,7 @@ class Player extends GameObject {
   }
 
   dampSpeed() {
+    if(this.dashing) return;
     let vel = this.vel.length();
     if(vel > CLAMP_SPEED) {
       this.vel.normalize().multiply(CLAMP_SPEED);

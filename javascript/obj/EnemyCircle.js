@@ -74,7 +74,7 @@ class EnemyCircle extends GameObject {
 
     // if (player.moveState === "STATE_DASHING") return;
     if (this.r * this.r + player.r * player.r > distSqr) {
-      this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.3);
+      this.game.playSoundMany(`${this.game.filePath}/assets/impact.wav`, 0.1);
       if(this.damage > 1) this.game.vanity.push(new DamageNumber(player, this.damage, {
         size: 20 + this.r / 4, 
         duration: 30, 

@@ -2,6 +2,7 @@
 import Particle from "../Particle";
 import Beam from "../Beam";
 import Vector from "../../lib/Vector";
+import Trig from "../../lib/Trig";
 
 const BULLET_SPEED = 20;
 const BULLET_SPREAD = 0.12;
@@ -48,6 +49,7 @@ export const fireBeamAtCursor = (player) => {
   p.color = player.color;
 
   let aim = new Vector(1, 1);
+  let offset = Trig.rotateByDegree(player.aim.dup(), 90);
   aim.multiply(player.aim);
   aim.normalize();
   p.aim = aim;

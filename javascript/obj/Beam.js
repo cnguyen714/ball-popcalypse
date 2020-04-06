@@ -129,9 +129,9 @@ class Beam extends Particle {
           obj.alive = false;
         } else if (!this.silenced) {
           if (this.combo === this.game.player.maxSlashCombo) {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.03);
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.02);
           } else {
-            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.08);
+            this.game.playSoundMany(`${this.game.filePath}/assets/SE_00017.wav`, 0.06);
           }
         }
 

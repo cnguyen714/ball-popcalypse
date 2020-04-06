@@ -87,6 +87,7 @@ class Game {
     this.assetsLoaded = false;
     this.cheat = false;
     this.player = new Player(this);
+    this.masterVol = 0.5;
 
 
     this.timeTracker = (new Date).getTime() + NORMAL_TIME_DELTA;
@@ -158,8 +159,8 @@ class Game {
         preDefeatSfx: bufferList[10],
         spawnSfx: bufferList[11],
       }
-      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, {vol: 0.6, loop: true});
-      game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, {vol: 1.4});
+      game.bgm = createAudio(game, game.AUDIO_BUFFERS.bgm, {vol: 0.2, loop: true});
+      game.preDefeatSfx = createAudio(game, game.AUDIO_BUFFERS.preDefeatSfx, {vol: 0.4});
       // game.bgm.sourceNode.loop = true;
       // game.bgm.gainNode.gain.value = 0.4;
       // let source0 = context.createBufferSource();
@@ -209,7 +210,7 @@ class Game {
       startedAt = 0,
       pausedAt = 0,
       playing = false,
-      volume = vol,
+      volume = vol * game.masterVol,
       loop = false
     }) {
       let context = game.audioContext;
@@ -407,7 +408,7 @@ class Game {
           if (this.aliveTime <= 0) this.game.startGame();
         }
         this.game.menus.push(overlay2);
-        this.game.playSound(this.game.spawnSfx, 0.6);
+        this.game.playSound(this.game.spawnSfx, 0.2);
       }
     }
     this.menus.push(overlay);
@@ -545,7 +546,7 @@ class Game {
 
       this.vanity.push(endEmit);
 
-      this.playSound(this.defeatSfx, 0.2);
+      this.playSound(this.defeatSfx, 0.05);
     }
 
     postDeath = postDeath.bind(this);
@@ -616,10 +617,10 @@ class Game {
     source.start(0);
   }
 
-  playSoundMany(path, vol = 1) {
+  playSoundMany(path, vol = 1.0) {
     if (this.mute) return;
     let sound = new Audio(path);
-    sound.volume = vol;
+    sound.volume = vol * this.masterVol;
     sound.play();
   }
 
@@ -716,7 +717,7 @@ class Game {
                 color: Beam.COLOR().CANNON,
               });
               this.vanity.push(star1);
-              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.2);
+              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.1);
             }
 
             if (this.player.charging && (this.loopCount + 5) % 10 === 0) {
@@ -731,7 +732,7 @@ class Game {
                 color: Beam.COLOR().TEAL,
               });
               this.vanity.push(star2);
-              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.2);
+              this.playSoundMany(`${this.filePath}/assets/SE_00016.wav`, 0.15);
             }
 
             for (let i = 0; i < 1; i++) {
@@ -790,11 +791,11 @@ class Game {
           }
 
           // Handle enemy death
-          let soundLimit = 3;
+          let soundLimit = 2;
           let soundCount = 0;
           this.entities.filter(entity => !entity.alive).forEach(entity => {
             if (soundCount <= soundLimit) {
-              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.3);
+              this.playSoundMany(`${PATH}/assets/boom2.wav`, 0.2);
               soundCount++;
             }
             this.vanity.push(new Explosion(game, entity.pos.x, entity.pos.y, entity.r * 1.5, entity.vel))
@@ -871,7 +872,7 @@ class Game {
         if (this.loopCount % (2) === 0 && (this.fps >= MIN_FRAME_RATE - 10)) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
         }
-        if (this.loopCount % 2 === 0) {
+        if (this.loopCount % 3 === 0) {
           this.particles.push(new DeathExplosion(game, 40, 50, 0, "BLACKHOLE"));
           // if (this.fps <= MIN_FRAME_RATE - 5) this.entities[0].alive = false;
         }
@@ -879,7 +880,7 @@ class Game {
           let diff = Vector.difference(entity.pos, this.player.pos);
           let distSqr = diff.dot(diff);
 
-          if (entity.r * entity.r + this.player.r * this.player.r  + 100 > distSqr) {
+          if (entity.r <= 0.1 || entity.r * entity.r + this.player.r * this.player.r  + 100 > distSqr) {
             entity.alive = false;
           } else {
             entity.r *= 0.996;

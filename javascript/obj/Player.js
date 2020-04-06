@@ -201,7 +201,7 @@ class Player extends GameObject {
   }
 
   slash() {
-    this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.13);
+    this.game.playSoundMany(`${this.game.filePath}/assets/SE_00064.wav`, 0.1);
     this.game.particles.push(new BeamSlash(this.game, this, {pos: this.pos, combo: this.slashCombo}));
     if (this.slashCombo === this.maxSlashCombo) {
       this.slashCooldown = SLASH_COOLDOWN + 60;
@@ -305,7 +305,6 @@ class Player extends GameObject {
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
-
 
     this.game.freeze(4);
   } 
@@ -437,28 +436,28 @@ class Player extends GameObject {
         let shootFlash = new Emitter(this.game, {
           pos: { x: this.pos.x, y: this.pos.y },
           r: 4,
-          aim: this.aim.dup(),
+          aim: aim.dup(),
           emittee: Sparkle,
-          aliveTime: 70,
+          aliveTime: 80,
           emitCount: 60,
           emitSpeed: 20,
-          ejectSpeed: 9,
-          impulseVariance: 1,
-          fanDegree: 10,
+          ejectSpeed: 8,
+          impulseVariance: 1.0,
+          fanDegree: 15,
           color: "rgba(255, 0, 0, 0.9)",
-          decayRate: 1.01,
+          decayRate: 1.012,
           width: 350,
           lengthForward: 300,
         });
         this.game.delayedParticles.push(shootFlash);
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.45);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.3);
         let kb = aim.dup().normalize().multiply(-75);
         this.vel.add(kb);
       }.bind(this), this.game.normalTimeDelta * freezeTime + 250);
 
 
       setTimeout(function() {
-        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.3);
+        this.game.playSoundMany(`${this.game.filePath}/assets/SE_00049.wav`, 0.2);
       }, this.game.normalTimeDelta * freezeTime);
     }
   }
@@ -466,7 +465,7 @@ class Player extends GameObject {
   shoot() {
     this.slashCharge = 0;
     if (this.shooting === false) {
-      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.4);
+      this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.25);
       this.shooting = true;
       this.slashCooldown = 6;
       this.shootCooldown = SHOOT_COOLDOWN;
@@ -516,7 +515,7 @@ class Player extends GameObject {
       this.game.vanity.push(shootFlashThin);
     } else {
       if (this.game.loopCount % 5 === 0) {
-        this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.2);
+        this.game.playSoundMany(`${this.game.filePath}/assets/laser7.wav`, 0.12);
       }
       fireBulletAtCursor(this);
       fireBulletAtCursor(this);

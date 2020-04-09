@@ -157,7 +157,7 @@ class Player extends GameObject {
 
   // Dash in a direction for a few frames
   dash() {
-    if (!this.dashing || this.game.cheat || this.dashCooldown <= this.maxDashCooldown / 2) {
+    if (this.game.cheat || (!this.dashing && this.dashCooldown <= this.maxDashCooldown / 2)) {
       this.dashing = true;
       if (this.movement.length() === 0) return;
       if (this.moveState !== STATE_DASHING) {
@@ -305,6 +305,22 @@ class Player extends GameObject {
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 20, 40, 8, angle + Math.PI / 2, 0, true, cb));
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4, 0, true, cb));
     this.game.vanity.push(new SlashSpark(this.game, this.pos.x, this.pos.y, 0, 8, 110, 14, angle + Math.PI / 4 * 3, 0, true, cb));
+
+    // let beamDrawPos = this.pos.dup().add( Trig.rotateByDegree(new Vector(-200, 50), Trig.getAngle( Vector.difference(this.pos.dup().add(-200, 50), this.mousePos))) );
+    // let beamAim = Vector.difference(beamDrawPos, this.mousePos);
+    // let beamDraw = new BeamCannon(this.game, beamDrawPos.x, beamDrawPos.y, beamAim);
+    // beamDraw.initialTime = 10;
+    // beamDraw.aliveTime = 10;
+    // beamDraw.initialTime = 10;
+    // beamDraw.width = 20;
+    // beamDraw.length = 400;
+    // beamDraw.color = [0, 188, 188];
+    // beamDraw.alpha = 1;
+    // beamDraw.paused = false;
+    // beamDraw.unpausable = true;
+    // beamDraw.silenced = true;
+    // beamDraw.active = false;
+    // this.game.vanity.push(beamDraw);
 
     this.game.freeze(4);
   } 
@@ -819,7 +835,7 @@ class Player extends GameObject {
     if (this.keyDown[KEY.MOUSE_RIGHT] && this.shootCooldown <= 0) this.shoot();
     if (!this.keyDown[KEY.MOUSE_RIGHT]) this.shooting = false;
     if (this.keyDown[KEY.SHIFT] && this.dashCooldown <= (DASH_COUNT - 1) * this.maxDashCooldown) this.dash();
-    if (!this.keyDown[KEY.SHIFT]) this.dashing = false;
+    if (this.dashDuration <= 0) this.dashing = false;
     if (this.keyDown[KEY.SPACE] && this.beamCooldown <= 0) this.fireBeam();
 
     // Apply movement

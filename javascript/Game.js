@@ -1172,9 +1172,9 @@ class Game {
         this.drawFreeze();
         this.entities.forEach(entity => entity.draw());
         this.particles.forEach(entity => entity.draw());
+        this.player.draw();
         this.vanity.forEach(entity => entity.draw());
         this.enemyParticles.forEach(entity => entity.draw());
-        this.player.draw();
         this.menus.forEach(entity => entity.draw());
         this.drawChargeBar();
         this.drawUI();

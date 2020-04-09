@@ -92,11 +92,9 @@ class EnemyBeam extends Beam {
 
     // Collision using obj as a box,
     // Use LENGTH > HIT_LENGTH to hide inaccuracy of hitbox
-    if (
-      x2 + obj.r >= 0 &&
-      x2 - obj.r <= 0 + this.hitLength &&
-      y2 + obj.r >= 0 - this.hitWidth / 2 &&
-      y2 - obj.r <= 0 + this.hitWidth / 2
+    if (Vector.difference(new Vector(x2, y2),
+                          new Vector(Math.max(Math.min(this.length, x2), 0),
+                                     Math.max(Math.min(this.width, y2), 0))).length() <= obj.r
     ) {
       diff = new Vector(1, 0);
       let x = diff.x * Math.cos(this.angle) - diff.y * Math.sin(this.angle);

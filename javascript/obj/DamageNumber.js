@@ -14,7 +14,7 @@ const COLOR = {
   NORMAL: [255, 255, 255],
   CRIT: [255, 255, 0],
   CANNON: [0, 0, 0],
-  ENEMY: [255, 0, 0],
+  ENEMY: [255, 50, 50],
 }
 //
 // Damage Number
@@ -82,8 +82,8 @@ class DamageNumber extends GameObject {
 
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
-    this.ctx.shadowBlur = 1;
-    this.ctx.shadowColor = "black";
+    // this.ctx.shadowBlur = 1;
+    this.ctx.shadowColor = "white";
     this.ctx.fillText(`${Math.floor(this.damage)}`, this.pos.x, this.pos.y);
     this.ctx.restore();
   }
@@ -96,12 +96,9 @@ class DamageNumber extends GameObject {
       this.vel.y += GRAVITY;
     }
 
-    if (this.aliveTime <= 0) {
-      this.alive = false;
-    }
+    if (this.aliveTime <= 0) this.alive = false;
     this.aliveTime--;
     
-
     this.cb();
   }
 

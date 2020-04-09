@@ -57,7 +57,7 @@ class Explosion extends Particle {
       this.ctx.fill();
       this.ctx.strokeStyle = this.color;
      
-      this.ctx.shadowBlur = 30;
+      // this.ctx.shadowBlur = 30;
       this.ctx.shadowColor =  this.color;
       this.ctx.stroke();  
 

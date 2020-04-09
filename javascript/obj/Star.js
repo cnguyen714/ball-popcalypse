@@ -101,7 +101,7 @@ class Star extends Beam {
       this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
       this.ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
       this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]},0.9)`;
-      this.ctx.shadowBlur = 30;
+      // this.ctx.shadowBlur = 30;
       this.ctx.closePath();
       this.ctx.stroke();
       this.drawRect();
@@ -114,7 +114,7 @@ class Star extends Beam {
 
       this.ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
       this.ctx.shadowColor = `rgba(${color[0]},${color[1]},${color[2]}, ${Math.pow((this.aliveTime + 3) / (this.initialTime - 6), 3)})`;
-      this.ctx.shadowBlur = 50;
+      // this.ctx.shadowBlur = 50;
       this.ctx.closePath();
       this.ctx.stroke();
       this.drawRect();

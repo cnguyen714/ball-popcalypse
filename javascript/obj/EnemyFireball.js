@@ -142,7 +142,7 @@ class EnemyFireball extends Particle {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
-    this.ctx.shadowBlur = 7;
+    // this.ctx.shadowBlur = 7;
     this.ctx.shadowColor = "red";
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
@@ -151,7 +151,7 @@ class EnemyFireball extends Particle {
 
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r * (HITBOX_RATIO + 0.1), 0, 2 * Math.PI);
-    this.ctx.shadowBlur = 0;
+    // this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 0.5;
     this.ctx.fillStyle = "rgba(0,0,0,0)";
     this.ctx.fill();

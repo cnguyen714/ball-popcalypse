@@ -18,7 +18,6 @@ import Sparkle from "./Sparkle";
 import Star from "./Star";
 // import shotSfx from '../assets/laser7.wav';
 
-const CLAMP_SPAWN = 200; // Offset from edges
 const PLAYER_RADIUS = 11;
 const COLOR = '#0d7377';
 const MAX_HEALTH = 250;
@@ -81,8 +80,8 @@ class Player extends GameObject {
   constructor(game) {
     super(game);
     
-    this.pos = new Vector(CLAMP_SPAWN + Math.random() * (this.cvs.width - CLAMP_SPAWN * 2),
-                          CLAMP_SPAWN + Math.random() * (this.cvs.height - CLAMP_SPAWN * 2));
+    this.pos = new Vector(this.cvs.width / 4 + Math.random() * (this.cvs.width / 2),
+                          this.cvs.height / 4 + Math.random() * (this.cvs.height / 2));
     this.vel = new Vector();
     this.movement = new Vector();
     this.aim = new Vector();
@@ -886,7 +885,7 @@ class Player extends GameObject {
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = "white";
 
-    this.ctx.shadowBlur = 6;
+    // this.ctx.shadowBlur = 6;
     this.ctx.shadowColor = "white";
     
     this.ctx.fill();
@@ -899,7 +898,7 @@ class Player extends GameObject {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.strokeStyle = "white";
-    this.ctx.shadowBlur = 6;
+    // this.ctx.shadowBlur = 6;
     this.ctx.shadowColor = "white";
     this.ctx.lineWidth = 6;
     this.ctx.arc(this.pos.x, this.pos.y, 20, 0, 2 * Math.PI * (this.dashCooldown / this.maxDashCooldown));

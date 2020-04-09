@@ -80,7 +80,7 @@ class Slam extends GameObject {
       this.ctx.fill();
       this.ctx.strokeStyle = "white";
      
-      this.ctx.shadowBlur = 30;
+      // this.ctx.shadowBlur = 30;
       this.ctx.shadowColor = this.color;
       this.ctx.stroke();  
 

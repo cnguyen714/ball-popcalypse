@@ -44,7 +44,7 @@ const STATE_OVER = "STATE_OVER";
 
 const FPS = 60;
 const NORMAL_TIME_DELTA = 1000 / FPS;
-const MIN_FRAME_RATE = 40; // Limits enemy production to save frames
+const MIN_FRAME_RATE = 30; // Limits enemy production to save frames
 
 const BASE_SPAWN_RATE = 4; // 5
 const SPAWN_LOCKOUT_TIME = 60; // 5
@@ -649,10 +649,10 @@ class Game {
       case STATE_BEGIN:
         if (this.entities.length < 300 && this.loopCount % 120 === 0 && this.fps >= MIN_FRAME_RATE && this.loopCount > 60) {
           this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
-          if (this.loopCount % 240 === 0) {
-            this.player.pos.x = 200 + Math.random() * (this.cvs.width - 200 * 2);
-            this.player.pos.y = 200 + Math.random() * (this.cvs.height - 200 * 2);
-          }
+        }
+        if (this.loopCount % 240 === 0) {
+          this.player.pos.x = 200 + Math.random() * (this.cvs.width - 200 * 2);
+          this.player.pos.y = 200 + Math.random() * (this.cvs.height - 200 * 2);
         }
         this.players.forEach(entity => entity.update());
         this.entities.forEach(entity => entity.update());
@@ -697,7 +697,6 @@ class Game {
 
         if (this.pauseTime > 0) {
           // charging effects before firing a beam
-          
           for (let i = 0; i < 1; i++) {
             let length = 400;
             let thickness = 40;
@@ -783,10 +782,13 @@ class Game {
           if (this.difficulty > MAX_DIFFICULTY) this.difficulty = MAX_DIFFICULTY;
 
           // Generate enemies -
-          // Throttle making enemies if you miss too many frame deadlines, also keep generating enemies if the FPS drop was to player using beam
+          // Throttle making enemies if you miss too many frame deadlines
           let spawnRate = 20 - Math.floor(this.difficulty * 0.8);
-          spawnRate = spawnRate <= 1 ? 1 : spawnRate;
-          if (this.loopCount % Math.floor((BASE_SPAWN_RATE + spawnRate) * (this.fps >= MIN_FRAME_RATE ? 1 : 2) || this.loopCount % 30 === 0) === 0 && this.pauseTime === 0 && this.loopCount > SPAWN_LOCKOUT_TIME) {
+          spawnRate = Math.max(1, spawnRate);
+          if (this.loopCount % Math.floor((BASE_SPAWN_RATE + spawnRate) * (this.fps >= MIN_FRAME_RATE ? 1 : 2) || 
+              this.loopCount % 30 === 0) === 0 && 
+              this.pauseTime === 0 && 
+              this.loopCount > SPAWN_LOCKOUT_TIME) {
             this.entities.push(EnemyFactory.spawnCircleRandom(this.player));
           }
 

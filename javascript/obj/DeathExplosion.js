@@ -160,7 +160,7 @@ class DeathExplosion extends Particle {
       this.ctx.fillStyle = "white";
       this.ctx.strokeStyle = "white";
 
-      this.ctx.shadowBlur = 6;
+      // this.ctx.shadowBlur = 6;
       this.ctx.shadowColor = "white";
 
       this.ctx.fill();

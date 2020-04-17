@@ -3,19 +3,8 @@ import GameObject from "./GameObject";
 import Sparkle from "./Sparkle";
 import Trig from "../lib/Trig";
 
-function augment(Obj1, Obj2) {
-  var prop;
-  for (prop in Obj2) {
-    if (Obj2.hasOwnProperty(prop) && !Obj1[prop]) {
-      Obj1[prop] = Obj2[prop];
-    }
-  }
-  return Obj1;
-}
-
 class Emitter extends GameObject {
-  constructor(
-    game,
+  constructor(game,
     {
       pos = {x: 0, y: 0},
       r = 1,
@@ -62,6 +51,7 @@ class Emitter extends GameObject {
     this.draw = this.draw.bind(this);
   }
 
+  // Remove obj if out of view
   validatePosition(rectX, rectY) {
     if (this.pos.x > rectX + this.r
       || this.pos.x < 0 - this.r
@@ -71,12 +61,13 @@ class Emitter extends GameObject {
     };
   }
 
+  // Emitter doesn't collide
   checkCollision(obj) {
     return;
   }
 
   update() {
-    if (!this.alive) return; //Don't check collision if object is not alive
+    if (!this.alive) return; 
     if (!this.active) return;
 
     for (let i = 0; i < this.emitSpeed; i++) {
@@ -127,7 +118,7 @@ class Emitter extends GameObject {
     this.validatePosition(this.cvs.width, this.cvs.height);
   }
 
-  // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
+  // Emitter doesn't draw anything
   draw() {
     return;
   }

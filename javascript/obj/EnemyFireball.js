@@ -17,9 +17,10 @@ const HITBOX_RATIO = 0.3;
 
 
 class EnemyFireball extends Particle {
-  constructor(game, {
+  constructor(game, 
+  {
     pos = {x: 100, y: 100},
-    vel = new Vector(1, 0),
+    vel = new Vector(VELOCITY, 0),
     cb = () => { },
     r = RADIUS,
     damage = DAMAGE,
@@ -112,7 +113,7 @@ class EnemyFireball extends Particle {
   }
 
   update() {
-    if (!this.alive) return; //Don't check collision if object is not alive
+    if (!this.alive) return; 
     this.cb();
     if (!this.active) return;
     this.addVelocityTimeDelta();
@@ -134,7 +135,6 @@ class EnemyFireball extends Particle {
     });
 
     this.game.vanity.push(thruster);
-    
   }
 
   // ctx.arc(x, y, r, sAngle, eAngle, [counterclockwise])
@@ -142,7 +142,6 @@ class EnemyFireball extends Particle {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r, 0, 2 * Math.PI);
-    // this.ctx.shadowBlur = 7;
     this.ctx.shadowColor = "red";
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
@@ -151,7 +150,6 @@ class EnemyFireball extends Particle {
 
     this.ctx.beginPath();
     this.ctx.arc(this.pos.x, this.pos.y, this.r * (HITBOX_RATIO + 0.1), 0, 2 * Math.PI);
-    // this.ctx.shadowBlur = 0;
     this.ctx.lineWidth = 0.5;
     this.ctx.fillStyle = "rgba(0,0,0,0)";
     this.ctx.fill();

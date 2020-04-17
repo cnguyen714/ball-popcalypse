@@ -10,8 +10,7 @@ const DECAY = 0.9;
 const DURATION = 20;
 
 class Sparkle extends GameObject {
-  constructor(
-    game,
+  constructor(game,
     {  
       pos = {x: 0, y: 0},
       vel = new Vector(0, 0),
@@ -54,7 +53,7 @@ class Sparkle extends GameObject {
   }
 
   update() {
-    if (!this.alive) return; //Don't check collision if object is not alive
+    if (!this.alive) return;
     if (!this.active) return;
     this.r = this.initialR * this.aliveTime / this.initialTime;
     this.pos = this.pos.add(this.vel);

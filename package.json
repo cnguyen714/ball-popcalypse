@@ -24,6 +24,6 @@
   "homepage": "https://github.com/cnguyen714/ball-popcalypse#readme",
   "dependencies": {
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   }
 }
